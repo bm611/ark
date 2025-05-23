@@ -1,0 +1,9 @@
+@font-face {
+	font-family: Bouge;
+	src: url('/fonts/bogue-black.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: dm;
+	src: url('/fonts/DMSans.ttf') format('truetype');
+}
