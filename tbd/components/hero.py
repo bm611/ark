@@ -75,13 +75,4 @@ def hero():
             ),
             class_name="flex items-center justify-center min-h-[70vh] pb-4",
         ),
-        rx.box(
-            rx.icon(
-                "chevron-down",
-                size=32,
-                color="black",
-                class_name="animate-bounce",
-            ),
-            class_name="flex justify-center items-center -mt-8 md:mt-0 md:py-8",
-        ),
     )

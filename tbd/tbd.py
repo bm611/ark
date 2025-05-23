@@ -42,4 +42,8 @@ app = rx.App(
     theme=rx.theme(
         appearance="light",
     ),
+    head_components=[
+        rx.el.link(rel="manifest", href="/manifest.json"),
+        rx.el.meta(name="theme-color", content="#ffffff"),
+    ],
 )
