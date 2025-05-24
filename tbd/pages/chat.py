@@ -4,7 +4,7 @@ from typing import Dict, Any
 
 class ChatState(rx.State):
     messages: list[dict[str, str]] = [
-        {"role": "user", "content": "What's the weather like today?"},
+        {"role": "user", "content": "What's the weather like today? "},
         {
             "role": "assistant",
             "content": "I don't have access to real-time weather data, but I can help you find weather information! You can check your local weather by:\n\n1. Looking at a weather app on your phone\n2. Visiting websites like Weather.com or AccuWeather\n3. Asking a voice assistant like Siri or Google Assistant\n\nIs there anything else I can help you with?",
@@ -46,9 +46,9 @@ def markdown_component_map() -> Dict[str, Any]:
             theme=rx.code_block.themes.material_oceanic,
             margin_y="1em",
             border_radius="16px",
-            font_family="Inter",
             custom_style={
                 "font-size": "12px",
+                "font_family": "Inter",
             },
         ),
         "a": lambda text, **props: rx.link(
@@ -110,7 +110,17 @@ def response_message(message: dict) -> rx.Component:
     return rx.box(
         rx.cond(
             message["role"] == "user",
-            rx.text(message["content"], class_name="ml-2 text-xl md:text-4xl"),
+            rx.text(
+                message["content"],
+                class_name="ml-2 text-xl md:text-4xl tracking-wide",
+                style={
+                    "display": "-webkit-box",
+                    "-webkit-line-clamp": "2",
+                    "-webkit-box-orient": "vertical",
+                    "overflow": "hidden",
+                    "text-overflow": "ellipsis",
+                },
+            ),
             rx.box(
                 rx.markdown(
                     message["content"],
