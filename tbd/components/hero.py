@@ -61,7 +61,7 @@ def card(
             class_name="md:flex-col",
             align="start",
         ),
-        class_name=f"{background_color} rounded-xl p-6 md:p-8 h-full flex flex-col border-3 border-black transform transition-all duration-300 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1",
+        class_name=f"{background_color} rounded-xl p-4 md:p-8 h-full flex flex-col border-3 border-black transform transition-all duration-300 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1",
     )
 
 
@@ -70,6 +70,11 @@ def hero():
         rx.box(
             rx.flex(
                 rx.box(
+                    rx.heading(
+                        "Ask Anything",
+                        class_name="text-4xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-black",
+                        as_="h1",
+                    ),
                     rx.flex(
                         card(
                             title="Chat",
