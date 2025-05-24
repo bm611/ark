@@ -7,7 +7,7 @@ def input_section():
             rx.hstack(
                 rx.input(
                     # value=State.habit,
-                    class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl bg-white rounded-2xl h-16 shadow-inner border-2 border-gray-600",
+                    class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl bg-white rounded-2xl h-16 shadow-2xl border-2 border-gray-600",
                     # on_change=State.set_habit,
                 ),
                 rx.button(
