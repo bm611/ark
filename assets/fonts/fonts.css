@@ -7,3 +7,14 @@
 	font-family: dm;
 	src: url('/fonts/DMSans.ttf') format('truetype');
 }
+
+/* Hide scrollbar for webkit browsers (Chrome, Safari) */
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for all browsers */
+.hide-scrollbar {
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
+}

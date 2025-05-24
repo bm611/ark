@@ -20,7 +20,7 @@ def input_section():
                 ),
                 class_name="w-full flex gap-1 items-center justify-center max-w-4xl mx-auto",
             ),
-            class_name="fixed bottom-2 md:bottom-6 left-0 right-0 p-2 md:p-4 bg-[#edede9]",
+            class_name="fixed bottom-2 md:bottom-6 left-0 right-0 p-2 md:p-4",
         ),
     )
 
