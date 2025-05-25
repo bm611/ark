@@ -35,7 +35,13 @@
 	# the handle_path directive will strip /backend/ from the path before proxying
 	handle_path /backend/* {
 		# this strips the /backend/ prefix from the uri sent to the proxy address
-		reverse_proxy 127.0.0.1:8000 # proxy all requests for /backend/* to the backend
+		reverse_proxy 127.0.0.1:8000  {
+				transport http {
+					versions h2c 1.1
+				}
+				header_up Upgrade websocket
+				header_up Connection upgrade
+			} # proxy all requests for /backend/* to the backend
 	}
 
 	# rewrite any errors to the corresponding error page
