@@ -69,11 +69,18 @@ def chat_nav():
                 rx.icon("zap", size=34),
                 rx.text("Ark", class_name="text-4xl"),
                 class_name="flex justify-center items-center gap-1 cursor-pointer",
-                on_click=rx.redirect("/"),
+                on_click=[
+                    rx.redirect("/"),
+                    State.reset_chat,
+                ],
             ),
             rx.button(
                 rx.text("New Chat"),
                 class_name="bg-blue-300 hover:bg-blue-500 px-4 md:px-6 py-6 md:py-8 rounded-3xl text-black text-lg md:text-xl transition-colors font-[dm] font-bold flex items-center justify-center",
+                on_click=[
+                    rx.redirect("/"),
+                    State.reset_chat,
+                ],
             ),
             class_name="flex justify-between items-center",
         ),

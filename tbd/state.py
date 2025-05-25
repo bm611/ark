@@ -9,6 +9,9 @@ class State(rx.State):
     def set_prompt(self, value: str):
         self.prompt = value
 
+    def reset_chat(self):
+        self.messages = []
+
     def send_message(self):
         if self.prompt:
             # Add user message
