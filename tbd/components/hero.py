@@ -1,4 +1,5 @@
 import reflex as rx
+from tbd.state import State
 
 
 def input_section():
@@ -6,10 +7,10 @@ def input_section():
         rx.box(
             rx.hstack(
                 rx.input(
-                    # value=State.habit,
+                    value=State.prompt,
                     class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl bg-white rounded-2xl h-16 shadow-2xl border-2 border-gray-600",
                     placeholder="Ask Anything...",
-                    # on_change=State.set_habit,
+                    on_change=State.set_prompt,
                 ),
                 rx.button(
                     rx.hstack(
@@ -17,7 +18,7 @@ def input_section():
                         class_name="flex items-center justify-center",
                     ),
                     class_name="mt-4 mx-auto text-black bg-black rounded-2xl h-16 px-4 md:px-8",
-                    # on_click=State.handle_submit,
+                    on_click=[rx.redirect("/chat"), State.send_message],
                 ),
                 class_name="w-full flex gap-1 items-center justify-center max-w-4xl mx-auto",
             ),

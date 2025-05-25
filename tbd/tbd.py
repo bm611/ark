@@ -1,5 +1,4 @@
 import reflex as rx
-from reflex.components.el.elements.inline import q
 from tbd.components.nav import navbar
 from tbd.components.hero import hero, input_section
 from tbd.pages.changelog import changelog
