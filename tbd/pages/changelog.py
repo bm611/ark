@@ -102,9 +102,24 @@ def changelog() -> rx.Component:
         # Changelog entries
         rx.box(
             changelog_entry(
+                version="0.2.0",
+                date="May 24 2025",
+                is_latest=True,
+                changes=[
+                    {
+                        "type": "added",
+                        "description": "Openrouter for Unified LLM provider access",
+                    },
+                    {
+                        "type": "added",
+                        "description": "Chat reponse with follow up with Gemini",
+                    },
+                ],
+            ),
+            changelog_entry(
                 version="0.1.0",
                 date="May 23 2025",
-                is_latest=True,
+                is_latest=False,
                 changes=[
                     {
                         "type": "added",
