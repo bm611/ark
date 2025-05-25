@@ -112,7 +112,6 @@ def response_message(message: dict) -> rx.Component:
                 class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-20",
             ),
         ),
-        class_name="",
     )
 
 
@@ -121,6 +120,11 @@ def chat_messages():
         rx.foreach(
             State.messages,
             response_message,
+        ),
+        # rx.skeleton
+        rx.skeleton(
+            loading=State.is_gen,
+            class_name="w-full h-1/2 rounded-3xl",
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
     )

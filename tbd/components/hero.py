@@ -17,7 +17,7 @@ def input_section():
                         rx.icon("arrow-up", size=28, color="black"),
                         class_name="flex items-center justify-center",
                     ),
-                    class_name="mt-4 mx-auto text-black bg-[#d5d5d0] rounded-2xl h-16 px-4 md:px-8",
+                    class_name="mt-4 mx-auto text-black bg-[#d5d5d0] hover:bg-[#b8b8b0] rounded-2xl h-16 px-4 md:px-8",
                     on_click=[
                         rx.redirect("/chat"),
                         State.handle_generation,

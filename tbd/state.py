@@ -12,23 +12,17 @@ class State(rx.State):
 
     def handle_generation(self):
         self.is_gen = True
+        self.messages.append({"role": "user", "content": self.prompt})
+
+        self.prompt = ""
 
     def reset_chat(self):
         self.messages = []
         self.is_gen = False
 
     def send_message(self):
-        if self.prompt:
-            # Add user message
-            self.messages.append({"role": "user", "content": self.prompt})
-
-            # Get AI response using all conversation history
-            response = openrouter.ask(self.messages)
-
-            self.is_gen = False
-
-            # Add assistant response
-            self.messages.append({"role": "assistant", "content": response})
-
-            # Clear prompt
-            self.prompt = ""
+        # Get AI response using all conversation history
+        response = openrouter.ask(self.messages)
+        self.is_gen = False
+        # Add assistant response
+        self.messages.append({"role": "assistant", "content": response})
