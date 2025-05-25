@@ -8,6 +8,7 @@ def input_section():
                 rx.input(
                     # value=State.habit,
                     class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl bg-white rounded-2xl h-16 shadow-2xl border-2 border-gray-600",
+                    placeholder="Ask Anything...",
                     # on_change=State.set_habit,
                 ),
                 rx.button(
@@ -71,7 +72,7 @@ def hero():
             rx.flex(
                 rx.box(
                     rx.heading(
-                        "Ask Anything",
+                        "Ask Anything!",
                         class_name="text-4xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-black",
                         as_="h1",
                     ),
