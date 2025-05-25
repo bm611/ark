@@ -15,6 +15,7 @@ class State(rx.State):
 
     def reset_chat(self):
         self.messages = []
+        self.is_gen = False
 
     def send_message(self):
         if self.prompt:

@@ -1,0 +1,47 @@
+# default to the python provider
+providers = ['python']
+
+# set up some variables to minimize annoyance
+[variables]
+NEXT_TELEMETRY_DISABLED = '1'        # disable next telemetry
+NPM_CONFIG_UPDATE_NOTIFIER = 'false' # the update check is relatively useless in a production environment
+NPM_CONFIG_FUND = 'false'            # the fund notification is also relatively useless in a production environment
+PIP_DISABLE_PIP_VERSION_CHECK = '1'  # the update check is relatively useless in a production environment
+
+# default setup phase
+[phases.setup]
+nixPkgs = [
+  '...',
+  'unzip',
+  'parallel',
+] # install unzip because reflex needs it, and install parallel to run the frontend and backend at the same time
+nixLibs = ['zlib']
+
+# reflex init phase
+[phases.init]
+dependsOn = [
+  'install',
+] # run after install (install is the default phase for installing the python modules)
+cmds = ['reflex init'] # re-initialize the app with the latest template
+
+# export frontend phase
+[phases.export]
+dependsOn = ['init'] # run after init
+cmds = [
+  'reflex export --frontend-only --no-zip',
+] # export the frontend to a static folder
+
+# install caddy phase
+[phases.caddy]
+dependsOn = ['export']                                      # run after export
+nixpkgsArchive = 'ced9bf9f7c303c7d4acc6c4a1bb44368c6baae3f' # https://github.com/NixOS/nixpkgs/commit/ced9bf9f7c303c7d4acc6c4a1bb44368c6baae3f (Caddy v2.7.5)
+nixPkgs = ['caddy']                                         # install caddy
+
+# format the caddyfile
+[phases.fmt]
+dependsOn = ['caddy']            # run after caddy
+cmds = ['caddy fmt --overwrite'] # format the caddyfile and overwrite changes
+
+# start phase
+[start]
+cmd = 'parallel --ungroup --halt now,fail=1 ::: "reflex run --backend-only --env $ENV" "caddy run 2>&1"' # run the backend and frontend in parallel, this will fail fast if either service crashes allowing railway to restart the deployment
