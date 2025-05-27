@@ -121,10 +121,39 @@ def chat_messages():
             State.messages,
             response_message,
         ),
-        # rx.skeleton
-        rx.skeleton(
-            loading=State.is_gen,
-            class_name="w-full h-1/2 rounded-3xl",
+        rx.cond(
+            State.is_gen,
+            rx.vstack(
+                rx.hstack(
+                    rx.skeleton(
+                        class_name="h-4 w-32 rounded-full bg-gray-200 dark:bg-gray-700",
+                        loading=State.is_gen,
+                    ),
+                    class_name="w-full items-start gap-3 px-4 py-2",
+                ),
+                rx.hstack(
+                    rx.skeleton(
+                        class_name="h-4 w-full rounded-lg bg-gray-200 dark:bg-gray-700",
+                        loading=State.is_gen,
+                    ),
+                    class_name="w-full px-4 py-2",
+                ),
+                rx.hstack(
+                    rx.skeleton(
+                        class_name="h-4 w-3/4 rounded-lg bg-gray-200 dark:bg-gray-700",
+                        loading=State.is_gen,
+                    ),
+                    class_name="w-full px-4 py-1",
+                ),
+                rx.hstack(
+                    rx.skeleton(
+                        class_name="h-4 w-1/2 rounded-lg bg-gray-200 dark:bg-gray-700",
+                        loading=State.is_gen,
+                    ),
+                    class_name="w-full px-4 py-1 pb-4",
+                ),
+                class_name="w-full space-y-1 py-2 animate-pulse",
+            ),
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
     )

@@ -42,7 +42,7 @@ def input_section():
                         on_click=State.select_action("Search"),
                         class_name=rx.cond(
                             State.selected_action == "Search",
-                            "rounded-xl ml-2 bg-gradient-to-r from-sky-400 to-sky-600 text-white",
+                            "rounded-xl ml-2 bg-sky-300 text-black",
                             "rounded-xl ml-2 hover:bg-sky-100 text-black",
                         ),
                         variant="surface",
