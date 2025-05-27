@@ -153,7 +153,7 @@ def offline_models_content() -> rx.Component:
             ),
             # Provider tabs
             rx.flex(
-                provider_tab("ollama", "Ollama", "/ollama.png"),
+                provider_tab("ollama", "Ollama", "/Ollama.png"),
                 provider_tab("lmstudio", "LM Studio", "/lmstudio.png"),
                 gap="2",
                 class_name="mb-6 p-1 bg-gray-50 rounded-xl",
