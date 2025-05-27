@@ -1,5 +1,210 @@
 import reflex as rx
 from tbd.state import State
+from typing import List
+
+
+class OfflineModelsState(rx.State):
+    """State management for the offline models bottom drawer"""
+
+    is_open: bool = False
+    selected_provider: str = "ollama"  # "ollama" or "lmstudio"
+    selected_model: str = ""  # Track selected model
+
+    # Placeholder models - will be replaced with actual models later
+    ollama_models: List[str] = [
+        "llama3.2:3b",
+        "llama3.2:1b",
+        "qwen2.5:7b",
+        "mistral:7b",
+        "codellama:7b",
+        "phi3:mini",
+    ]
+
+    lmstudio_models: List[str] = [
+        "microsoft/Phi-3-mini-4k-instruct",
+        "meta-llama/Llama-3.2-3B-Instruct",
+        "Qwen/Qwen2.5-7B-Instruct",
+        "mistralai/Mistral-7B-Instruct-v0.3",
+        "codellama/CodeLlama-7b-Instruct-hf",
+    ]
+
+    def toggle_drawer(self):
+        """Toggle the drawer open/closed"""
+        self.is_open = not self.is_open
+
+    def open_drawer(self):
+        """Open the drawer"""
+        self.is_open = True
+
+    def close_drawer(self):
+        """Close the drawer"""
+        self.is_open = False
+
+    def select_provider(self, provider: str):
+        """Select model provider (ollama or lmstudio)"""
+        self.selected_provider = provider
+
+    def select_model(self, model: str):
+        """Select a specific model and close drawer"""
+        self.selected_model = model
+        print(f"Selected model: {model} from {self.selected_provider}")
+        self.close_drawer()
+
+
+def offline_models_overlay() -> rx.Component:
+    """Creates the backdrop overlay for the bottom drawer"""
+    return rx.box(
+        width="100%",
+        height="100%",
+        position="fixed",
+        top="0",
+        left="0",
+        background_color="rgba(0, 0, 0, 0.5)",
+        z_index="999",
+        display=rx.cond(OfflineModelsState.is_open, "block", "none"),
+        on_click=OfflineModelsState.close_drawer,
+        class_name="backdrop-blur-sm",
+    )
+
+
+def model_item(model_name: str, provider: str) -> rx.Component:
+    """Individual model item component"""
+    return rx.box(
+        rx.flex(
+            rx.box(
+                rx.image(
+                    src=f"/{provider}.png",
+                    alt=f"{provider} logo",
+                    width="20px",
+                    height="20px",
+                    class_name="object-contain",
+                ),
+                class_name="flex-shrink-0",
+            ),
+            rx.box(
+                rx.text(model_name, class_name="font-[dm] font-medium text-sm"),
+                class_name="flex-1 min-w-0",
+            ),
+            rx.icon("chevron-right", size=16, color="#9CA3AF"),
+            align="center",
+            class_name="w-full gap-3",
+        ),
+        on_click=lambda: OfflineModelsState.select_model(model_name),
+        class_name="p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 border-b border-gray-100 last:border-b-0",
+    )
+
+
+def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
+    """Provider tab component"""
+    is_active = OfflineModelsState.selected_provider == provider
+
+    return rx.button(
+        rx.flex(
+            rx.image(
+                src=image_src,
+                alt=f"{provider} logo",
+                width="18px",
+                height="18px",
+                class_name="object-contain",
+            ),
+            rx.text(label, class_name="font-[dm] font-medium text-sm"),
+            align="center",
+            justify="center",
+            class_name="gap-2",
+        ),
+        on_click=lambda: OfflineModelsState.select_provider(provider),
+        class_name=rx.cond(
+            is_active,
+            "flex-1 py-2 px-4 bg-gray-200 text-gray-900 rounded-lg transition-all duration-200",
+            "flex-1 py-2 px-4 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200",
+        ),
+    )
+
+
+def offline_models_content() -> rx.Component:
+    """The actual bottom drawer content"""
+    return rx.box(
+        # Sheet container
+        rx.box(
+            # Handle bar
+            rx.box(
+                width="40px",
+                height="4px",
+                background_color="#D1D5DB",
+                border_radius="2px",
+                margin="12px auto 20px auto",
+                class_name="cursor-pointer",
+            ),
+            # Header
+            rx.flex(
+                rx.heading(
+                    "Offline Models",
+                    size="5",
+                    class_name="font-[dm] font-bold",
+                ),
+                rx.button(
+                    rx.icon("x", size=20),
+                    on_click=OfflineModelsState.close_drawer,
+                    class_name="p-2 hover:bg-gray-100 rounded-full transition-colors",
+                ),
+                justify="between",
+                align="center",
+                class_name="mb-6",
+            ),
+            # Provider tabs
+            rx.flex(
+                provider_tab("ollama", "Ollama", "/ollama.png"),
+                provider_tab("lmstudio", "LM Studio", "/lmstudio.png"),
+                gap="2",
+                class_name="mb-6 p-1 bg-gray-50 rounded-xl",
+            ),
+            # Models list
+            rx.box(
+                rx.cond(
+                    OfflineModelsState.selected_provider == "ollama",
+                    rx.box(
+                        rx.foreach(
+                            OfflineModelsState.ollama_models,
+                            lambda model: model_item(model, "ollama"),
+                        ),
+                        class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                    ),
+                    rx.box(
+                        rx.foreach(
+                            OfflineModelsState.lmstudio_models,
+                            lambda model: model_item(model, "lmstudio"),
+                        ),
+                        class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                    ),
+                ),
+                class_name="h-80 overflow-y-auto",
+            ),
+            # Footer info
+            rx.box(
+                rx.text(
+                    "Select a model to start chatting offline",
+                    class_name="font-[dm] text-sm text-gray-500 text-center",
+                ),
+                class_name="mt-6 pt-4 border-t border-gray-100",
+            ),
+            padding="0 24px 32px 24px",
+            background_color="white",
+            border_radius="20px 20px 0 0",
+            box_shadow="0 -4px 20px rgba(0, 0, 0, 0.1)",
+            class_name="max-h-[80vh] w-full max-w-md mx-auto md:max-w-lg",
+        ),
+        # Sheet positioning and animation
+        position="fixed",
+        bottom="0",
+        left="0",
+        right="0",
+        z_index="1000",
+        transform=rx.cond(
+            OfflineModelsState.is_open, "translateY(0)", "translateY(100%)"
+        ),
+        transition="transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+        class_name="flex justify-center",
+    )
 
 
 def input_section():
@@ -31,21 +236,49 @@ def input_section():
                 ),
                 rx.cond(
                     State.current_url == "/",
-                    rx.button(
-                        rx.hstack(
-                            rx.text(
-                                "Web Search",
-                                class_name="font-[dm] md:text-lg",
+                    rx.hstack(
+                        rx.button(
+                            rx.flex(
+                                rx.icon("globe", size=20, color="black"),
+                                rx.text(
+                                    "Search",
+                                    class_name="font-[dm] md:text-lg",
+                                ),
+                                class_name="items-center justify-center gap-2",
                             ),
-                            class_name="gap-2",
+                            on_click=State.select_action("Search"),
+                            class_name=rx.cond(
+                                State.selected_action == "Search",
+                                "rounded-xl ml-2 bg-sky-300 text-black",
+                                "rounded-xl ml-2 hover:bg-sky-100 text-black",
+                            ),
+                            variant="surface",
                         ),
-                        on_click=State.select_action("Search"),
-                        class_name=rx.cond(
-                            State.selected_action == "Search",
-                            "rounded-xl ml-2 bg-sky-300 text-black",
-                            "rounded-xl ml-2 hover:bg-sky-100 text-black",
+                        rx.button(
+                            rx.flex(
+                                rx.icon("cloud-off", size=20, color="black"),
+                                rx.text(
+                                    "Offline",
+                                    class_name="font-[dm] md:text-lg",
+                                ),
+                                class_name="items-center justify-center gap-2",
+                            ),
+                            on_click=[
+                                State.select_action("Offline"),
+                                OfflineModelsState.open_drawer,
+                            ],
+                            class_name=rx.cond(
+                                rx.cond(
+                                    State.selected_action == "Offline",
+                                    OfflineModelsState.selected_model != "",
+                                    False,
+                                ),
+                                "rounded-xl ml-2 bg-purple-300 text-black",
+                                "rounded-xl ml-2 hover:bg-purple-100 text-black",
+                            ),
+                            variant="surface",
                         ),
-                        variant="surface",
+                        class_name="gap-0",
                     ),
                 ),
                 class_name="w-full mx-auto max-w-4xl",
@@ -132,6 +365,8 @@ def hero():
                 align="center",
                 justify="center",
             ),
+            offline_models_overlay(),
+            offline_models_content(),
             class_name="flex items-center justify-center min-h-[70vh] pb-4",
         ),
     )

@@ -26,7 +26,6 @@ def chat() -> rx.Component:
 
 style = {
     "font_family": "Bouge",
-    # "background_color": "#edede9",
 }
 
 
