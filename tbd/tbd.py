@@ -20,16 +20,13 @@ def chat() -> rx.Component:
         chat_nav(),
         chat_messages(),
         input_section(),
-        # header(),
-        # chat_messages(),
-        # message_input(),
-        class_name="h-screen flex flex-col bg-[#edede9]",
+        class_name="h-screen flex flex-col",
     )
 
 
 style = {
     "font_family": "Bouge",
-    "background_color": "#edede9",
+    # "background_color": "#edede9",
 }
 
 

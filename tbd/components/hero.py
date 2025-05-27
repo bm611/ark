@@ -5,28 +5,50 @@ from tbd.state import State
 def input_section():
     return (
         rx.box(
-            rx.hstack(
-                rx.input(
-                    value=State.prompt,
-                    class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl bg-white rounded-2xl h-16 shadow-2xl border-2 border-gray-600",
-                    placeholder="Ask Anything...",
-                    on_change=State.set_prompt,
-                ),
-                rx.button(
-                    rx.hstack(
-                        rx.icon("arrow-up", size=28, color="black"),
-                        class_name="flex items-center justify-center",
+            rx.vstack(
+                rx.hstack(
+                    rx.input(
+                        value=State.prompt,
+                        class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl bg-white rounded-2xl h-16 shadow-lg border-2 border-gray-600",
+                        placeholder="Ask Anything...",
+                        on_change=State.set_prompt,
                     ),
-                    class_name="mt-4 mx-auto text-black bg-[#d5d5d0] hover:bg-[#b8b8b0] rounded-2xl h-16 px-4 md:px-8",
-                    on_click=[
-                        rx.redirect("/chat"),
-                        State.handle_generation,
-                        State.send_message,
-                    ],
-                    loading=State.is_gen,
-                    disabled=State.is_gen,
+                    rx.button(
+                        rx.hstack(
+                            rx.icon("arrow-up", size=28, color="black"),
+                            class_name="flex items-center justify-center",
+                        ),
+                        class_name="mt-4 mx-auto text-black bg-[#d5d5d0] hover:bg-[#b8b8b0] rounded-2xl h-16 px-4 md:px-8",
+                        on_click=[
+                            rx.redirect("/chat"),
+                            State.handle_generation,
+                            State.send_message,
+                        ],
+                        loading=State.is_gen,
+                        disabled=State.is_gen,
+                    ),
+                    class_name="w-full flex gap-1 items-center justify-center max-w-4xl mx-auto",
                 ),
-                class_name="w-full flex gap-1 items-center justify-center max-w-4xl mx-auto",
+                rx.cond(
+                    State.current_url == "/",
+                    rx.button(
+                        rx.hstack(
+                            rx.text(
+                                "Web Search",
+                                class_name="font-[dm] md:text-lg",
+                            ),
+                            class_name="gap-2",
+                        ),
+                        on_click=State.select_action("Search"),
+                        class_name=rx.cond(
+                            State.selected_action == "Search",
+                            "rounded-xl ml-2 bg-gradient-to-r from-sky-400 to-sky-600 text-white",
+                            "rounded-xl ml-2 hover:bg-sky-100 text-black",
+                        ),
+                        variant="surface",
+                    ),
+                ),
+                class_name="w-full mx-auto max-w-4xl",
             ),
             class_name="fixed bottom-2 md:bottom-6 left-0 right-0 p-2 md:p-4",
         ),

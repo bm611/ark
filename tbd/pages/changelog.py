@@ -102,9 +102,24 @@ def changelog() -> rx.Component:
         # Changelog entries
         rx.box(
             changelog_entry(
+                version="0.3.0",
+                date="May 26 2025",
+                is_latest=True,
+                changes=[
+                    {
+                        "type": "added",
+                        "description": "Enabled web search powered by Perplexity",
+                    },
+                    {
+                        "type": "added",
+                        "description": "UI refinements",
+                    },
+                ],
+            ),
+            changelog_entry(
                 version="0.2.0",
                 date="May 24 2025",
-                is_latest=True,
+                is_latest=False,
                 changes=[
                     {
                         "type": "added",
@@ -113,6 +128,10 @@ def changelog() -> rx.Component:
                     {
                         "type": "added",
                         "description": "Chat reponse with follow up with Gemini",
+                    },
+                    {
+                        "type": "added",
+                        "description": "Loading placeholder and animation",
                     },
                 ],
             ),
