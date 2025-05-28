@@ -22,52 +22,98 @@ class OfflineModelsState(rx.State):
     # Loading states
     loading_ollama: bool = False
     loading_lmstudio: bool = False
+    
+    # Last refresh timestamps (to prevent too frequent refreshes)
+    _last_ollama_refresh: float = 0
+    _last_lmstudio_refresh: float = 0
+    _refresh_cooldown: float = 5.0  # seconds
 
     def on_load(self):
         """Load models when component mounts"""
-        self.refresh_models()
+        # Don't block initial load, just set up background refresh
+        self.refresh_models_background()
 
-    def refresh_models(self):
-        """Refresh model lists and connection status"""
-        self.refresh_ollama_models()
-        self.refresh_lmstudio_models()
+    async def refresh_models_background(self):
+        """Refresh models in the background without blocking UI"""
+        # Start async tasks for both providers
+        await self.refresh_ollama_models_async()
+        await self.refresh_lmstudio_models_async()
 
-    def refresh_ollama_models(self):
-        """Refresh Ollama models and connection status"""
+    async def refresh_ollama_models_async(self):
+        """Refresh Ollama models asynchronously"""
+        import time
+        current_time = time.time()
+        
+        # Skip if we refreshed recently (prevents hammering the API)
+        if current_time - self._last_ollama_refresh < self._refresh_cooldown:
+            return
+            
+        self._last_ollama_refresh = current_time
         self.loading_ollama = True
+        
         try:
-            models = get_ollama_models()
+            # Use run_background to prevent blocking the UI
+            from tbd.services.openrouter import get_ollama_models
+            models = await rx.run_background(get_ollama_models)
             self.ollama_models = models
             self.ollama_connected = len(models) > 0
-        except Exception:
+        except Exception as e:
+            print(f"Error refreshing Ollama models: {e}")
             self.ollama_models = []
             self.ollama_connected = False
         finally:
             self.loading_ollama = False
 
-    def refresh_lmstudio_models(self):
-        """Refresh LM Studio models and connection status"""
+    async def refresh_lmstudio_models_async(self):
+        """Refresh LM Studio models asynchronously"""
+        import time
+        current_time = time.time()
+        
+        # Skip if we refreshed recently
+        if current_time - self._last_lmstudio_refresh < self._refresh_cooldown:
+            return
+            
+        self._last_lmstudio_refresh = current_time
         self.loading_lmstudio = True
+        
         try:
-            models = get_lmstudio_models()
+            # Use run_background to prevent blocking the UI
+            from tbd.services.openrouter import get_lmstudio_models
+            models = await rx.run_background(get_lmstudio_models)
             self.lmstudio_models = models
             self.lmstudio_connected = len(models) > 0
-        except Exception:
+        except Exception as e:
+            print(f"Error refreshing LM Studio models: {e}")
             self.lmstudio_models = []
             self.lmstudio_connected = False
         finally:
             self.loading_lmstudio = False
 
+    # Keep the original methods for backward compatibility
+    def refresh_models(self):
+        """Trigger background refresh of models"""
+        self.refresh_models_background()
+
+    def refresh_ollama_models(self):
+        """Trigger background refresh of Ollama models"""
+        self.refresh_ollama_models_async()
+        
+    def refresh_lmstudio_models(self):
+        """Trigger background refresh of LM Studio models"""
+        self.refresh_lmstudio_models_async()
+
     def toggle_drawer(self):
         """Toggle the drawer open/closed"""
         self.is_open = not self.is_open
         if self.is_open:
-            self.refresh_models()
+            # Trigger refresh but don't wait for it
+            self.refresh_models_background()
 
     def open_drawer(self):
         """Open the drawer"""
         self.is_open = True
-        self.refresh_models()
+        # Trigger refresh but don't wait for it
+        self.refresh_models_background()
 
     def close_drawer(self):
         """Close the drawer"""
