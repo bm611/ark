@@ -10,10 +10,25 @@ def markdown_component_map() -> Dict[str, Any]:
         A dictionary mapping markdown elements to their Reflex components
     """
     return {
-        "h1": lambda text: rx.heading(text, size="5", margin_y="1em"),
-        "h2": lambda text: rx.heading(text, size="3", margin_y="1em"),
-        "h3": lambda text: rx.heading(text, size="1", margin_y="1em"),
-        "p": lambda text: rx.text(text, margin_y="1em"),
+        "h1": lambda text: rx.heading(
+            text,
+            size="5",
+            margin_y="1em",
+            class_name="font-[dm] text-3xl font-bold leading-tight my-4",
+        ),
+        "h2": lambda text: rx.heading(
+            text,
+            size="3",
+            margin_y="1em",
+            class_name="font-[dm] text-2xl font-bold leading-tight my-4",
+        ),
+        "h3": lambda text: rx.heading(
+            text,
+            size="1",
+            margin_y="1em",
+            class_name="font-[dm] text-xl font-bold leading-tight my-4",
+        ),
+        "p": lambda text: rx.text(text, margin_y="1em", class_name="font-[dm]"),
         "code": lambda text: rx.code(text),
         "codeblock": lambda text, **props: rx.code_block(
             text,
