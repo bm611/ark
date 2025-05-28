@@ -14,11 +14,11 @@ class OfflineModelsState(rx.State):
     # Dynamic model lists
     ollama_models: List[str] = []
     lmstudio_models: List[str] = []
-    
+
     # Connection status
     ollama_connected: bool = False
     lmstudio_connected: bool = False
-    
+
     # Loading states
     loading_ollama: bool = False
     loading_lmstudio: bool = False
@@ -81,12 +81,13 @@ class OfflineModelsState(rx.State):
         """Select a specific model and close drawer"""
         self.selected_model = model
         print(f"Selected model: {model} from {self.selected_provider}")
-        
+
         # Update the main State with the selected provider and model
         from tbd.state import State
+
         state = await self.get_state(State)
         state.set_provider_and_model(self.selected_provider, model)
-        
+
         self.close_drawer()
 
 
@@ -136,12 +137,12 @@ def model_item(model_name: str, provider: str) -> rx.Component:
 def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
     """Provider tab component with connection status indicator"""
     is_active = OfflineModelsState.selected_provider == provider
-    
+
     # Determine connection status based on provider
     is_connected = rx.cond(
         provider == "ollama",
         OfflineModelsState.ollama_connected,
-        OfflineModelsState.lmstudio_connected
+        OfflineModelsState.lmstudio_connected,
     )
 
     return rx.button(
@@ -159,7 +160,7 @@ def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
                 class_name=rx.cond(
                     is_connected,
                     "w-2 h-2 bg-green-500 rounded-full",
-                    "w-2 h-2 bg-red-500 rounded-full"
+                    "w-2 h-2 bg-red-500 rounded-full",
                 )
             ),
             align="center",
@@ -223,8 +224,11 @@ def offline_models_content() -> rx.Component:
                         # Loading state
                         rx.box(
                             rx.flex(
-                                rx.icon("loader-2", size=20, class_name="animate-spin"),
-                                rx.text("Loading Ollama models...", class_name="font-[dm] text-sm text-gray-500"),
+                                rx.icon("loader", size=20, class_name="animate-spin"),
+                                rx.text(
+                                    "Loading Ollama models...",
+                                    class_name="font-[dm] text-sm text-gray-500",
+                                ),
                                 align="center",
                                 class_name="gap-2",
                             ),
@@ -246,8 +250,14 @@ def offline_models_content() -> rx.Component:
                                 rx.box(
                                     rx.flex(
                                         rx.icon("inbox", size=24, color="#9CA3AF"),
-                                        rx.text("No models found", class_name="font-[dm] text-sm font-medium text-gray-700"),
-                                        rx.text("Make sure you have models installed in Ollama", class_name="font-[dm] text-xs text-gray-500"),
+                                        rx.text(
+                                            "No models found",
+                                            class_name="font-[dm] text-sm font-medium text-gray-700",
+                                        ),
+                                        rx.text(
+                                            "Make sure you have models installed in Ollama",
+                                            class_name="font-[dm] text-xs text-gray-500",
+                                        ),
                                         direction="column",
                                         align="center",
                                         class_name="gap-2",
@@ -259,8 +269,14 @@ def offline_models_content() -> rx.Component:
                             rx.box(
                                 rx.flex(
                                     rx.icon("wifi-off", size=24, color="#EF4444"),
-                                    rx.text("Ollama not available", class_name="font-[dm] text-sm font-medium text-gray-700"),
-                                    rx.text("Make sure Ollama is running on localhost:11434", class_name="font-[dm] text-xs text-gray-500"),
+                                    rx.text(
+                                        "Ollama not available",
+                                        class_name="font-[dm] text-sm font-medium text-gray-700",
+                                    ),
+                                    rx.text(
+                                        "Make sure Ollama is running on localhost:11434",
+                                        class_name="font-[dm] text-xs text-gray-500",
+                                    ),
                                     rx.button(
                                         rx.icon("refresh-cw", size=14),
                                         "Retry",
@@ -283,8 +299,11 @@ def offline_models_content() -> rx.Component:
                         # Loading state
                         rx.box(
                             rx.flex(
-                                rx.icon("loader-2", size=20, class_name="animate-spin"),
-                                rx.text("Loading LM Studio models...", class_name="font-[dm] text-sm text-gray-500"),
+                                rx.icon("loader", size=20, class_name="animate-spin"),
+                                rx.text(
+                                    "Loading LM Studio models...",
+                                    class_name="font-[dm] text-sm text-gray-500",
+                                ),
                                 align="center",
                                 class_name="gap-2",
                             ),
@@ -306,8 +325,14 @@ def offline_models_content() -> rx.Component:
                                 rx.box(
                                     rx.flex(
                                         rx.icon("inbox", size=24, color="#9CA3AF"),
-                                        rx.text("No models found", class_name="font-[dm] text-sm font-medium text-gray-700"),
-                                        rx.text("Make sure you have models loaded in LM Studio", class_name="font-[dm] text-xs text-gray-500"),
+                                        rx.text(
+                                            "No models found",
+                                            class_name="font-[dm] text-sm font-medium text-gray-700",
+                                        ),
+                                        rx.text(
+                                            "Make sure you have models loaded in LM Studio",
+                                            class_name="font-[dm] text-xs text-gray-500",
+                                        ),
                                         direction="column",
                                         align="center",
                                         class_name="gap-2",
@@ -319,8 +344,14 @@ def offline_models_content() -> rx.Component:
                             rx.box(
                                 rx.flex(
                                     rx.icon("wifi-off", size=24, color="#EF4444"),
-                                    rx.text("LM Studio not available", class_name="font-[dm] text-sm font-medium text-gray-700"),
-                                    rx.text("Make sure LM Studio is running on localhost:1234", class_name="font-[dm] text-xs text-gray-500"),
+                                    rx.text(
+                                        "LM Studio not available",
+                                        class_name="font-[dm] text-sm font-medium text-gray-700",
+                                    ),
+                                    rx.text(
+                                        "Make sure LM Studio is running on localhost:1234",
+                                        class_name="font-[dm] text-xs text-gray-500",
+                                    ),
                                     rx.button(
                                         rx.icon("refresh-cw", size=14),
                                         "Retry",
