@@ -1,5 +1,6 @@
 import reflex as rx
 from tbd.state import State
+from tbd.services.openrouter import get_ollama_models, get_lmstudio_models
 from typing import List
 
 
@@ -10,31 +11,63 @@ class OfflineModelsState(rx.State):
     selected_provider: str = "ollama"  # "ollama" or "lmstudio"
     selected_model: str = ""  # Track selected model
 
-    # Placeholder models - will be replaced with actual models later
-    ollama_models: List[str] = [
-        "llama3.2:3b",
-        "llama3.2:1b",
-        "qwen2.5:7b",
-        "mistral:7b",
-        "codellama:7b",
-        "phi3:mini",
-    ]
+    # Dynamic model lists
+    ollama_models: List[str] = []
+    lmstudio_models: List[str] = []
+    
+    # Connection status
+    ollama_connected: bool = False
+    lmstudio_connected: bool = False
+    
+    # Loading states
+    loading_ollama: bool = False
+    loading_lmstudio: bool = False
 
-    lmstudio_models: List[str] = [
-        "microsoft/Phi-3-mini-4k-instruct",
-        "meta-llama/Llama-3.2-3B-Instruct",
-        "Qwen/Qwen2.5-7B-Instruct",
-        "mistralai/Mistral-7B-Instruct-v0.3",
-        "codellama/CodeLlama-7b-Instruct-hf",
-    ]
+    def on_load(self):
+        """Load models when component mounts"""
+        self.refresh_models()
+
+    def refresh_models(self):
+        """Refresh model lists and connection status"""
+        self.refresh_ollama_models()
+        self.refresh_lmstudio_models()
+
+    def refresh_ollama_models(self):
+        """Refresh Ollama models and connection status"""
+        self.loading_ollama = True
+        try:
+            models = get_ollama_models()
+            self.ollama_models = models
+            self.ollama_connected = len(models) > 0
+        except Exception:
+            self.ollama_models = []
+            self.ollama_connected = False
+        finally:
+            self.loading_ollama = False
+
+    def refresh_lmstudio_models(self):
+        """Refresh LM Studio models and connection status"""
+        self.loading_lmstudio = True
+        try:
+            models = get_lmstudio_models()
+            self.lmstudio_models = models
+            self.lmstudio_connected = len(models) > 0
+        except Exception:
+            self.lmstudio_models = []
+            self.lmstudio_connected = False
+        finally:
+            self.loading_lmstudio = False
 
     def toggle_drawer(self):
         """Toggle the drawer open/closed"""
         self.is_open = not self.is_open
+        if self.is_open:
+            self.refresh_models()
 
     def open_drawer(self):
         """Open the drawer"""
         self.is_open = True
+        self.refresh_models()
 
     def close_drawer(self):
         """Close the drawer"""
@@ -44,10 +77,16 @@ class OfflineModelsState(rx.State):
         """Select model provider (ollama or lmstudio)"""
         self.selected_provider = provider
 
-    def select_model(self, model: str):
+    async def select_model(self, model: str):
         """Select a specific model and close drawer"""
         self.selected_model = model
         print(f"Selected model: {model} from {self.selected_provider}")
+        
+        # Update the main State with the selected provider and model
+        from tbd.state import State
+        state = await self.get_state(State)
+        state.set_provider_and_model(self.selected_provider, model)
+        
         self.close_drawer()
 
 
@@ -95,8 +134,15 @@ def model_item(model_name: str, provider: str) -> rx.Component:
 
 
 def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
-    """Provider tab component"""
+    """Provider tab component with connection status indicator"""
     is_active = OfflineModelsState.selected_provider == provider
+    
+    # Determine connection status based on provider
+    is_connected = rx.cond(
+        provider == "ollama",
+        OfflineModelsState.ollama_connected,
+        OfflineModelsState.lmstudio_connected
+    )
 
     return rx.button(
         rx.flex(
@@ -108,6 +154,14 @@ def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
                 class_name="object-contain",
             ),
             rx.text(label, class_name="font-[dm] font-medium text-sm"),
+            # Status indicator
+            rx.box(
+                class_name=rx.cond(
+                    is_connected,
+                    "w-2 h-2 bg-green-500 rounded-full",
+                    "w-2 h-2 bg-red-500 rounded-full"
+                )
+            ),
             align="center",
             justify="center",
             class_name="gap-2",
@@ -163,19 +217,125 @@ def offline_models_content() -> rx.Component:
             rx.box(
                 rx.cond(
                     OfflineModelsState.selected_provider == "ollama",
-                    rx.box(
-                        rx.foreach(
-                            OfflineModelsState.ollama_models,
-                            lambda model: model_item(model, "ollama"),
+                    # Ollama models section
+                    rx.cond(
+                        OfflineModelsState.loading_ollama,
+                        # Loading state
+                        rx.box(
+                            rx.flex(
+                                rx.icon("loader-2", size=20, class_name="animate-spin"),
+                                rx.text("Loading Ollama models...", class_name="font-[dm] text-sm text-gray-500"),
+                                align="center",
+                                class_name="gap-2",
+                            ),
+                            class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
                         ),
-                        class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                        rx.cond(
+                            OfflineModelsState.ollama_connected,
+                            # Connected - show models
+                            rx.cond(
+                                OfflineModelsState.ollama_models.length() > 0,
+                                rx.box(
+                                    rx.foreach(
+                                        OfflineModelsState.ollama_models,
+                                        lambda model: model_item(model, "ollama"),
+                                    ),
+                                    class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                                ),
+                                # Connected but no models
+                                rx.box(
+                                    rx.flex(
+                                        rx.icon("inbox", size=24, color="#9CA3AF"),
+                                        rx.text("No models found", class_name="font-[dm] text-sm font-medium text-gray-700"),
+                                        rx.text("Make sure you have models installed in Ollama", class_name="font-[dm] text-xs text-gray-500"),
+                                        direction="column",
+                                        align="center",
+                                        class_name="gap-2",
+                                    ),
+                                    class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                                ),
+                            ),
+                            # Not connected
+                            rx.box(
+                                rx.flex(
+                                    rx.icon("wifi-off", size=24, color="#EF4444"),
+                                    rx.text("Ollama not available", class_name="font-[dm] text-sm font-medium text-gray-700"),
+                                    rx.text("Make sure Ollama is running on localhost:11434", class_name="font-[dm] text-xs text-gray-500"),
+                                    rx.button(
+                                        rx.icon("refresh-cw", size=14),
+                                        "Retry",
+                                        on_click=OfflineModelsState.refresh_ollama_models,
+                                        size="1",
+                                        variant="outline",
+                                        class_name="mt-2 font-[dm] bg-white hover:bg-gray-50 border-gray-300 text-gray-700",
+                                    ),
+                                    direction="column",
+                                    align="center",
+                                    class_name="gap-2",
+                                ),
+                                class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                            ),
+                        ),
                     ),
-                    rx.box(
-                        rx.foreach(
-                            OfflineModelsState.lmstudio_models,
-                            lambda model: model_item(model, "lmstudio"),
+                    # LM Studio models section
+                    rx.cond(
+                        OfflineModelsState.loading_lmstudio,
+                        # Loading state
+                        rx.box(
+                            rx.flex(
+                                rx.icon("loader-2", size=20, class_name="animate-spin"),
+                                rx.text("Loading LM Studio models...", class_name="font-[dm] text-sm text-gray-500"),
+                                align="center",
+                                class_name="gap-2",
+                            ),
+                            class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
                         ),
-                        class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                        rx.cond(
+                            OfflineModelsState.lmstudio_connected,
+                            # Connected - show models
+                            rx.cond(
+                                OfflineModelsState.lmstudio_models.length() > 0,
+                                rx.box(
+                                    rx.foreach(
+                                        OfflineModelsState.lmstudio_models,
+                                        lambda model: model_item(model, "lmstudio"),
+                                    ),
+                                    class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                                ),
+                                # Connected but no models
+                                rx.box(
+                                    rx.flex(
+                                        rx.icon("inbox", size=24, color="#9CA3AF"),
+                                        rx.text("No models found", class_name="font-[dm] text-sm font-medium text-gray-700"),
+                                        rx.text("Make sure you have models loaded in LM Studio", class_name="font-[dm] text-xs text-gray-500"),
+                                        direction="column",
+                                        align="center",
+                                        class_name="gap-2",
+                                    ),
+                                    class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                                ),
+                            ),
+                            # Not connected
+                            rx.box(
+                                rx.flex(
+                                    rx.icon("wifi-off", size=24, color="#EF4444"),
+                                    rx.text("LM Studio not available", class_name="font-[dm] text-sm font-medium text-gray-700"),
+                                    rx.text("Make sure LM Studio is running on localhost:1234", class_name="font-[dm] text-xs text-gray-500"),
+                                    rx.button(
+                                        rx.icon("refresh-cw", size=14),
+                                        "Retry",
+                                        on_click=OfflineModelsState.refresh_lmstudio_models,
+                                        size="1",
+                                        variant="outline",
+                                        class_name="mt-2 font-[dm] bg-white hover:bg-gray-50 border-gray-300 text-gray-700",
+                                    ),
+                                    direction="column",
+                                    align="center",
+                                    class_name="gap-2",
+                                ),
+                                class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                            ),
+                        ),
                     ),
                 ),
                 class_name="h-80 overflow-y-auto",

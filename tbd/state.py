@@ -7,6 +7,10 @@ class State(rx.State):
     messages: list[dict[str, str]] = []
     is_gen: bool = False
     selected_action: str = ""
+    
+    # Provider and model selection
+    selected_provider: str = "openrouter"  # Default to openrouter
+    selected_model: str = ""  # Empty means use provider's default model
 
     @rx.var
     def current_url(self) -> str:
@@ -15,10 +19,15 @@ class State(rx.State):
     def set_prompt(self, value: str):
         self.prompt = value
 
+    def set_provider_and_model(self, provider: str, model: str = ""):
+        """Set the selected provider and model from offline models selection"""
+        self.selected_provider = provider
+        self.selected_model = model
+        print(f"Provider set to: {provider}, Model: {model or 'default'}")
+
     def handle_generation(self):
         self.is_gen = True
         self.messages.append({"role": "user", "content": self.prompt})
-
         self.prompt = ""
 
     def reset_chat(self):
@@ -26,11 +35,20 @@ class State(rx.State):
         self.is_gen = False
 
     def send_message(self):
-        # Get AI response using all conversation history
+        # Determine which model to use based on action and selection
         if self.selected_action == "Search":
-            response = openrouter.ask(self.messages, "perplexity/sonar")
+            # For search, use Perplexity if on OpenRouter, otherwise use selected provider
+            if self.selected_provider == "openrouter":
+                response = openrouter.ask(self.messages, model="perplexity/sonar", provider="openrouter")
+            else:
+                # Use the selected offline provider for search
+                model = self.selected_model if self.selected_model else None
+                response = openrouter.ask(self.messages, model=model, provider=self.selected_provider)
         else:
-            response = openrouter.ask(self.messages)
+            # For regular chat, use the selected provider and model
+            model = self.selected_model if self.selected_model else None
+            response = openrouter.ask(self.messages, model=model, provider=self.selected_provider)
+        
         self.is_gen = False
         # Add assistant response
         self.messages.append({"role": "assistant", "content": response})
