@@ -145,7 +145,8 @@ def offline_models_content() -> rx.Component:
                 rx.button(
                     rx.icon("x", size=20),
                     on_click=OfflineModelsState.close_drawer,
-                    class_name="p-2 hover:bg-gray-100 rounded-full transition-colors",
+                    class_name="p-2 hover:bg-gray-100 rounded-full",
+                    variant="surface",
                 ),
                 justify="between",
                 align="center",
@@ -301,22 +302,22 @@ def card(
             rx.box(
                 rx.image(
                     src=image_src,
-                    class_name="w-24 md:w-32 h-24 md:h-32 object-contain",
+                    class_name="w-16 md:w-32 h-16 md:h-32 object-contain",
                 ),
-                class_name="flex-shrink-0 mr-4 md:mr-0 md:mb-6",
+                class_name="flex-shrink-0 mr-3 md:mr-0 md:mb-6",
             ),
             # Content container
             rx.box(
                 # Title
                 rx.heading(
                     title,
-                    class_name="text-2xl md:text-4xl font-bold mb-2 md:mb-4 tracking-wider text-black text-left",
+                    class_name="text-lg md:text-4xl font-bold mb-1 md:mb-4 tracking-wider text-black text-left",
                     as_="h2",
                 ),
                 # Description
                 rx.text(
                     description,
-                    class_name="font-[dm] text-sm md:text-xl text-black font-medium text-left leading-relaxed",
+                    class_name="font-[dm] text-xs md:text-xl text-black font-medium text-left leading-relaxed",
                 ),
                 class_name="flex-1",
             ),
@@ -324,7 +325,7 @@ def card(
             class_name="md:flex-col",
             align="start",
         ),
-        class_name=f"{background_color} rounded-xl p-4 md:p-8 h-full flex flex-col border-3 border-black transform transition-all duration-300 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1",
+        class_name=f"{background_color} rounded-lg md:rounded-xl p-3 md:p-8 h-full flex flex-col border-2 md:border-3 border-black transform transition-all duration-300 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1",
     )
 
 
@@ -357,7 +358,7 @@ def hero():
                             image_src="/g_learn.png",
                             background_color="bg-purple-300",
                         ),
-                        class_name="flex flex-col md:grid md:grid-cols-3 gap-6 md:gap-6 max-w-lg md:max-w-6xl mx-auto px-4",
+                        class_name="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-6 max-w-sm md:max-w-6xl mx-auto px-2 md:px-4",
                     ),
                     class_name="text-center",
                 ),
