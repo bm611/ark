@@ -102,9 +102,36 @@ def changelog() -> rx.Component:
         # Changelog entries
         rx.box(
             changelog_entry(
+                version="0.4.0",
+                date="May 28 2025",
+                is_latest=True,
+                changes=[
+                    {
+                        "type": "added",
+                        "description": "Added local model support",
+                    },
+                    {
+                        "type": "added",
+                        "description": "Added bottom drawer for selecting local models from Ollama and LM Studio",
+                    },
+                    {
+                        "type": "improved",
+                        "description": "Improved home page and chat UI",
+                    },
+                    {
+                        "type": "fixed",
+                        "description": "Loading placeholder and animation",
+                    },
+                    {
+                        "type": "fixed",
+                        "description": "Markdown rendering issues",
+                    },
+                ],
+            ),
+            changelog_entry(
                 version="0.3.0",
                 date="May 26 2025",
-                is_latest=True,
+                is_latest=False,
                 changes=[
                     {
                         "type": "added",
