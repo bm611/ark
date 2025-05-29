@@ -146,8 +146,37 @@ def response_message(message: dict) -> rx.Component:
                         component_map=markdown_component_map(),
                         class_name="font-[dm] text-sm md:text-lg",
                     ),
-                    class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-20",
+                    class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                 ),
+                # Performance stats with hero component design style
+                rx.cond(
+                    message.get("generation_time"),
+                    rx.flex(
+                        rx.flex(
+                            rx.text(
+                                f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
+                                class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                            ),
+                            class_name="bg-purple-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                        ),
+                        rx.flex(
+                            rx.text(
+                                f"{message.get('total_tokens', 'N/A'):.2f} TOKENS",
+                                class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                            ),
+                            class_name="bg-sky-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                        ),
+                        rx.flex(
+                            rx.text(
+                                f"{message.get('generation_time', 'N/A'):.2f} SEC",
+                                class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                            ),
+                            class_name="bg-amber-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                        ),
+                        class_name="gap-2 md:gap-4 mb-20",
+                    ),
+                ),
+                spacing="0",
             ),
         ),
     )
@@ -194,4 +223,27 @@ def chat_messages():
             ),
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
+    )
+
+
+def model_provider():
+    return rx.center(
+        rx.flex(
+            rx.flex(
+                rx.text(
+                    State.selected_provider.upper(),
+                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                ),
+                class_name="bg-green-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+            ),
+            rx.flex(
+                rx.text(
+                    State.selected_model.upper(),
+                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                ),
+                class_name="bg-pink-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+            ),
+            class_name="gap-2 md:gap-4",
+        ),
+        class_name="py-2",
     )

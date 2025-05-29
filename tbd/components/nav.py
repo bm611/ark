@@ -21,6 +21,9 @@ def navbar() -> rx.Component:
                     rx.icon("github", class_name="block md:hidden", size=20),
                     rx.text("Github", class_name="hidden md:block"),
                     class_name="bg-blue-200 hover:bg-blue-300 p-3 rounded-xl md:bg-blue-300 md:hover:bg-blue-500 md:px-6 md:py-8 md:rounded-3xl text-black text-lg md:text-xl transition-colors font-[dm] font-bold flex items-center justify-center",
+                    on_click=rx.redirect(
+                        "https://github.com/bm611/ark", is_external=True
+                    ),
                 ),
                 class_name="flex gap-3",
             ),

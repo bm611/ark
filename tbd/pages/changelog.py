@@ -1,7 +1,6 @@
 import reflex as rx
 import json
 import os
-from tbd.components.nav import navbar
 
 
 def changelog_entry(

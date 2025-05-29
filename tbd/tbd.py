@@ -2,10 +2,10 @@ import reflex as rx
 from tbd.components.nav import navbar
 from tbd.components.hero import hero, input_section
 from tbd.pages.changelog import changelog_entry, changelog_header, load_changelog_data
-from tbd.pages.chat import chat_nav, chat_messages
+from tbd.pages.chat import chat_nav, chat_messages, model_provider
 
 
-@rx.page(route="/", title="Beeb Boop")
+@rx.page(route="/", title="Ark - Chat | Search | Learn")
 def index() -> rx.Component:
     return rx.box(
         navbar(),
@@ -14,10 +14,11 @@ def index() -> rx.Component:
     )
 
 
-@rx.page(route="/chat", title="Chat")
+@rx.page(route="/chat", title="Ark - Chat")
 def chat() -> rx.Component:
     return rx.box(
         chat_nav(),
+        model_provider(),
         chat_messages(),
         input_section(),
         class_name="h-screen flex flex-col",
@@ -28,7 +29,7 @@ def chat() -> rx.Component:
 def changelog() -> rx.Component:
     # Load changelog entries from JSON
     changelog_entries = load_changelog_data()
-    
+
     return rx.box(
         navbar(),
         # Header section
@@ -40,7 +41,7 @@ def changelog() -> rx.Component:
                     version=entry["version"],
                     date=entry["date"],
                     is_latest=entry.get("is_latest", False),
-                    changes=entry["changes"]
+                    changes=entry["changes"],
                 )
                 for entry in changelog_entries
             ],
