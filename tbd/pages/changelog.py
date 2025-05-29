@@ -54,14 +54,14 @@ def changelog_entry(
                                     else 'bg-purple-200 text-purple-800'
                                 }",
                             ),
-                            class_name="flex-shrink-0",
+                            class_name="flex-shrink-0 w-24 text-center",
                         ),
                         rx.text(
                             change["description"],
-                            class_name="font-[dm] text-sm md:text-lg text-black font-medium leading-relaxed md:ml-2",
+                            class_name="font-[dm] text-sm md:text-lg text-black font-medium leading-relaxed",
                         ),
                         align="start",
-                        class_name="w-full",
+                        class_name="w-full flex",
                     ),
                 )
                 for change in changes
@@ -115,11 +115,11 @@ def changelog() -> rx.Component:
                         "description": "Added bottom drawer for selecting local models from Ollama and LM Studio",
                     },
                     {
-                        "type": "improved",
+                        "type": "fixed",
                         "description": "Improved home page and chat UI",
                     },
                     {
-                        "type": "fixed",
+                        "type": "improved",
                         "description": "Loading placeholder and animation",
                     },
                     {
