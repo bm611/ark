@@ -79,25 +79,26 @@ def markdown_component_map() -> Dict[str, Any]:
 
 def chat_nav():
     return rx.box(
-        rx.hstack(
-            rx.hstack(
-                rx.icon("zap", size=34),
-                rx.text("Ark", class_name="text-4xl"),
-                class_name="flex justify-center items-center gap-1 cursor-pointer",
-                on_click=[
-                    rx.redirect("/"),
-                    State.reset_chat,
-                ],
+        rx.button(
+            rx.flex(
+                rx.icon(
+                    "plus", size=24, color="rgb(75, 85, 99)", class_name="md:hidden"
+                ),
+                rx.text(
+                    "New Chat",
+                    class_name="hidden md:block tracking-wide text-lg font-bold",
+                ),
+                align="center",
+                justify="center",
+                class_name="flex items-center",
             ),
-            rx.button(
-                rx.text("New Chat"),
-                class_name="bg-blue-300 hover:bg-blue-500 px-4 md:px-6 py-6 md:py-8 rounded-3xl text-black text-lg md:text-xl transition-colors font-[dm] font-bold flex items-center justify-center",
-                on_click=[
-                    rx.redirect("/"),
-                    State.reset_chat,
-                ],
-            ),
-            class_name="flex justify-between items-center",
+            class_name="bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-all duration-200 text-gray-600 font-[dm] font-semibold shadow-sm hover:shadow-md "
+            "w-12 h-12 md:w-auto md:h-auto md:px-6 md:py-3 rounded-xl "
+            "flex items-center justify-center ml-auto",
+            on_click=[
+                rx.redirect("/"),
+                State.reset_chat,
+            ],
         ),
         class_name="p-4",
     )
@@ -245,5 +246,5 @@ def model_provider():
             ),
             class_name="gap-2 md:gap-4",
         ),
-        class_name="py-2",
+        # class_name="py-2",
     )

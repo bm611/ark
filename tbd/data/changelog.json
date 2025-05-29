@@ -11,6 +11,14 @@
         },
         {
           "type": "added",
+          "description": "Token Generation stats"
+        },
+        {
+          "type": "improved",
+          "description": "Chat response page design"
+        },
+        {
+          "type": "added",
           "description": "Added bottom drawer for selecting local models from Ollama and LM Studio"
         },
         {
@@ -20,6 +28,10 @@
         {
           "type": "improved",
           "description": "Loading placeholder and animation"
+        },
+        {
+          "type": "improved",
+          "description": "UI layout for mobile screen"
         },
         {
           "type": "fixed",

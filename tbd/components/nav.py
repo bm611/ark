@@ -5,8 +5,8 @@ def navbar() -> rx.Component:
     return rx.box(
         rx.hstack(
             rx.hstack(
-                rx.icon("zap", size=34),
-                rx.text("Ark", class_name="text-4xl"),
+                rx.icon("zap", size=24, class_name="md:h-8 md:w-8"),
+                rx.text("Ark", class_name="text-3xl md:text-4xl"),
                 class_name="flex justify-center items-center gap-1 cursor-pointer",
                 on_click=rx.redirect("/"),
             ),
