@@ -2,7 +2,7 @@ import reflex as rx
 from tbd.components.nav import navbar
 from tbd.components.hero import hero, input_section
 from tbd.pages.changelog import changelog_entry, changelog_header, load_changelog_data
-from tbd.pages.chat import chat_nav, chat_messages, model_provider
+from tbd.pages.chat import chat_nav, chat_messages
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -18,7 +18,6 @@ def index() -> rx.Component:
 def chat() -> rx.Component:
     return rx.box(
         chat_nav(),
-        model_provider(),
         chat_messages(),
         input_section(),
         class_name="h-screen flex flex-col",

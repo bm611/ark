@@ -90,29 +90,53 @@ def markdown_component_map() -> Dict[str, Any]:
 
 
 def chat_nav():
-    return rx.box(
-        rx.button(
+    return rx.hstack(
+        # Left side - empty with flex-1 to take equal space
+        rx.box(class_name="flex-1"),
+        # Middle - Model provider section
+        rx.flex(
             rx.flex(
-                rx.icon(
-                    "plus", size=24, color="rgb(75, 85, 99)", class_name="md:hidden"
-                ),
                 rx.text(
-                    "New Chat",
-                    class_name="hidden md:block tracking-wide text-lg font-bold",
+                    State.selected_provider.upper(),
+                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
                 ),
-                align="center",
-                justify="center",
-                class_name="flex items-center",
+                class_name="bg-green-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
             ),
-            class_name="bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-all duration-200 text-gray-600 font-[dm] font-semibold shadow-sm hover:shadow-md "
-            "w-12 h-12 md:w-auto md:h-auto md:px-6 md:py-3 rounded-xl "
-            "flex items-center justify-center ml-auto",
-            on_click=[
-                rx.redirect("/"),
-                State.reset_chat,
-            ],
+            rx.flex(
+                rx.text(
+                    State.selected_model.upper(),
+                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                ),
+                class_name="bg-pink-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+            ),
+            class_name="gap-2 md:gap-4",
         ),
-        class_name="p-4",
+        # Right side - New Chat button with flex-1 and flex-end to align right
+        rx.box(
+            rx.button(
+                rx.flex(
+                    rx.icon(
+                        "plus", size=24, color="rgb(75, 85, 99)", class_name="md:hidden"
+                    ),
+                    rx.text(
+                        "New Chat",
+                        class_name="hidden md:block tracking-wide text-lg font-bold",
+                    ),
+                    align="center",
+                    justify="center",
+                    class_name="flex items-center",
+                ),
+                class_name="bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-all duration-200 text-gray-600 font-[dm] font-semibold shadow-inner "
+                "w-12 h-12 md:w-auto md:h-auto md:px-6 md:py-3 rounded-xl "
+                "flex items-center justify-center",
+                on_click=[
+                    rx.redirect("/"),
+                    State.reset_chat,
+                ],
+            ),
+            class_name="flex-1 flex justify-end",
+        ),
+        class_name="p-4 items-center",
     )
 
 
@@ -193,7 +217,7 @@ def response_message(message: dict) -> rx.Component:
                             ),
                             class_name="bg-amber-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
                         ),
-                        class_name="gap-2 md:gap-4 mb-20",
+                        class_name="gap-2 md:gap-4 mb-20 ml-2",
                     ),
                 ),
                 spacing="0",
@@ -243,27 +267,4 @@ def chat_messages():
             ),
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
-    )
-
-
-def model_provider():
-    return rx.center(
-        rx.flex(
-            rx.flex(
-                rx.text(
-                    State.selected_provider.upper(),
-                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
-                ),
-                class_name="bg-green-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
-            ),
-            rx.flex(
-                rx.text(
-                    State.selected_model.upper(),
-                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
-                ),
-                class_name="bg-pink-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
-            ),
-            class_name="gap-2 md:gap-4",
-        ),
-        # class_name="py-2",
     )
