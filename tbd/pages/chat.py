@@ -118,13 +118,36 @@ def response_message(message: dict) -> rx.Component:
                     "text-overflow": "ellipsis",
                 },
             ),
-            rx.box(
-                rx.markdown(
-                    message["content"],
-                    component_map=markdown_component_map(),
-                    class_name="font-[dm] text-sm md:text-lg",
+            rx.vstack(
+                rx.cond(
+                    message.get("citations", []),
+                    rx.box(
+                        rx.text(
+                            "Sources:",
+                            class_name="text-lg mb-2 tracking-wide",
+                        ),
+                        rx.foreach(
+                            message.get("citations", []),
+                            lambda citation, index: rx.box(
+                                rx.text(
+                                    f"[{index + 1}] {citation}",
+                                    class_name="font-[dm] text-sm text-gray-600 mb-1",
+                                ),
+                                class_name="mb-1",
+                            ),
+                        ),
+                        class_name="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg",
+                    ),
                 ),
-                class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-20",
+                rx.box(
+                    # Assistant message content
+                    rx.markdown(
+                        message["content"],
+                        component_map=markdown_component_map(),
+                        class_name="font-[dm] text-sm md:text-lg",
+                    ),
+                    class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-20",
+                ),
             ),
         ),
     )

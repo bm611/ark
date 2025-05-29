@@ -7,7 +7,7 @@ class State(rx.State):
     messages: list[dict[str, str]] = []
     is_gen: bool = False
     selected_action: str = ""
-    
+
     # Provider and model selection
     selected_provider: str = "openrouter"  # Default to openrouter
     selected_model: str = ""  # Empty means use provider's default model
@@ -33,25 +33,41 @@ class State(rx.State):
     def reset_chat(self):
         self.messages = []
         self.is_gen = False
+        self.selected_provider = "openrouter"
+        self.selected_model = ""
+        self.selected_action = ""
 
     def send_message(self):
         # Determine which model to use based on action and selection
         if self.selected_action == "Search":
             # For search, use Perplexity if on OpenRouter, otherwise use selected provider
             if self.selected_provider == "openrouter":
-                response = openrouter.ask(self.messages, model="perplexity/sonar", provider="openrouter")
+                response = openrouter.ask(
+                    self.messages, model="perplexity/sonar", provider="openrouter"
+                )
+                citations = response.citations
             else:
                 # Use the selected offline provider for search
                 model = self.selected_model if self.selected_model else None
-                response = openrouter.ask(self.messages, model=model, provider=self.selected_provider)
+                response = openrouter.ask(
+                    self.messages, model=model, provider=self.selected_provider
+                )
+                citations = []
         else:
             # For regular chat, use the selected provider and model
             model = self.selected_model if self.selected_model else None
-            response = openrouter.ask(self.messages, model=model, provider=self.selected_provider)
-        
+            response = openrouter.ask(
+                self.messages, model=model, provider=self.selected_provider
+            )
+            citations = []
+
         self.is_gen = False
+        response_text = response.choices[0].message.content
+
         # Add assistant response
-        self.messages.append({"role": "assistant", "content": response})
+        self.messages.append(
+            {"role": "assistant", "content": response_text, "citations": citations}
+        )
 
     def select_action(self, action: str):
         if self.selected_action == action:

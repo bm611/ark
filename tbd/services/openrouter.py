@@ -8,18 +8,18 @@ PROVIDER_CONFIGS = {
     "openrouter": {
         "base_url": "https://openrouter.ai/api/v1",
         "api_key": os.environ.get("OPENROUTER_API_KEY", ""),
-        "default_model": "google/gemini-2.0-flash-001"
+        "default_model": "google/gemini-2.0-flash-001",
     },
     "ollama": {
         "base_url": "http://localhost:11434/v1",
         "api_key": "ollama",
-        "default_model": None  # No default - user must select a model
+        "default_model": None,  # No default - user must select a model
     },
     "lmstudio": {
         "base_url": "http://localhost:1234/v1",
         "api_key": "lmstudio",
-        "default_model": None  # No default - user must select a model
-    }
+        "default_model": None,  # No default - user must select a model
+    },
 }
 
 # Default OpenRouter client for backward compatibility
@@ -40,7 +40,7 @@ def create_client(provider="openrouter"):
 
 def ask(messages: list[dict[str, str]], model=None, provider="openrouter"):
     """Send messages to the specified AI provider and return the response.
-    
+
     Args:
         messages: List of message dictionaries with 'role' and 'content' keys
         model: Model name to use (if None, uses provider's default)
@@ -48,26 +48,30 @@ def ask(messages: list[dict[str, str]], model=None, provider="openrouter"):
     """
     # Get provider configuration
     config = PROVIDER_CONFIGS.get(provider, PROVIDER_CONFIGS["openrouter"])
-    
+
     # Use provided model or fall back to provider's default
     if model is None:
         model = config["default_model"]
-        
+
     # For offline providers, model selection is required
     if model is None and provider in ["ollama", "lmstudio"]:
-        raise ValueError(f"Model selection is required for {provider}. Please select a model from the available options.")
-    
+        raise ValueError(
+            f"Model selection is required for {provider}. Please select a model from the available options."
+        )
+
     # Create client for the specified provider
     provider_client = create_client(provider)
-    
+
     # Prepend system message if not already present
     full_messages = messages.copy()
     if not full_messages or full_messages[0]["role"] != "system":
         full_messages.insert(0, {"role": "system", "content": _DEFAULT_SYSTEM_MESSAGE})
 
-    completion = provider_client.chat.completions.create(model=model, messages=full_messages)
+    completion = provider_client.chat.completions.create(
+        model=model, messages=full_messages
+    )
 
-    return completion.choices[0].message.content
+    return completion
 
 
 def get_ollama_models():
