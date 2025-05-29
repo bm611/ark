@@ -451,7 +451,7 @@ def card(
     title: str,
     description: str,
     image_src: str,
-    background_color: str = "bg-blue-300",
+    background_color: str = "bg-blue-50",
 ):
     return rx.box(
         # Mobile: horizontal layout, Desktop: vertical layout
@@ -469,13 +469,13 @@ def card(
                 # Title
                 rx.heading(
                     title,
-                    class_name="text-lg md:text-4xl font-bold mb-1 md:mb-4 tracking-wider text-black text-left",
+                    class_name="text-xl md:text-3xl font-semibold mb-1 md:mb-3 tracking-wide text-gray-800 text-left",
                     as_="h2",
                 ),
                 # Description
                 rx.text(
                     description,
-                    class_name="font-[dm] text-sm md:text-xl text-black font-medium text-left leading-relaxed",
+                    class_name="font-[dm] text-sm md:text-lg text-gray-600 font-normal text-left leading-relaxed",
                 ),
                 class_name="flex-1",
             ),
@@ -483,7 +483,7 @@ def card(
             class_name="md:flex-col",
             align="start",
         ),
-        class_name=f"{background_color} rounded-lg md:rounded-xl p-4 md:p-6 h-full flex flex-col border-2 md:border-3 border-black transform transition-all duration-300 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1",
+        class_name=f"{background_color} rounded-lg md:rounded-xl p-4 md:p-6 h-full flex flex-col border border-gray-200 shadow-sm",
     )
 
 
@@ -502,19 +502,19 @@ def hero():
                             title="Chat",
                             description="Engage in intelligent conversations powered by advanced AI technology.",
                             image_src="/go_pop.png",
-                            background_color="bg-amber-300",
+                            background_color="bg-amber-100",
                         ),
                         card(
                             title="Search",
                             description="Find accurate information quickly with AI-powered search capabilities.",
                             image_src="/g_search.png",
-                            background_color="bg-sky-300",
+                            background_color="bg-sky-100",
                         ),
                         card(
                             title="Learn",
                             description="Expand your knowledge with personalized learning experiences.",
                             image_src="/g_learn.png",
-                            background_color="bg-purple-300",
+                            background_color="bg-purple-100",
                         ),
                         class_name="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-8 max-w-sm md:max-w-6xl mx-auto px-2 md:px-4",
                     ),
