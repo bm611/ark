@@ -8,6 +8,11 @@ class State(rx.State):
     messages: list[dict[str, str]] = []
     is_gen: bool = False
     selected_action: str = ""
+    
+    # Thinking section expansion state
+    thinking_expanded: dict[int, bool] = {}
+    # Citations section expansion state
+    citations_expanded: dict[int, bool] = {}
 
     # Provider and model selection
     selected_provider: str = "openrouter"  # Default to openrouter
@@ -37,6 +42,22 @@ class State(rx.State):
         self.selected_provider = "openrouter"
         self.selected_model = "google/gemini-2.0-flash-001"
         self.selected_action = ""
+        self.thinking_expanded = {}
+        self.citations_expanded = {}
+
+    def toggle_thinking(self, message_index: int):
+        """Toggle the thinking section for a specific message"""
+        if message_index in self.thinking_expanded:
+            self.thinking_expanded[message_index] = not self.thinking_expanded[message_index]
+        else:
+            self.thinking_expanded[message_index] = True
+
+    def toggle_citations(self, message_index: int):
+        """Toggle the citations section for a specific message"""
+        if message_index in self.citations_expanded:
+            self.citations_expanded[message_index] = not self.citations_expanded[message_index]
+        else:
+            self.citations_expanded[message_index] = True
 
     def send_message(self):
         # Record start time for response generation
@@ -87,17 +108,36 @@ class State(rx.State):
         self.is_gen = False
         response_text = response.choices[0].message.content
 
+        # Extract thinking tokens if they exist
+        thinking_content = None
+        actual_response = response_text
+        
+        # Check for thinking tokens in the format <think>...</think>
+        import re
+        think_pattern = r'<think>(.*?)</think>'
+        think_match = re.search(think_pattern, response_text, re.DOTALL)
+        
+        if think_match:
+            thinking_content = think_match.group(1).strip()
+            # Remove the thinking tokens from the actual response
+            actual_response = re.sub(think_pattern, '', response_text, flags=re.DOTALL).strip()
+
+        # Prepare the message dictionary
+        message_dict = {
+            "role": "assistant",
+            "content": actual_response,
+            "citations": citations,
+            "generation_time": generation_time,
+            "total_tokens": total_tokens,
+            "tokens_per_second": tokens_per_second,
+        }
+        
+        # Add thinking content if it exists
+        if thinking_content:
+            message_dict["thinking"] = thinking_content
+
         # Add assistant response with generation time and token metrics
-        self.messages.append(
-            {
-                "role": "assistant",
-                "content": response_text,
-                "citations": citations,
-                "generation_time": generation_time,
-                "total_tokens": total_tokens,
-                "tokens_per_second": tokens_per_second,
-            }
-        )
+        self.messages.append(message_dict)
 
     def select_action(self, action: str):
         if self.selected_action == action:

@@ -140,7 +140,7 @@ def chat_nav():
     )
 
 
-def response_message(message: dict) -> rx.Component:
+def response_message(message: dict, index: int) -> rx.Component:
     return rx.box(
         rx.cond(
             message["role"] == "user",
@@ -156,24 +156,115 @@ def response_message(message: dict) -> rx.Component:
                 },
             ),
             rx.vstack(
+                # Citations section
                 rx.cond(
                     message.get("citations", []),
                     rx.box(
-                        rx.text(
-                            "Sources:",
-                            class_name="text-lg mb-2 tracking-wide",
-                        ),
-                        rx.foreach(
-                            message.get("citations", []),
-                            lambda citation, index: rx.box(
+                        rx.button(
+                            rx.hstack(
                                 rx.text(
-                                    f"[{index + 1}] {citation}",
-                                    class_name="font-[dm] text-sm text-gray-600 mb-1",
+                                    "Sources",
+                                    class_name="font-[dm] text-sm md:text-lg font-semibold text-white",
                                 ),
-                                class_name="mb-1",
+                                rx.cond(
+                                    State.citations_expanded.get(index, False),
+                                    rx.icon(
+                                        "chevron-down",
+                                        size=24,
+                                        class_name="text-white",
+                                    ),
+                                    rx.icon(
+                                        "chevron-right",
+                                        size=24,
+                                        class_name="text-white",
+                                    ),
+                                ),
+                                class_name="items-center gap-2",
+                            ),
+                            on_click=State.toggle_citations(index),
+                            class_name="w-full text-left p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(59,130,246,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(59,130,246,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
+                            style={
+                                "background": "linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
+                                "border": "2px solid #1e40af",
+                            },
+                        ),
+                        rx.cond(
+                            State.citations_expanded.get(index, False),
+                            rx.box(
+                                rx.foreach(
+                                    message.get("citations", []),
+                                    lambda citation, citation_index: rx.box(
+                                        rx.text(
+                                            f"[{citation_index + 1}] {citation}",
+                                            class_name="font-[dm] text-sm md:text-lg text-black mb-1",
+                                        ),
+                                        class_name="mb-1",
+                                    ),
+                                ),
+                                class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                                width="100%",
+                                max_width="100%",
+                                overflow_x="auto",
+                                style={
+                                    "word-wrap": "break-word",
+                                    "overflow-wrap": "break-word",
+                                },
                             ),
                         ),
-                        class_name="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg",
+                        class_name="mb-4",
+                    ),
+                ),
+                # Thinking tokens collapsible section
+                rx.cond(
+                    message.get("thinking"),
+                    rx.box(
+                        rx.button(
+                            rx.hstack(
+                                rx.text(
+                                    "Thinking",
+                                    class_name="font-[dm] text-sm md:text-lg font-semibold text-white",
+                                ),
+                                rx.cond(
+                                    State.thinking_expanded.get(index, False),
+                                    rx.icon(
+                                        "chevron-down",
+                                        size=24,
+                                        class_name="text-white",
+                                    ),
+                                    rx.icon(
+                                        "chevron-right",
+                                        size=24,
+                                        class_name="text-white",
+                                    ),
+                                ),
+                                class_name="items-center gap-2",
+                            ),
+                            on_click=State.toggle_thinking(index),
+                            class_name="w-full text-left p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
+                            style={
+                                "background": "linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #7c3aed 100%)",
+                                "border": "2px solid #6d28d9",
+                            },
+                        ),
+                        rx.cond(
+                            State.thinking_expanded.get(index, False),
+                            rx.box(
+                                rx.markdown(
+                                    message["thinking"],
+                                    component_map=markdown_component_map(),
+                                    class_name="font-[dm] text-sm md:text-lg text-black",
+                                ),
+                                class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                                width="100%",
+                                max_width="100%",
+                                overflow_x="auto",
+                                style={
+                                    "word-wrap": "break-word",
+                                    "overflow-wrap": "break-word",
+                                },
+                            ),
+                        ),
+                        class_name="mb-4",
                     ),
                 ),
                 rx.box(
@@ -230,7 +321,7 @@ def chat_messages():
     return rx.box(
         rx.foreach(
             State.messages,
-            response_message,
+            lambda message, index: response_message(message, index),
         ),
         rx.cond(
             State.is_gen,

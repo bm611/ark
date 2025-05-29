@@ -1,9 +1,33 @@
 {
   "entries": [
     {
+      "version": "0.4.1",
+      "date": "May 29 2025",
+      "is_latest": true,
+      "changes": [
+        {
+          "type": "added",
+          "description": "Added thinking tokens component in chat message view"
+        },
+        {
+          "type": "improved",
+          "description": "Improved button design for sources and thinking"
+        },
+        {
+          "type": "fixed",
+          "description": "Fixed hero section cards for better visual flow"
+        },
+        {
+          "type": "added",
+          "description": "Added collapsible section for citations"
+        }
+      ]
+    },
+
+    {
       "version": "0.4.0",
       "date": "May 28 2025",
-      "is_latest": true,
+      "is_latest": false,
       "changes": [
         {
           "type": "added",
