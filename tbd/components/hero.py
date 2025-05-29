@@ -483,7 +483,7 @@ def card(
             class_name="md:flex-col",
             align="start",
         ),
-        class_name=f"{background_color} rounded-lg md:rounded-xl p-4 md:p-6 h-full flex flex-col border border-gray-200 shadow-sm",
+        class_name=f"{background_color} rounded-xl md:rounded-2xl p-4 md:p-6 h-full flex flex-col border border-gray-200 shadow-sm",
     )
 
 
