@@ -1,0 +1,84 @@
+{
+  "entries": [
+    {
+      "version": "0.4.0",
+      "date": "May 28 2025",
+      "is_latest": true,
+      "changes": [
+        {
+          "type": "added",
+          "description": "Added local model support"
+        },
+        {
+          "type": "added",
+          "description": "Added bottom drawer for selecting local models from Ollama and LM Studio"
+        },
+        {
+          "type": "fixed",
+          "description": "home page and chat UI layout"
+        },
+        {
+          "type": "improved",
+          "description": "Loading placeholder and animation"
+        },
+        {
+          "type": "fixed",
+          "description": "Markdown rendering issues"
+        }
+      ]
+    },
+    {
+      "version": "0.3.0",
+      "date": "May 26 2025",
+      "is_latest": false,
+      "changes": [
+        {
+          "type": "added",
+          "description": "Enabled web search powered by Perplexity"
+        },
+        {
+          "type": "added",
+          "description": "UI refinements"
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "date": "May 24 2025",
+      "is_latest": false,
+      "changes": [
+        {
+          "type": "added",
+          "description": "Openrouter for Unified LLM provider access"
+        },
+        {
+          "type": "added",
+          "description": "Chat reponse with follow up with Gemini"
+        },
+        {
+          "type": "added",
+          "description": "Loading placeholder and animation"
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "date": "May 23 2025",
+      "is_latest": false,
+      "changes": [
+        {
+          "type": "added",
+          "description": "Responsive design with mobile-first approach"
+        },
+        {
+          "type": "added",
+          "description": "Interactive hero section with feature cards"
+        },
+        {
+          "type": "added",
+          "description": "Navigation bar with branding and GitHub link"
+        }
+      ]
+    }
+  ]
+}

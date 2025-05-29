@@ -1,4 +1,6 @@
 import reflex as rx
+import json
+import os
 from tbd.components.nav import navbar
 
 
@@ -93,95 +95,16 @@ def changelog_header():
     )
 
 
-@rx.page(route="/changelog", title="Changelog - Ark")
-def changelog() -> rx.Component:
-    return rx.box(
-        navbar(),
-        # Header section
-        changelog_header(),
-        # Changelog entries
-        rx.box(
-            changelog_entry(
-                version="0.4.0",
-                date="May 28 2025",
-                is_latest=True,
-                changes=[
-                    {
-                        "type": "added",
-                        "description": "Added local model support",
-                    },
-                    {
-                        "type": "added",
-                        "description": "Added bottom drawer for selecting local models from Ollama and LM Studio",
-                    },
-                    {
-                        "type": "fixed",
-                        "description": "Improved home page and chat UI",
-                    },
-                    {
-                        "type": "improved",
-                        "description": "Loading placeholder and animation",
-                    },
-                    {
-                        "type": "fixed",
-                        "description": "Markdown rendering issues",
-                    },
-                ],
-            ),
-            changelog_entry(
-                version="0.3.0",
-                date="May 26 2025",
-                is_latest=False,
-                changes=[
-                    {
-                        "type": "added",
-                        "description": "Enabled web search powered by Perplexity",
-                    },
-                    {
-                        "type": "added",
-                        "description": "UI refinements",
-                    },
-                ],
-            ),
-            changelog_entry(
-                version="0.2.0",
-                date="May 24 2025",
-                is_latest=False,
-                changes=[
-                    {
-                        "type": "added",
-                        "description": "Openrouter for Unified LLM provider access",
-                    },
-                    {
-                        "type": "added",
-                        "description": "Chat reponse with follow up with Gemini",
-                    },
-                    {
-                        "type": "added",
-                        "description": "Loading placeholder and animation",
-                    },
-                ],
-            ),
-            changelog_entry(
-                version="0.1.0",
-                date="May 23 2025",
-                is_latest=False,
-                changes=[
-                    {
-                        "type": "added",
-                        "description": "Responsive design with mobile-first approach",
-                    },
-                    {
-                        "type": "added",
-                        "description": "Interactive hero section with feature cards",
-                    },
-                    {
-                        "type": "added",
-                        "description": "Navigation bar with branding and GitHub link",
-                    },
-                ],
-            ),
-            class_name="max-w-4xl mx-auto px-4 pb-16 md:pb-20",
-        ),
-        class_name="min-h-screen",
-    )
+def load_changelog_data():
+    """Load changelog data from JSON file"""
+    try:
+        # Get the path relative to this file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, "..", "data", "changelog.json")
+
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        return data.get("entries", [])
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading changelog data: {e}")
+        return []
