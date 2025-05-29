@@ -33,12 +33,24 @@ def markdown_component_map() -> Dict[str, Any]:
         "codeblock": lambda text, **props: rx.code_block(
             text,
             **props,
-            theme=rx.code_block.themes.material_oceanic,
+            theme=rx.code_block.themes.vsc_dark_plus,
             margin_y="1em",
             border_radius="16px",
+            width="100%",
+            max_width="100%",
+            overflow_x="auto",
             custom_style={
                 "font-size": "12px",
                 "font_family": "Inter",
+                "white-space": "pre",
+                "word-wrap": "break-word",
+                "overflow-wrap": "break-word",
+            },
+            css={
+                "@media (max-width: 768px)": {
+                    "font-size": "8px",
+                    "padding": "8px",
+                },
             },
         ),
         "a": lambda text, **props: rx.link(
@@ -148,6 +160,13 @@ def response_message(message: dict) -> rx.Component:
                         class_name="font-[dm] text-sm md:text-lg",
                     ),
                     class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                    width="100%",
+                    max_width="100%",
+                    overflow_x="auto",
+                    style={
+                        "word-wrap": "break-word",
+                        "overflow-wrap": "break-word",
+                    },
                 ),
                 # Performance stats with hero component design style
                 rx.cond(
