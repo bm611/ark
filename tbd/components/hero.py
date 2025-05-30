@@ -465,8 +465,8 @@ def input_section():
                                     OfflineModelsState.selected_model != "",
                                     False,
                                 ),
-                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 ml-2",
-                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 ml-2",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
                             ),
                             style=rx.cond(
                                 rx.cond(

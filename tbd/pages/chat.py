@@ -100,7 +100,7 @@ def chat_nav():
                     State.selected_provider.upper(),
                     class_name="font-[dm] text-xs md:text-sm font-bold text-black",
                 ),
-                class_name="bg-green-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                class_name="hidden md:flex bg-green-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
             ),
             rx.flex(
                 rx.text(
@@ -120,15 +120,17 @@ def chat_nav():
                     ),
                     rx.text(
                         "New Chat",
-                        class_name="hidden md:block tracking-wide text-lg font-bold",
+                        class_name="hidden md:block font-[dm] text-black tracking-wide text-lg font-bold",
                     ),
                     align="center",
                     justify="center",
                     class_name="flex items-center",
                 ),
-                class_name="bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition-all duration-200 text-gray-600 font-[dm] font-semibold shadow-inner "
-                "w-12 h-12 md:w-auto md:h-auto md:px-6 md:py-3 rounded-xl "
-                "flex items-center justify-center",
+                class_name="text-left p-4 md:p-6 rounded-2xl shadow-[0px_8px_0px_0px_rgba(75,85,99,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
+                style={
+                    "background": "linear-gradient(135deg, #e2e8f0 0%, #d1d5db 50%, #bcc3ce 100%)",
+                    "border": "2px solid #4a5568",
+                },
                 on_click=[
                     rx.redirect("/"),
                     State.reset_chat,
