@@ -408,12 +408,7 @@ def input_section():
                                 ),
                                 class_name="items-center gap-1 md:gap-2",
                             ),
-                            on_click=[
-                                State.select_action("Search"),
-                                State.set_provider_and_model(
-                                    "openrouter", "perplexity/sonar"
-                                ),
-                            ],
+                            on_click=State.handle_search_click,
                             class_name=rx.cond(
                                 State.selected_action == "Search",
                                 "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",

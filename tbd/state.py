@@ -141,6 +141,22 @@ class State(rx.State):
 
     def select_action(self, action: str):
         if self.selected_action == action:
+            # Deactivating the current action - reset to defaults
             self.selected_action = ""
+            self.selected_provider = "openrouter"
+            self.selected_model = "google/gemini-2.0-flash-001"
         else:
             self.selected_action = action
+
+    def handle_search_click(self):
+        """Handle search button click - toggle action and set/reset model accordingly"""
+        if self.selected_action == "Search":
+            # Deactivating search - reset to defaults
+            self.selected_action = ""
+            self.selected_provider = "openrouter"
+            self.selected_model = "google/gemini-2.0-flash-001"
+        else:
+            # Activating search - set search model
+            self.selected_action = "Search"
+            self.selected_provider = "openrouter"
+            self.selected_model = "perplexity/sonar"
