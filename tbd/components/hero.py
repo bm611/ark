@@ -470,8 +470,8 @@ def input_section():
                                     OfflineModelsState.selected_model != "",
                                     False,
                                 ),
-                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
-                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 ml-2",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 ml-2",
                             ),
                             style=rx.cond(
                                 rx.cond(
@@ -503,39 +503,54 @@ def card(
     title: str,
     description: str,
     image_src: str,
-    background_color: str = "bg-blue-50",
+    background_color: str = "bg-gradient-to-br from-purple-500 to-pink-500",
 ):
     return rx.box(
-        # Mobile: horizontal layout, Desktop: vertical layout
-        rx.flex(
-            # Image container
+        # Gradient border wrapper
+        rx.box(
+            # Inner card with glassmorphism effect
             rx.box(
-                rx.image(
-                    src=image_src,
-                    class_name="w-16 md:w-32 h-16 md:h-32 object-contain",
+                # Mobile: horizontal layout, Desktop: vertical layout
+                rx.flex(
+                    # Image container with glow effect
+                    rx.box(
+                        rx.box(
+                            rx.image(
+                                src=image_src,
+                                class_name="w-24 md:w-36 h-24 md:h-36 object-contain relative z-10",
+                            ),
+                            class_name="relative",
+                        ),
+                        # Glow effect behind image
+                        rx.box(
+                            class_name="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-400 blur-xl opacity-50",
+                        ),
+                        class_name="flex-shrink-0 mr-4 mt-3 md:mr-0 md:mb-8 relative",
+                    ),
+                    # Content container
+                    rx.box(
+                        # Title with gradient text
+                        rx.heading(
+                            title,
+                            class_name="text-2xl md:text-4xl font-black mb-2 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
+                            as_="h2",
+                        ),
+                        # Description with modern styling
+                        rx.text(
+                            description,
+                            class_name="font-[dm] text-base md:text-xl text-gray-700 font-medium text-left",
+                        ),
+                        class_name="flex-1",
+                    ),
+                    direction="row",
+                    class_name="md:flex-col",
+                    align="start",
                 ),
-                class_name="flex-shrink-0 mr-3 md:mr-0 md:mb-6",
+                class_name="bg-white/90 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 md:p-8 h-full flex flex-col relative overflow-hidden",
             ),
-            # Content container
-            rx.box(
-                # Title
-                rx.heading(
-                    title,
-                    class_name="text-xl md:text-3xl font-semibold mb-1 md:mb-3 tracking-wide text-gray-800 text-left",
-                    as_="h2",
-                ),
-                # Description
-                rx.text(
-                    description,
-                    class_name="font-[dm] text-sm md:text-lg text-gray-600 font-normal text-left leading-relaxed",
-                ),
-                class_name="flex-1",
-            ),
-            direction="row",
-            class_name="md:flex-col",
-            align="start",
+            class_name=f"{background_color} p-[2px] rounded-2xl md:rounded-3xl shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300",
         ),
-        class_name=f"{background_color} rounded-xl md:rounded-2xl p-4 md:p-6 h-full flex flex-col border border-gray-200 shadow-sm",
+        class_name="transform hover:scale-[1.02] transition-transform duration-300",
     )
 
 
@@ -546,7 +561,7 @@ def hero():
                 rx.box(
                     rx.heading(
                         "Ask Anything!",
-                        class_name="text-4xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-black",
+                        class_name="text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-black",
                         as_="h1",
                     ),
                     rx.flex(
@@ -554,19 +569,19 @@ def hero():
                             title="Chat",
                             description="Engage in intelligent conversations powered by advanced AI technology.",
                             image_src="/go_pop.png",
-                            background_color="bg-amber-100",
+                            background_color="bg-amber-200",
                         ),
                         card(
                             title="Search",
                             description="Find accurate information quickly with AI-powered search capabilities.",
                             image_src="/g_search.png",
-                            background_color="bg-sky-100",
+                            background_color="bg-sky-200",
                         ),
                         card(
                             title="Learn",
                             description="Expand your knowledge with personalized learning experiences.",
                             image_src="/g_learn.png",
-                            background_color="bg-purple-100",
+                            background_color="bg-purple-200",
                         ),
                         class_name="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-8 max-w-sm md:max-w-6xl mx-auto px-2 md:px-4",
                     ),
