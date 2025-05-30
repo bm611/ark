@@ -14,7 +14,6 @@ def navbar() -> rx.Component:
                 rx.button(
                     rx.icon(
                         "scroll-text",
-                        color="black",
                         class_name="block md:hidden",
                         size=18,
                     ),
@@ -29,7 +28,6 @@ def navbar() -> rx.Component:
                 rx.button(
                     rx.icon(
                         "github",
-                        color="black",
                         class_name="block md:hidden",
                         size=18,
                     ),
