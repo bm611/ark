@@ -12,7 +12,12 @@ def navbar() -> rx.Component:
             ),
             rx.hstack(
                 rx.button(
-                    rx.icon("scroll-text", class_name="block md:hidden", size=18),
+                    rx.icon(
+                        "scroll-text",
+                        color="black",
+                        class_name="block md:hidden",
+                        size=18,
+                    ),
                     rx.text("Changelog", class_name="hidden md:block"),
                     class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] hover:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] hover:translate-y-1 md:shadow-none md:hover:shadow-none md:hover:translate-y-0",
                     style={
@@ -22,7 +27,12 @@ def navbar() -> rx.Component:
                     on_click=rx.redirect("/changelog"),
                 ),
                 rx.button(
-                    rx.icon("github", class_name="block md:hidden", size=18),
+                    rx.icon(
+                        "github",
+                        color="black",
+                        class_name="block md:hidden",
+                        size=18,
+                    ),
                     rx.text("Github", class_name="hidden md:block"),
                     class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] hover:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] hover:translate-y-1 md:shadow-none md:hover:shadow-none md:hover:translate-y-0",
                     style={

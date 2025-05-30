@@ -520,7 +520,7 @@ def card(
                         rx.box(
                             class_name="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-400 blur-xl opacity-50",
                         ),
-                        class_name="flex-shrink-0 mr-4 mt-3 md:mr-0 md:mb-8 relative",
+                        class_name="flex-shrink-0 mr-4 mt-1 md:mr-0 md:mb-8 relative",
                     ),
                     # Content container
                     rx.box(
@@ -555,26 +555,26 @@ def hero():
             rx.flex(
                 rx.box(
                     rx.heading(
-                        "Ask Anything!",
+                        "Welcome to Ark!",
                         class_name="text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-black",
                         as_="h1",
                     ),
                     rx.flex(
                         card(
                             title="Chat",
-                            description="Engage in intelligent conversations powered by advanced AI technology.",
+                            description="Great for everyday conversations.",
                             image_src="/go_pop.png",
                             background_color="bg-amber-200",
                         ),
                         card(
                             title="Search",
-                            description="Find accurate information quickly with AI-powered search capabilities.",
+                            description="Get real-time information with AI-powered search.",
                             image_src="/g_search.png",
                             background_color="bg-sky-200",
                         ),
                         card(
                             title="Learn",
-                            description="Expand your knowledge with personalized learning experiences.",
+                            description="Explore topics in-depth with an AI learning companion.",
                             image_src="/g_learn.png",
                             background_color="bg-purple-200",
                         ),
