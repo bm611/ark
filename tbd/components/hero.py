@@ -1,7 +1,7 @@
 import reflex as rx
 from tbd.state import State
-from tbd.services.openrouter import get_ollama_models, get_lmstudio_models
 from typing import List
+from tbd.services.openrouter import get_ollama_models, get_lmstudio_models
 
 
 class OfflineModelsState(rx.State):
@@ -22,8 +22,6 @@ class OfflineModelsState(rx.State):
     def refresh_ollama_models(self):
         """Refresh Ollama models"""
         try:
-            from tbd.services.openrouter import get_ollama_models
-
             models = get_ollama_models()
             self.ollama_models = models
             self.ollama_connected = len(models) > 0
@@ -35,8 +33,6 @@ class OfflineModelsState(rx.State):
     def refresh_lmstudio_models(self):
         """Refresh LM Studio models"""
         try:
-            from tbd.services.openrouter import get_lmstudio_models
-
             models = get_lmstudio_models()
             self.lmstudio_models = models
             self.lmstudio_connected = len(models) > 0
@@ -392,13 +388,25 @@ def input_section():
                     State.current_url == "/",
                     rx.hstack(
                         rx.button(
-                            rx.flex(
-                                rx.icon("globe", size=20, color="black"),
+                            rx.hstack(
+                                rx.icon(
+                                    "globe",
+                                    size=16,
+                                    class_name=rx.cond(
+                                        State.selected_action == "Search",
+                                        "text-white",
+                                        "text-gray-600",
+                                    ),
+                                ),
                                 rx.text(
                                     "Search",
-                                    class_name="font-[dm] md:text-lg",
+                                    class_name=rx.cond(
+                                        State.selected_action == "Search",
+                                        "font-[dm] text-xs md:text-sm font-semibold text-white",
+                                        "font-[dm] text-xs md:text-sm font-semibold text-gray-600",
+                                    ),
                                 ),
-                                class_name="items-center justify-center gap-2",
+                                class_name="items-center gap-1 md:gap-2",
                             ),
                             on_click=[
                                 State.select_action("Search"),
@@ -408,19 +416,49 @@ def input_section():
                             ],
                             class_name=rx.cond(
                                 State.selected_action == "Search",
-                                "rounded-xl ml-2 bg-sky-300 text-black",
-                                "rounded-xl ml-2 hover:bg-sky-100 text-black",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-[0px_8px_0px_0px_rgba(34,197,94,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
                             ),
-                            variant="surface",
+                            style=rx.cond(
+                                State.selected_action == "Search",
+                                {
+                                    "background": "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
+                                    "border": "1px solid #166534",
+                                },
+                                {
+                                    "background": "white",
+                                    "border": "1px solid #d1d5db",
+                                },
+                            ),
                         ),
                         rx.button(
-                            rx.flex(
-                                rx.icon("cloud-off", size=20, color="black"),
+                            rx.hstack(
+                                rx.icon(
+                                    "cloud-off",
+                                    size=16,
+                                    class_name=rx.cond(
+                                        rx.cond(
+                                            State.selected_action == "Offline",
+                                            OfflineModelsState.selected_model != "",
+                                            False,
+                                        ),
+                                        "text-white",
+                                        "text-gray-600",
+                                    ),
+                                ),
                                 rx.text(
                                     "Offline",
-                                    class_name="font-[dm] md:text-lg",
+                                    class_name=rx.cond(
+                                        rx.cond(
+                                            State.selected_action == "Offline",
+                                            OfflineModelsState.selected_model != "",
+                                            False,
+                                        ),
+                                        "font-[dm] text-xs md:text-sm font-semibold text-white",
+                                        "font-[dm] text-xs md:text-sm font-semibold text-gray-600",
+                                    ),
                                 ),
-                                class_name="items-center justify-center gap-2",
+                                class_name="items-center gap-1 md:gap-2",
                             ),
                             on_click=[
                                 State.select_action("Offline"),
@@ -432,10 +470,24 @@ def input_section():
                                     OfflineModelsState.selected_model != "",
                                     False,
                                 ),
-                                "rounded-xl ml-2 bg-purple-300 text-black",
-                                "rounded-xl ml-2 hover:bg-purple-100 text-black",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
+                                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 ml-2",
                             ),
-                            variant="surface",
+                            style=rx.cond(
+                                rx.cond(
+                                    State.selected_action == "Offline",
+                                    OfflineModelsState.selected_model != "",
+                                    False,
+                                ),
+                                {
+                                    "background": "linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
+                                    "border": "1px solid #5b21b6",
+                                },
+                                {
+                                    "background": "white",
+                                    "border": "1px solid #d1d5db",
+                                },
+                            ),
                         ),
                         class_name="gap-0",
                     ),

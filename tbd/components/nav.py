@@ -12,15 +12,23 @@ def navbar() -> rx.Component:
             ),
             rx.hstack(
                 rx.button(
-                    rx.icon("scroll-text", class_name="block md:hidden", size=20),
+                    rx.icon("scroll-text", class_name="block md:hidden", size=18),
                     rx.text("Changelog", class_name="hidden md:block"),
-                    class_name="bg-purple-200 hover:bg-purple-300 p-3 rounded-xl md:bg-purple-300 md:hover:bg-purple-500 md:px-6 md:py-8 md:rounded-3xl text-black text-lg md:text-xl transition-colors font-[dm] font-bold flex items-center justify-center",
+                    class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center shadow-[0px_4px_0px_0px_rgba(147,51,234,0.6)] hover:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.6)] hover:translate-y-1 md:shadow-none md:hover:shadow-none md:hover:translate-y-0",
+                    style={
+                        "background": "linear-gradient(135deg, #a855f7 0%, #9333ea 50%, #7c3aed 100%)",
+                        "border": "1px solid #7c3aed",
+                    },
                     on_click=rx.redirect("/changelog"),
                 ),
                 rx.button(
-                    rx.icon("github", class_name="block md:hidden", size=20),
+                    rx.icon("github", class_name="block md:hidden", size=18),
                     rx.text("Github", class_name="hidden md:block"),
-                    class_name="bg-blue-200 hover:bg-blue-300 p-3 rounded-xl md:bg-blue-300 md:hover:bg-blue-500 md:px-6 md:py-8 md:rounded-3xl text-black text-lg md:text-xl transition-colors font-[dm] font-bold flex items-center justify-center",
+                    class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center shadow-[0px_4px_0px_0px_rgba(59,130,246,0.6)] hover:shadow-[0px_2px_0px_0px_rgba(59,130,246,0.6)] hover:translate-y-1 md:shadow-none md:hover:shadow-none md:hover:translate-y-0",
+                    style={
+                        "background": "linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)",
+                        "border": "1px solid #2563eb",
+                    },
                     on_click=rx.redirect(
                         "https://github.com/bm611/ark", is_external=True
                     ),
