@@ -1,9 +1,25 @@
 {
   "entries": [
     {
+      "version": "0.4.2",
+      "date": "May 30 2025",
+      "is_latest": true,
+      "changes": [
+        {
+          "type": "improved",
+          "description": "Improved input text and button component"
+        },
+        {
+          "type": "fixed",
+          "description": "Fixed delay in opening offline bottom drawer"
+        }
+      ]
+    },
+
+    {
       "version": "0.4.1",
       "date": "May 29 2025",
-      "is_latest": true,
+      "is_latest": false,
       "changes": [
         {
           "type": "added",

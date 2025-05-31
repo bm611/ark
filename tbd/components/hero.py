@@ -2,6 +2,7 @@ import reflex as rx
 from tbd.state import State
 from typing import List
 from tbd.services.openrouter import get_ollama_models, get_lmstudio_models
+from rxconfig import config
 
 
 class OfflineModelsState(rx.State):
@@ -50,14 +51,19 @@ class OfflineModelsState(rx.State):
         """Toggle the drawer open/closed"""
         self.is_open = not self.is_open
         if self.is_open:
-            # Automatically refresh models when opening
-            self.refresh_all_models()
+            # Only refresh models when running locally
+            if "0.0.0.0" in config.api_url:
+                self.refresh_all_models()
 
     def open_drawer(self):
         """Open the drawer"""
         self.is_open = True
-        # Automatically refresh models when opening
-        self.refresh_all_models()
+        # Only refresh models when running locally
+        if "0.0.0.0" in config.api_url:
+            return self.refresh_all_models()
+        else:
+            # In hosted environment, just show the drawer without refreshing
+            print("Skipping model refresh in hosted environment")
 
     def close_drawer(self):
         """Close the drawer"""
