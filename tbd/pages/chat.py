@@ -28,6 +28,12 @@ def markdown_component_map() -> Dict[str, Any]:
             margin_y="1em",
             class_name="font-[dm] text-xl font-bold leading-tight my-4",
         ),
+        "h4": lambda text: rx.heading(
+            text,
+            size="1",
+            margin_y="1em",
+            class_name="font-[dm] text-xl font-bold leading-tight my-4",
+        ),
         "p": lambda text: rx.text(text, margin_y="1em", class_name="font-[dm]"),
         "code": lambda text: rx.code(text),
         "codeblock": lambda text, **props: rx.code_block(

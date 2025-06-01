@@ -8,7 +8,7 @@ class State(rx.State):
     messages: list[dict[str, str]] = []
     is_gen: bool = False
     selected_action: str = ""
-    
+
     # Thinking section expansion state
     thinking_expanded: dict[int, bool] = {}
     # Citations section expansion state
@@ -48,14 +48,18 @@ class State(rx.State):
     def toggle_thinking(self, message_index: int):
         """Toggle the thinking section for a specific message"""
         if message_index in self.thinking_expanded:
-            self.thinking_expanded[message_index] = not self.thinking_expanded[message_index]
+            self.thinking_expanded[message_index] = not self.thinking_expanded[
+                message_index
+            ]
         else:
             self.thinking_expanded[message_index] = True
 
     def toggle_citations(self, message_index: int):
         """Toggle the citations section for a specific message"""
         if message_index in self.citations_expanded:
-            self.citations_expanded[message_index] = not self.citations_expanded[message_index]
+            self.citations_expanded[message_index] = not self.citations_expanded[
+                message_index
+            ]
         else:
             self.citations_expanded[message_index] = True
 
@@ -111,16 +115,23 @@ class State(rx.State):
         # Extract thinking tokens if they exist
         thinking_content = None
         actual_response = response_text
-        
-        # Check for thinking tokens in the format <think>...</think>
+
+        # Method 1: Check for thinking tokens in the format <think>...</think>
         import re
-        think_pattern = r'<think>(.*?)</think>'
+
+        think_pattern = r"<think>(.*?)</think>"
         think_match = re.search(think_pattern, response_text, re.DOTALL)
-        
+
         if think_match:
             thinking_content = think_match.group(1).strip()
             # Remove the thinking tokens from the actual response
-            actual_response = re.sub(think_pattern, '', response_text, flags=re.DOTALL).strip()
+            actual_response = re.sub(
+                think_pattern, "", response_text, flags=re.DOTALL
+            ).strip()
+        # Method 2: Check for reasoning parameter in OpenRouter responses
+        elif hasattr(response.choices[0].message, "reasoning") and response.choices[0].message.reasoning:
+            thinking_content = response.choices[0].message.reasoning.strip()
+            # The actual response is already clean in this case
 
         # Prepare the message dictionary
         message_dict = {
@@ -131,7 +142,7 @@ class State(rx.State):
             "total_tokens": total_tokens,
             "tokens_per_second": tokens_per_second,
         }
-        
+
         # Add thinking content if it exists
         if thinking_content:
             message_dict["thinking"] = thinking_content
@@ -160,3 +171,16 @@ class State(rx.State):
             self.selected_action = "Search"
             self.selected_provider = "openrouter"
             self.selected_model = "perplexity/sonar"
+
+    def handle_turbo_click(self):
+        """Handle turbo button click - toggle action and set/reset model accordingly"""
+        if self.selected_action == "Turbo":
+            # Deactivating turbo - reset to defaults
+            self.selected_action = ""
+            self.selected_provider = "openrouter"
+            self.selected_model = "google/gemini-2.0-flash-001"
+        else:
+            # Activating turbo - set turbo model
+            self.selected_action = "Turbo"
+            self.selected_provider = "openrouter"
+            self.selected_model = "qwen/qwen3-32b"

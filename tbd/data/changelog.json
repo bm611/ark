@@ -1,6 +1,22 @@
 {
   "entries": [
     {
+      "version": "0.4.1",
+      "date": "Jun 01 2025",
+      "is_latest": true,
+      "changes": [
+        {
+          "type": "added",
+          "description": "Turbo option to use cerebras hosted qwen3-32b"
+        },
+        {
+          "type": "added",
+          "description": "Alternate option to extract thinking token from openrouter response"
+        }
+      ]
+    },
+
+    {
       "version": "0.4.2",
       "date": "May 30 2025",
       "is_latest": true,
