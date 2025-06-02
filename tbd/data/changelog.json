@@ -12,6 +12,14 @@
         {
           "type": "added",
           "description": "Alternate option to extract thinking token from openrouter response"
+        },
+        {
+          "type": "fixed",
+          "description": "Fixed output TPS based on completion_tokens"
+        },
+        {
+          "type": "improved",
+          "description": "Card display in medium screens"
         }
       ]
     },

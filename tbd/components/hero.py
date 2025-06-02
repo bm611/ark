@@ -548,41 +548,33 @@ def card(
     description: str,
     image_src: str,
     background_color: str = "bg-gradient-to-br from-purple-500 to-pink-500",
-):
+) -> rx.Component:
     return rx.box(
-        # Gradient border wrapper
         rx.box(
-            # Inner card with glassmorphism effect
             rx.box(
-                # Mobile: horizontal layout, Desktop: vertical layout
                 rx.flex(
-                    # Image container with glow effect
                     rx.box(
                         rx.box(
                             rx.image(
                                 src=image_src,
-                                class_name="w-24 md:w-36 h-24 md:h-36 object-contain relative z-10",
+                                class_name="w-24 md:w-28 h-24 md:h-28 object-contain relative z-10",
                             ),
                             class_name="relative",
                         ),
-                        # Glow effect behind image
                         rx.box(
                             class_name="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-400 blur-xl opacity-50",
                         ),
                         class_name="flex-shrink-0 mr-4 mt-1 md:mr-0 md:mb-8 relative",
                     ),
-                    # Content container
                     rx.box(
-                        # Title with gradient text
                         rx.heading(
                             title,
-                            class_name="text-2xl md:text-4xl font-black mb-2 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
+                            class_name="text-2xl md:text-3xl font-black mb-2 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
                             as_="h2",
                         ),
-                        # Description with modern styling
                         rx.text(
                             description,
-                            class_name="font-[dm] text-base md:text-xl text-gray-700 font-medium text-left",
+                            class_name="font-[dm] text-base md:text-lg text-gray-700 font-medium text-left",
                         ),
                         class_name="flex-1",
                     ),
@@ -590,7 +582,7 @@ def card(
                     class_name="md:flex-col",
                     align="start",
                 ),
-                class_name="bg-white/90 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 md:p-8 h-full flex flex-col relative overflow-hidden",
+                class_name="bg-white/90 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
             ),
             class_name=f"{background_color} p-[2px] rounded-2xl md:rounded-3xl shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300",
         ),

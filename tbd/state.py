@@ -17,7 +17,7 @@ class State(rx.State):
     # Provider and model selection
     selected_provider: str = "openrouter"  # Default to openrouter
     selected_model: str = "google/gemini-2.0-flash-001"  # default model
-
+    
     @rx.var
     def current_url(self) -> str:
         return self.router.page.path
@@ -97,15 +97,16 @@ class State(rx.State):
         generation_time_seconds = round(end_time - start_time, 2)
         generation_time = f"{generation_time_seconds}s"
 
-        # Extract token usage information
-        total_tokens = (
-            response.usage.total_tokens
-            if hasattr(response, "usage") and response.usage
+        # Extract token usage information - use completion_tokens (output only) for accurate per-response metrics
+        current_response_tokens = (
+            response.usage.completion_tokens
+            if hasattr(response, "usage") and response.usage and hasattr(response.usage, "completion_tokens")
             else 0
         )
+        
         tokens_per_second = (
-            round(total_tokens / generation_time_seconds, 2)
-            if generation_time_seconds > 0
+            round(current_response_tokens / generation_time_seconds, 2)
+            if generation_time_seconds > 0 and current_response_tokens > 0
             else 0
         )
 
@@ -139,7 +140,7 @@ class State(rx.State):
             "content": actual_response,
             "citations": citations,
             "generation_time": generation_time,
-            "total_tokens": total_tokens,
+            "total_tokens": current_response_tokens,  # Show tokens for this response only
             "tokens_per_second": tokens_per_second,
         }
 
