@@ -1,8 +1,8 @@
 import reflex as rx
-from tbd.components.nav import navbar
-from tbd.components.hero import hero, input_section
-from tbd.pages.changelog import changelog_entry, changelog_header, load_changelog_data
-from tbd.pages.chat import chat_nav, chat_messages
+from ark.components.nav import navbar
+from ark.components.hero import hero, input_section
+from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
+from ark.pages.chat import chat_nav, chat_messages
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")

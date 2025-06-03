@@ -9,7 +9,7 @@ class ReflextemplateConfig(rx.Config):
 
 
 config = ReflextemplateConfig(
-    app_name="tbd",
+    app_name="ark",
     telemetry_enabled=False,
     frontend_port=3000,  # default frontend port
     backend_port=8000,  # default backend port
@@ -17,4 +17,5 @@ config = ReflextemplateConfig(
     api_url=f"https://{os.environ[railway_domain]}/backend"
     if railway_domain in os.environ
     else "http://0.0.0.0:8000",
+    plugins=[rx.plugins.TailwindV3Plugin()],
 )
