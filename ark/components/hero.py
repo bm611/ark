@@ -79,7 +79,6 @@ class OfflineModelsState(rx.State):
         print(f"Selected model: {model} from {self.selected_provider}")
 
         # Update the main State with the selected provider and model
-        from tbd.state import State
 
         state = await self.get_state(State)
         state.set_provider_and_model(self.selected_provider, model)

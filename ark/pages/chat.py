@@ -202,8 +202,9 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 rx.foreach(
                                     message.get("citations", []),
                                     lambda citation, citation_index: rx.box(
-                                        rx.text(
+                                        rx.link(
                                             f"[{citation_index + 1}] {citation}",
+                                            href=citation,
                                             class_name="font-[dm] text-sm md:text-lg text-black mb-1",
                                         ),
                                         class_name="mb-1",
@@ -298,23 +299,23 @@ def response_message(message: dict, index: int) -> rx.Component:
                         rx.flex(
                             rx.text(
                                 f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
-                                class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                                class_name="font-[dm] text-xs font-bold text-black",
                             ),
-                            class_name="bg-purple-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                            class_name="bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                         ),
                         rx.flex(
                             rx.text(
                                 f"{message.get('total_tokens', 'N/A'):.2f} TOKENS",
-                                class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                                class_name="font-[dm] text-xs font-bold text-black",
                             ),
-                            class_name="bg-sky-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                            class_name="bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                         ),
                         rx.flex(
                             rx.text(
                                 f"{message.get('generation_time', 'N/A'):.2f} SEC",
-                                class_name="font-[dm] text-xs md:text-sm font-bold text-black",
+                                class_name="font-[dm] text-xs font-bold text-black",
                             ),
-                            class_name="bg-amber-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+                            class_name="bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                         ),
                         class_name="gap-2 md:gap-4 mb-20 ml-2",
                     ),
