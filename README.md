@@ -10,9 +10,20 @@ A modern, feature-rich AI chat application built with Python and Reflex that sup
 - **Turbo Mode**: Ultra-fast responses using Qwen3-32B hosted on Cerebras
 - **Perplexity Search**: Integrated search functionality powered by Perplexity AI
 
+<p align="center">
+  <img src="assets/Ark.jpeg" alt="Image 1 Alt Text" width="300"/>
+  <img src="assets/Ark_C.jpeg" alt="Image 2 Alt Text" width="300"/>
+  <img src="assets/Ark_S.jpeg" alt="Image 2 Alt Text" width="300"/>
+</p>
+
 ### 💻 Offline Features (No Internet Required)
 - **Local Models**: Chat with locally hosted models via Ollama and LM Studio
 - **Token Usage Tracking**: Performance metrics and statistics
+
+<p align="center">
+  <img src="assets/Ark_Offline_Modal.jpeg" alt="Image 1 Alt Text" width="300"/>
+  <img src="assets/Ark_Offline.jpeg" alt="Image 1 Alt Text" width="300"/>
+</p>
 
 ### 💬 General Features
 - Real-time conversation interface
