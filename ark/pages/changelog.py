@@ -97,11 +97,10 @@ def changelog_header():
 def load_changelog_data():
     """Load changelog data from JSON file"""
     try:
-        # Get the path relative to this file
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(current_dir, "..", "data", "changelog.json")
+        # Get the path to the changelog.json file
+        data_file = os.path.join(os.path.dirname(__file__), "..", "data", "changelog.json")
 
-        with open(json_path, "r") as f:
+        with open(data_file, "r") as f:
             data = json.load(f)
         return data.get("entries", [])
     except (FileNotFoundError, json.JSONDecodeError) as e:
