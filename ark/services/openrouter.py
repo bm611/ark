@@ -1,7 +1,11 @@
 from openai import OpenAI
 import os
+from ark.services import weather
 
 _DEFAULT_SYSTEM_MESSAGE = "You are a helpful assistant."
+_TOOLS = [
+    weather.schema(),
+]
 
 # Provider configurations
 PROVIDER_CONFIGS = {
@@ -68,7 +72,7 @@ def ask(messages: list[dict[str, str]], model=None, provider="openrouter"):
         full_messages.insert(0, {"role": "system", "content": _DEFAULT_SYSTEM_MESSAGE})
 
     completion = provider_client.chat.completions.create(
-        model=model, messages=full_messages
+        model=model, messages=full_messages, tools=_TOOLS
     )
 
     return completion

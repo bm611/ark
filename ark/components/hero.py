@@ -556,24 +556,24 @@ def card(
                         rx.box(
                             rx.image(
                                 src=image_src,
-                                class_name="w-24 md:w-28 h-24 md:h-28 object-contain relative z-10",
+                                class_name="w-20 md:w-28 h-20 md:h-28 object-contain relative z-10",
                             ),
                             class_name="relative",
                         ),
                         rx.box(
                             class_name="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-400 blur-xl opacity-50",
                         ),
-                        class_name="flex-shrink-0 mr-4 mt-1 md:mr-0 md:mb-8 relative",
+                        class_name="flex-shrink-0 mr-3 mt-1 md:mr-0 md:mb-8 relative",
                     ),
                     rx.box(
                         rx.heading(
                             title,
-                            class_name="text-2xl md:text-3xl font-black mb-2 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
+                            class_name="text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
                             as_="h2",
                         ),
                         rx.text(
                             description,
-                            class_name="font-[dm] text-base md:text-lg text-gray-700 font-medium text-left",
+                            class_name="font-[dm] text-sm md:text-lg text-gray-700 font-medium text-left",
                         ),
                         class_name="flex-1",
                     ),
@@ -581,9 +581,9 @@ def card(
                     class_name="md:flex-col",
                     align="start",
                 ),
-                class_name="bg-white/90 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
+                class_name="bg-white/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
             ),
-            class_name=f"{background_color} p-[2px] rounded-2xl md:rounded-3xl shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300",
+            class_name=f"{background_color} p-[2px] rounded-xl md:rounded-3xl shadow-lg md:shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300",
         ),
         class_name="transform hover:scale-[1.02] transition-transform duration-300",
     )
@@ -628,6 +628,6 @@ def hero():
             ),
             offline_models_overlay(),
             offline_models_content(),
-            class_name="flex items-center justify-center min-h-[70vh] pb-4",
+            class_name="flex items-center justify-center min-h-[60vh] pb-4",
         ),
     )

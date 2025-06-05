@@ -35,7 +35,17 @@ def markdown_component_map() -> Dict[str, Any]:
             class_name="font-[dm] text-xl font-bold leading-tight my-4",
         ),
         "p": lambda text: rx.text(text, margin_y="1em", class_name="font-[dm]"),
-        "code": lambda text: rx.code(text),
+        "code": lambda text: rx.code(
+            text,
+            class_name="font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
+            style={
+                "font-family": "ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace",
+                "font-size": "0.875rem",
+                "line-height": "1.25rem",
+                "word-break": "break-all",
+                "white-space": "pre-wrap",
+            },
+        ),
         "codeblock": lambda text, **props: rx.code_block(
             text,
             **props,

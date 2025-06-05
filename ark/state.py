@@ -1,6 +1,7 @@
 import reflex as rx
 import time
 from ark.services import openrouter
+import json
 
 
 class State(rx.State):
@@ -8,6 +9,7 @@ class State(rx.State):
     messages: list[dict[str, str]] = []
     is_gen: bool = False
     selected_action: str = ""
+    is_tool_use: bool = False
 
     # Thinking section expansion state
     thinking_expanded: dict[int, bool] = {}
@@ -17,7 +19,7 @@ class State(rx.State):
     # Provider and model selection
     selected_provider: str = "openrouter"  # Default to openrouter
     selected_model: str = "google/gemini-2.0-flash-001"  # default model
-    
+
     @rx.var
     def current_url(self) -> str:
         return self.router.page.path
@@ -100,10 +102,12 @@ class State(rx.State):
         # Extract token usage information - use completion_tokens (output only) for accurate per-response metrics
         current_response_tokens = (
             response.usage.completion_tokens
-            if hasattr(response, "usage") and response.usage and hasattr(response.usage, "completion_tokens")
+            if hasattr(response, "usage")
+            and response.usage
+            and hasattr(response.usage, "completion_tokens")
             else 0
         )
-        
+
         tokens_per_second = (
             round(current_response_tokens / generation_time_seconds, 2)
             if generation_time_seconds > 0 and current_response_tokens > 0
@@ -112,6 +116,13 @@ class State(rx.State):
 
         self.is_gen = False
         response_text = response.choices[0].message.content
+
+        # check if tools were used [TODO: using first index]
+        tool_call = response.choices[0].message.tool_calls[0]
+        if tool_call:
+            self.is_tool_use = True
+            tool_name = tool_call.function.name
+            tool_args = json.loads(tool_call.function.arguments)
 
         # Extract thinking tokens if they exist
         thinking_content = None
@@ -130,7 +141,10 @@ class State(rx.State):
                 think_pattern, "", response_text, flags=re.DOTALL
             ).strip()
         # Method 2: Check for reasoning parameter in OpenRouter responses
-        elif hasattr(response.choices[0].message, "reasoning") and response.choices[0].message.reasoning:
+        elif (
+            hasattr(response.choices[0].message, "reasoning")
+            and response.choices[0].message.reasoning
+        ):
             thinking_content = response.choices[0].message.reasoning.strip()
             # The actual response is already clean in this case
 
