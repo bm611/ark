@@ -15,6 +15,8 @@ class State(rx.State):
     thinking_expanded: dict[int, bool] = {}
     # Citations section expansion state
     citations_expanded: dict[int, bool] = {}
+    # Tool section expansion state
+    tool_expanded: dict[int, bool] = {}
 
     # Provider and model selection
     selected_provider: str = "openrouter"  # Default to openrouter
@@ -46,6 +48,7 @@ class State(rx.State):
         self.selected_action = ""
         self.thinking_expanded = {}
         self.citations_expanded = {}
+        self.tool_expanded = {}
 
     def toggle_thinking(self, message_index: int):
         """Toggle the thinking section for a specific message"""
@@ -64,6 +67,15 @@ class State(rx.State):
             ]
         else:
             self.citations_expanded[message_index] = True
+
+    def toggle_tool(self, message_index: int):
+        """Toggle the tool section for a specific message"""
+        if message_index in self.tool_expanded:
+            self.tool_expanded[message_index] = not self.tool_expanded[
+                message_index
+            ]
+        else:
+            self.tool_expanded[message_index] = True
 
     def send_message(self):
         # Record start time for response generation
@@ -118,11 +130,15 @@ class State(rx.State):
         response_text = response.choices[0].message.content
 
         # check if tools were used [TODO: using first index]
-        tool_call = response.choices[0].message.tool_calls[0]
-        if tool_call:
+        tool_name = None
+        tool_args = None
+        if response.choices[0].message.tool_calls:
+            tool_call = response.choices[0].message.tool_calls[0]
             self.is_tool_use = True
             tool_name = tool_call.function.name
             tool_args = json.loads(tool_call.function.arguments)
+        else:
+            self.is_tool_use = False
 
         # Extract thinking tokens if they exist
         thinking_content = None
@@ -161,6 +177,11 @@ class State(rx.State):
         # Add thinking content if it exists
         if thinking_content:
             message_dict["thinking"] = thinking_content
+
+        # Add tool information if tools were used
+        if tool_name:
+            message_dict["tool_name"] = tool_name
+            message_dict["tool_args"] = json.dumps(tool_args, indent=2) if tool_args else "{}"
 
         # Add assistant response with generation time and token metrics
         self.messages.append(message_dict)

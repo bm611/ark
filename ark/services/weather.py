@@ -220,10 +220,6 @@ def schema():
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "api_key": {
-                        "type": "string",
-                        "description": "Your OpenWeatherMap API key",
-                    },
                     "city": {
                         "type": "string",
                         "description": 'City name (e.g., "Campbell")',
@@ -242,7 +238,7 @@ def schema():
                         "default": "imperial",
                     },
                 },
-                "required": ["api_key", "city"],
+                "required": ["city"],
             },
         },
     }
