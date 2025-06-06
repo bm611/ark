@@ -90,7 +90,8 @@ class State(rx.State):
                     model=self.selected_model,
                     provider=self.selected_provider,
                 )
-                citations = response.citations
+                # Safely get citations if they exist
+                citations = getattr(response, 'citations', [])
             else:
                 # Use the selected offline provider for search
                 model = self.selected_model if self.selected_model else None
