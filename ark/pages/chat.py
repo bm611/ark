@@ -1,6 +1,7 @@
 import reflex as rx
 from typing import Dict, Any
 from ark.state import State
+from ark.components.custom.weather import weather_card
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -372,6 +373,14 @@ def response_message(message: dict, index: int) -> rx.Component:
                             "word-wrap": "break-word",
                             "overflow-wrap": "break-word",
                         },
+                    ),
+                ),
+                # Weather component - display when weather data is available
+                rx.cond(
+                    message.get("weather_data"),
+                    rx.box(
+                        weather_card(),
+                        class_name="mb-4 w-full md:max-w-xl",
                     ),
                 ),
                 # Performance stats with hero component design style

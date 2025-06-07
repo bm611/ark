@@ -1,7 +1,85 @@
 import reflex as rx
 import time
+from typing import TypedDict, List, Optional
 from ark.services import openrouter
+from ark.services.weather import get_weather_data
 import json
+
+
+# Define the structure for weather coordinates
+class WeatherCoordinates(TypedDict):
+    lat: float
+    lon: float
+
+
+# Define the structure for weather location
+class WeatherLocation(TypedDict):
+    city: str
+    state: str
+    country: str
+    coordinates: WeatherCoordinates
+
+
+# Define the structure for current weather
+class CurrentWeather(TypedDict):
+    temperature: int | float
+    feels_like: int | float
+    weather_main: str
+    weather_description: str
+    weather_icon: str
+    is_sunny: bool
+    humidity: int
+    pressure: int
+    visibility: float
+    uv_index: int | None
+    wind_speed: float
+    wind_direction: int
+
+
+# Define the structure for timestamp
+class WeatherTimestamp(TypedDict):
+    current_time: str
+    current_day: str
+    current_date: str
+    timezone_offset: int
+
+
+# Define the structure for daily forecast item
+class DailyForecast(TypedDict):
+    day: str
+    day_short: str
+    date: str
+    high_temp: int
+    low_temp: int
+    weather_main: str
+    weather_description: str
+    weather_icon: str
+    is_sunny: bool
+
+
+# Define the structure for weather units
+class WeatherUnits(TypedDict):
+    temperature: str
+    wind_speed: str
+    pressure: str
+    visibility: str
+
+
+# Define the structure for API info
+class WeatherApiInfo(TypedDict):
+    provider: str
+    last_updated: str
+    units_system: str
+
+
+# Define the complete weather data structure
+class WeatherData(TypedDict):
+    location: WeatherLocation
+    current: CurrentWeather
+    timestamp: WeatherTimestamp
+    daily_forecast: List[DailyForecast]
+    units: WeatherUnits
+    api_info: WeatherApiInfo
 
 
 class State(rx.State):
@@ -21,6 +99,10 @@ class State(rx.State):
     # Provider and model selection
     selected_provider: str = "openrouter"  # Default to openrouter
     selected_model: str = "google/gemini-2.0-flash-001"  # default model
+
+    # Weather-related state variables
+    weather_data: Optional[WeatherData] = None
+    weather_location: str = ""
 
     @rx.var
     def current_url(self) -> str:
@@ -49,6 +131,8 @@ class State(rx.State):
         self.thinking_expanded = {}
         self.citations_expanded = {}
         self.tool_expanded = {}
+        self.weather_data = None
+        self.weather_location = ""
 
     def toggle_thinking(self, message_index: int):
         """Toggle the thinking section for a specific message"""
@@ -138,6 +222,9 @@ class State(rx.State):
             self.is_tool_use = True
             tool_name = tool_call.function.name
             tool_args = json.loads(tool_call.function.arguments)
+            if tool_name == "get_weather_data":
+                self.weather_data = get_weather_data(tool_args["location"], tool_args.get("units", "imperial"))
+                self.weather_location = tool_args["location"]
         else:
             self.is_tool_use = False
 
@@ -183,6 +270,11 @@ class State(rx.State):
         if tool_name:
             message_dict["tool_name"] = tool_name
             message_dict["tool_args"] = json.dumps(tool_args, indent=2) if tool_args else "{}"
+
+        # Add weather data if available
+        if self.weather_data:
+            message_dict["weather_data"] = self.weather_data
+            message_dict["weather_location"] = self.weather_location
 
         # Add assistant response with generation time and token metrics
         self.messages.append(message_dict)
