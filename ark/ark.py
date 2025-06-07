@@ -3,6 +3,7 @@ from ark.components.nav import navbar
 from ark.components.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
 from ark.pages.chat import chat_nav, chat_messages
+from ark.components.custom.weather import weather_demo
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -21,6 +22,13 @@ def chat() -> rx.Component:
         chat_messages(),
         input_section(),
         class_name="h-screen flex flex-col",
+    )
+
+
+@rx.page(route="/demo", title="demo")
+def demo() -> rx.Component:
+    return rx.container(
+        weather_demo(),
     )
 
 

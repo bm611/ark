@@ -3,26 +3,20 @@ from datetime import datetime
 import os
 
 
-def get_weather_data(city, state=None, country=None, units="imperial"):
+def get_weather_data(location, units="imperial"):
     """
     Fetch weather data from OpenWeatherMap API for UI display
 
     Args:
-        city (str): City name (e.g., "Campbell")
-        state (str, optional): State code (e.g., "CA")
-        country (str, optional): Country code (e.g., "US")
+        location (str): Location query (e.g., "Campbell", "Campbell,CA", "Campbell,CA,US")
         units (str): Temperature units - 'imperial' (°F), 'metric' (°C), 'kelvin'
 
     Returns:
         dict: Weather data formatted for UI display
     """
 
-    # Build location query
-    location_query = city
-    if state:
-        location_query += f",{state}"
-    if country:
-        location_query += f",{country}"
+    # Use location directly as query
+    location_query = location
 
     # API endpoints
     current_url = "https://api.openweathermap.org/data/2.5/weather"
@@ -140,7 +134,7 @@ def get_weather_data(city, state=None, country=None, units="imperial"):
         weather_data = {
             "location": {
                 "city": current_data["name"],
-                "state": state or "",
+                "state": "",
                 "country": current_data["sys"]["country"],
                 "coordinates": {
                     "lat": current_data["coord"]["lat"],
@@ -216,21 +210,13 @@ def schema():
         "type": "function",
         "function": {
             "name": "get_weather_data",
-            "description": "Fetch weather data from OpenWeatherMap API for UI display",
+            "description": "Get current weather information for a specific location. Only use when the user explicitly asks about weather, temperature, or weather conditions.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "city": {
+                    "location": {
                         "type": "string",
-                        "description": 'City name (e.g., "Campbell")',
-                    },
-                    "state": {
-                        "type": "string",
-                        "description": 'State code (e.g., "CA")',
-                    },
-                    "country": {
-                        "type": "string",
-                        "description": 'Country code (e.g., "US")',
+                        "description": 'Location query (e.g., "Campbell", "Campbell,CA", "Campbell,CA,US")',
                     },
                     "units": {
                         "type": "string",
@@ -238,7 +224,7 @@ def schema():
                         "default": "imperial",
                     },
                 },
-                "required": ["city"],
+                "required": ["location"],
             },
         },
     }
