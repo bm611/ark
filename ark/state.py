@@ -25,6 +25,9 @@ class State(rx.State):
     # Weather-related state variables
     weather_data: Optional[WeatherData] = None
     weather_location: str = ""
+    
+    # Theme state
+    is_dark_theme: bool = False
 
     @rx.var
     def current_url(self) -> str:
@@ -156,3 +159,7 @@ class State(rx.State):
             self.selected_action = "Turbo"
             self.selected_provider = "openrouter"
             self.selected_model = "qwen/qwen3-32b"
+    
+    def toggle_theme(self):
+        """Toggle between light and dark theme"""
+        self.is_dark_theme = not self.is_dark_theme

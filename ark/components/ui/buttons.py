@@ -4,6 +4,7 @@ Reusable button components.
 
 import reflex as rx
 from typing import Any
+from ark.state import State
 
 
 def action_button(
@@ -38,7 +39,11 @@ def action_button(
                 class_name=rx.cond(
                     is_active,
                     "text-white",
-                    "text-gray-600",
+                    rx.cond(
+                        State.is_dark_theme,
+                        "text-gray-300",
+                        "text-gray-600"
+                    )
                 ),
             ),
             rx.text(
@@ -46,7 +51,11 @@ def action_button(
                 class_name=rx.cond(
                     is_active,
                     "font-[dm] text-xs md:text-sm font-semibold text-white",
-                    "font-[dm] text-xs md:text-sm font-semibold text-gray-600",
+                    rx.cond(
+                        State.is_dark_theme,
+                        "font-[dm] text-xs md:text-sm font-semibold text-gray-300",
+                        "font-[dm] text-xs md:text-sm font-semibold text-gray-600"
+                    )
                 ),
             ),
             class_name="items-center gap-1 md:gap-2",
@@ -54,8 +63,8 @@ def action_button(
         on_click=on_click,
         class_name=rx.cond(
             is_active,
-            f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_{shadow_color}] hover:shadow-[0px_4px_0px_0px_{shadow_color}] hover:translate-y-1 transition-all duration-200 ml-2",
-            f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] hover:shadow-[0px_8px_0px_0px_{shadow_color}] hover:translate-y-1 transition-all duration-200 ml-2",
+            f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_{shadow_color}] active:shadow-[0px_4px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_4px_0px_0px_{shadow_color}] hover:md:translate-y-1",
+            f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_{shadow_color}] hover:md:translate-y-1",
         ),
         style=rx.cond(
             is_active,
@@ -63,10 +72,17 @@ def action_button(
                 "background": active_gradient,
                 "border": f"1px solid {active_border}",
             },
-            {
-                "background": "white",
-                "border": "1px solid #d1d5db",
-            },
+            rx.cond(
+                State.is_dark_theme,
+                {
+                    "background": "#374151",
+                    "border": "1px solid #6b7280",
+                },
+                {
+                    "background": "white",
+                    "border": "1px solid #d1d5db",
+                }
+            ),
         ),
         **kwargs,
     )
@@ -163,12 +179,20 @@ def gradient_card(
                     rx.box(
                         rx.heading(
                             title,
-                            class_name="text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent text-left",
+                                "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left"
+                            ),
                             as_="h2",
                         ),
                         rx.text(
                             description,
-                            class_name="font-[dm] text-sm md:text-lg text-gray-700 font-medium text-left",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "font-[dm] text-sm md:text-lg text-gray-300 font-medium text-left",
+                                "font-[dm] text-sm md:text-lg text-gray-700 font-medium text-left"
+                            ),
                         ),
                         class_name="flex-1",
                     ),
@@ -176,7 +200,11 @@ def gradient_card(
                     class_name="md:flex-col",
                     align="start",
                 ),
-                class_name="bg-white/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "bg-gray-800/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
+                    "bg-white/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden"
+                ),
             ),
             class_name=f"{background_color} p-[2px] rounded-xl md:rounded-3xl shadow-lg md:shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300",
         ),

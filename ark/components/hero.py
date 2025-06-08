@@ -15,20 +15,42 @@ def input_section():
                 rx.hstack(
                     rx.input(
                         value=State.prompt,
-                        class_name="w-full font-[dm] mt-4 mx-auto text-black text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 px-4 md:px-6",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "w-full font-[dm] mt-4 mx-auto text-white text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 px-4 md:px-6",
+                            "w-full font-[dm] mt-4 mx-auto text-gray-900 text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 px-4 md:px-6"
+                        ),
                         placeholder="Ask Anything...",
-                        on_change=State.set_prompt,
                         style={
-                            "background-color": "white",
-                            "background-clip": "padding-box",
+                            "background": rx.cond(State.is_dark_theme, "#1f2937", "white"),
+                            "color": rx.cond(State.is_dark_theme, "white", "#111827"),
+                            "& input::placeholder": {
+                                "color": rx.cond(State.is_dark_theme, "#9ca3af", "#6b7280"),
+                            }
                         },
+                        on_change=State.set_prompt,
                     ),
                     rx.button(
                         rx.hstack(
                             rx.icon("arrow-up", size=28, color="white"),
                             class_name="flex items-center justify-center",
                         ),
-                        class_name="mt-4 mx-auto text-white bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 rounded-2xl h-16 px-4 md:px-8 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.4)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-1 transition-all duration-200 border border-gray-600",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "mt-4 mx-auto text-white rounded-2xl h-16 px-4 md:px-8 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.3)] active:shadow-[0px_2px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-1 transition-all duration-200 md:hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.4)] md:hover:brightness-110",
+                            "mt-4 mx-auto text-white rounded-2xl h-16 px-4 md:px-8 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.3)] active:shadow-[0px_2px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-1 transition-all duration-200 md:hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.4)] md:hover:brightness-110"
+                        ),
+                        style=rx.cond(
+                            State.is_dark_theme,
+                            {
+                                "background": "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%)",
+                                "border": "1px solid #1e40af",
+                            },
+                            {
+                                "background": "linear-gradient(to right, #374151, #111827)",
+                                "border": "1px solid #4b5563",
+                            }
+                        ),
                         on_click=[
                             rx.redirect("/chat"),
                             State.handle_generation,
@@ -93,7 +115,11 @@ def hero():
                 rx.box(
                     rx.heading(
                         "Welcome to Ark!",
-                        class_name="text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-black",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-white",
+                            "text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-gray-900"
+                        ),
                         as_="h1",
                     ),
                     rx.flex(

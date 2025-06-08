@@ -1,6 +1,7 @@
 import reflex as rx
 import json
 import os
+from ark.state import State
 
 
 def changelog_entry(
@@ -13,19 +14,31 @@ def changelog_entry(
             # Date - takes remaining space
             rx.text(
                 date,
-                class_name="text-lg md:text-xl font-medium text-gray-700 flex-1",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-lg md:text-xl font-medium text-gray-300 flex-1",
+                    "text-lg md:text-xl font-medium text-gray-700 flex-1",
+                ),
             ),
             # Version and Latest badges - always on the right side
             rx.hstack(
                 rx.text(
                     f"v{version}",
-                    class_name="text-xs md:text-lg font-bold text-black px-2 md:px-4 py-0.5 md:py-2 bg-amber-300 rounded-full border-1 md:border-2 border-black",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "text-xs md:text-lg font-bold text-black px-2 md:px-4 py-0.5 md:py-2 bg-amber-300 rounded-full border-1 md:border-2 border-white",
+                        "text-xs md:text-lg font-bold text-black px-2 md:px-4 py-0.5 md:py-2 bg-amber-300 rounded-full border-1 md:border-2 border-black",
+                    ),
                 ),
                 rx.cond(
                     is_latest,
                     rx.text(
                         "Latest",
-                        class_name="text-xs md:text-sm font-medium text-white px-1.5 md:px-3 py-0.5 md:py-1 bg-green-600 rounded-full border-1 md:border-2 border-black",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "text-xs md:text-sm font-medium text-white px-1.5 md:px-3 py-0.5 md:py-1 bg-green-600 rounded-full border-1 md:border-2 border-white",
+                            "text-xs md:text-sm font-medium text-white px-1.5 md:px-3 py-0.5 md:py-1 bg-green-600 rounded-full border-1 md:border-2 border-black",
+                        ),
                     ),
                 ),
                 direction="row",
@@ -59,7 +72,11 @@ def changelog_entry(
                         ),
                         rx.text(
                             change["description"],
-                            class_name="font-[dm] text-sm md:text-lg text-black font-medium leading-relaxed",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "font-[dm] text-sm md:text-lg text-white font-medium leading-relaxed",
+                                "font-[dm] text-sm md:text-lg text-black font-medium leading-relaxed",
+                            ),
                         ),
                         align="start",
                         class_name="w-full flex",
@@ -69,7 +86,11 @@ def changelog_entry(
             ],
             class_name="space-y-2",
         ),
-        class_name="bg-white rounded-xl p-4 md:p-8 border-2 md:border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] mb-4 md:mb-6",
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "bg-gray-800 rounded-xl p-4 md:p-8 border-2 md:border-3 border-gray-600 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)] md:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.1)] mb-4 md:mb-6",
+            "bg-white rounded-xl p-4 md:p-8 border-2 md:border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] mb-4 md:mb-6",
+        ),
     )
 
 
@@ -79,12 +100,20 @@ def changelog_header():
         rx.flex(
             rx.heading(
                 "Changelog",
-                class_name="text-4xl md:text-7xl font-bold text-black tracking-wider mb-4",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-4xl md:text-7xl font-bold text-white tracking-wider mb-4",
+                    "text-4xl md:text-7xl font-bold text-black tracking-wider mb-4",
+                ),
                 as_="h1",
             ),
             rx.text(
                 "Keep track of all the exciting features and improvements shipped",
-                class_name="font-[dm] text-base md:text-2xl text-gray-700 font-medium max-w-3xl text-center leading-relaxed px-4",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "font-[dm] text-base md:text-2xl text-gray-300 font-medium max-w-3xl text-center leading-relaxed px-4",
+                    "font-[dm] text-base md:text-2xl text-gray-700 font-medium max-w-3xl text-center leading-relaxed px-4",
+                ),
             ),
             direction="column",
             align="center",
@@ -98,7 +127,9 @@ def load_changelog_data():
     """Load changelog data from JSON file"""
     try:
         # Get the path to the changelog.json file
-        data_file = os.path.join(os.path.dirname(__file__), "..", "data", "changelog.json")
+        data_file = os.path.join(
+            os.path.dirname(__file__), "..", "data", "changelog.json"
+        )
 
         with open(data_file, "r") as f:
             data = json.load(f)
