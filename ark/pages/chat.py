@@ -1,6 +1,7 @@
 import reflex as rx
 from typing import Dict, Any
 from ark.state import State
+from ark.components.custom.weather import weather_card
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -35,7 +36,17 @@ def markdown_component_map() -> Dict[str, Any]:
             class_name="font-[dm] text-xl font-bold leading-tight my-4",
         ),
         "p": lambda text: rx.text(text, margin_y="1em", class_name="font-[dm]"),
-        "code": lambda text: rx.code(text),
+        "code": lambda text: rx.code(
+            text,
+            class_name="font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
+            style={
+                "font-family": "ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace",
+                "font-size": "0.875rem",
+                "line-height": "1.25rem",
+                "word-break": "break-all",
+                "white-space": "pre-wrap",
+            },
+        ),
         "codeblock": lambda text, **props: rx.code_block(
             text,
             **props,
@@ -164,133 +175,213 @@ def response_message(message: dict, index: int) -> rx.Component:
                 },
             ),
             rx.vstack(
-                # Citations section
-                rx.cond(
-                    message.get("citations", []),
-                    rx.box(
-                        rx.button(
-                            rx.hstack(
-                                rx.text(
-                                    "Sources",
-                                    class_name="font-[dm] text-sm md:text-lg font-semibold text-white",
-                                ),
-                                rx.cond(
-                                    State.citations_expanded.get(index, False),
+                # Buttons section in horizontal stack
+                rx.hstack(
+                    # Citations section
+                    rx.cond(
+                        message.get("citations", []),
+                        rx.box(
+                            rx.button(
+                                rx.hstack(
                                     rx.icon(
-                                        "chevron-down",
-                                        size=24,
+                                        "list",
+                                        size=16,
                                         class_name="text-white",
                                     ),
-                                    rx.icon(
-                                        "chevron-right",
-                                        size=24,
-                                        class_name="text-white",
+                                    rx.text(
+                                        "Sources",
+                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
                                     ),
-                                ),
-                                class_name="items-center gap-2",
-                            ),
-                            on_click=State.toggle_citations(index),
-                            class_name="w-full text-left p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(59,130,246,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(59,130,246,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
-                            style={
-                                "background": "linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
-                                "border": "2px solid #1e40af",
-                            },
-                        ),
-                        rx.cond(
-                            State.citations_expanded.get(index, False),
-                            rx.box(
-                                rx.foreach(
-                                    message.get("citations", []),
-                                    lambda citation, citation_index: rx.box(
-                                        rx.link(
-                                            f"[{citation_index + 1}] {citation}",
-                                            href=citation,
-                                            class_name="font-[dm] text-sm md:text-lg text-black mb-1",
+                                    rx.cond(
+                                        State.citations_expanded.get(index, False),
+                                        rx.icon(
+                                            "chevron-down",
+                                            size=16,
+                                            class_name="text-white",
                                         ),
-                                        class_name="mb-1",
+                                        rx.icon(
+                                            "chevron-right",
+                                            size=16,
+                                            class_name="text-white",
+                                        ),
                                     ),
+                                    class_name="items-center gap-1",
                                 ),
-                                class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                                width="100%",
-                                max_width="100%",
-                                overflow_x="auto",
+                                on_click=State.toggle_citations(index),
+                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(59,130,246,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(59,130,246,0.8)] hover:translate-y-1 transition-all duration-200",
                                 style={
-                                    "word-wrap": "break-word",
-                                    "overflow-wrap": "break-word",
+                                    "background": "linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
+                                    "border": "2px solid #1e40af",
                                 },
                             ),
                         ),
-                        class_name="mb-4",
                     ),
+                    # Tool use section
+                    rx.cond(
+                        message.get("tool_name"),
+                        rx.box(
+                            rx.button(
+                                rx.hstack(
+                                    rx.icon(
+                                        "wrench",
+                                        size=16,
+                                        class_name="text-white",
+                                    ),
+                                    rx.text(
+                                        "Tools",
+                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
+                                    ),
+                                    rx.cond(
+                                        State.tool_expanded.get(index, False),
+                                        rx.icon(
+                                            "chevron-down",
+                                            size=16,
+                                            class_name="text-white",
+                                        ),
+                                        rx.icon(
+                                            "chevron-right",
+                                            size=16,
+                                            class_name="text-white",
+                                        ),
+                                    ),
+                                    class_name="items-center gap-1",
+                                ),
+                                on_click=State.toggle_tool(index),
+                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(34,197,94,0.8)] hover:translate-y-1 transition-all duration-200",
+                                style={
+                                    "background": "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
+                                    "border": "2px solid #166534",
+                                },
+                            ),
+                        ),
+                    ),
+                    # Thinking tokens collapsible section
+                    rx.cond(
+                        message.get("thinking"),
+                        rx.box(
+                            rx.button(
+                                rx.hstack(
+                                    rx.icon(
+                                        "lightbulb",
+                                        size=16,
+                                        class_name="text-white",
+                                    ),
+                                    rx.text(
+                                        "Thinking",
+                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
+                                    ),
+                                    rx.cond(
+                                        State.thinking_expanded.get(index, False),
+                                        rx.icon(
+                                            "chevron-down",
+                                            size=16,
+                                            class_name="text-white",
+                                        ),
+                                        rx.icon(
+                                            "chevron-right",
+                                            size=16,
+                                            class_name="text-white",
+                                        ),
+                                    ),
+                                    class_name="items-center gap-1",
+                                ),
+                                on_click=State.toggle_thinking(index),
+                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200",
+                                style={
+                                    "background": "linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #7c3aed 100%)",
+                                    "border": "2px solid #6d28d9",
+                                },
+                            ),
+                        ),
+                    ),
+                    class_name="gap-2 mb-4 flex-wrap ml-2",
                 ),
-                # Thinking tokens collapsible section
+                # Expanded content sections
                 rx.cond(
-                    message.get("thinking"),
+                    State.citations_expanded.get(index, False),
                     rx.box(
-                        rx.button(
-                            rx.hstack(
-                                rx.text(
-                                    "Thinking",
-                                    class_name="font-[dm] text-sm md:text-lg font-semibold text-white",
+                        rx.foreach(
+                            message.get("citations", []),
+                            lambda citation, citation_index: rx.box(
+                                rx.link(
+                                    f"[{citation_index + 1}] {citation}",
+                                    href=citation,
+                                    class_name="font-[dm] text-sm md:text-lg text-black mb-1",
                                 ),
-                                rx.cond(
-                                    State.thinking_expanded.get(index, False),
-                                    rx.icon(
-                                        "chevron-down",
-                                        size=24,
-                                        class_name="text-white",
-                                    ),
-                                    rx.icon(
-                                        "chevron-right",
-                                        size=24,
-                                        class_name="text-white",
-                                    ),
-                                ),
-                                class_name="items-center gap-2",
-                            ),
-                            on_click=State.toggle_thinking(index),
-                            class_name="w-full text-left p-4 rounded-2xl shadow-[0px_8px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
-                            style={
-                                "background": "linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #7c3aed 100%)",
-                                "border": "2px solid #6d28d9",
-                            },
-                        ),
-                        rx.cond(
-                            State.thinking_expanded.get(index, False),
-                            rx.box(
-                                rx.markdown(
-                                    message["thinking"],
-                                    component_map=markdown_component_map(),
-                                    class_name="font-[dm] text-sm md:text-lg text-black",
-                                ),
-                                class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                                width="100%",
-                                max_width="100%",
-                                overflow_x="auto",
-                                style={
-                                    "word-wrap": "break-word",
-                                    "overflow-wrap": "break-word",
-                                },
+                                class_name="mb-1",
                             ),
                         ),
-                        class_name="mb-4",
+                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        width="100%",
+                        max_width="100%",
+                        overflow_x="auto",
+                        style={
+                            "word-wrap": "break-word",
+                            "overflow-wrap": "break-word",
+                        },
                     ),
                 ),
-                rx.box(
-                    # Assistant message content
-                    rx.markdown(
-                        message["content"],
-                        component_map=markdown_component_map(),
-                        class_name="font-[dm] text-sm md:text-lg",
+                rx.cond(
+                    State.tool_expanded.get(index, False),
+                    rx.box(
+                        rx.text(
+                            f"Tool Name: {message.get('tool_name', '')}",
+                            class_name="font-[dm] text-sm md:text-lg font-semibold text-black",
+                        ),
+                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        # width="100%",
+                        # max_width="100%",
+                        overflow_x="auto",
+                        style={
+                            "word-wrap": "break-word",
+                            "overflow-wrap": "break-word",
+                        },
                     ),
-                    class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                    width="100%",
-                    max_width="100%",
-                    overflow_x="auto",
-                    style={
-                        "word-wrap": "break-word",
-                        "overflow-wrap": "break-word",
-                    },
+                ),
+                rx.cond(
+                    State.thinking_expanded.get(index, False),
+                    rx.box(
+                        rx.markdown(
+                            message["thinking"],
+                            component_map=markdown_component_map(),
+                            class_name="font-[dm] text-sm md:text-lg text-black",
+                        ),
+                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        width="100%",
+                        max_width="100%",
+                        overflow_x="auto",
+                        style={
+                            "word-wrap": "break-word",
+                            "overflow-wrap": "break-word",
+                        },
+                    ),
+                ),
+                rx.cond(
+                    message.get("content"),
+                    rx.box(
+                        # Assistant message content
+                        rx.markdown(
+                            message["content"],
+                            component_map=markdown_component_map(),
+                            class_name="font-[dm] text-sm md:text-lg",
+                        ),
+                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        width="100%",
+                        max_width="100%",
+                        overflow_x="auto",
+                        style={
+                            "word-wrap": "break-word",
+                            "overflow-wrap": "break-word",
+                        },
+                    ),
+                ),
+                # Weather component - display when weather data is available
+                rx.cond(
+                    message.get("weather_data"),
+                    rx.box(
+                        weather_card(),
+                        class_name="mb-4 w-full md:max-w-xl",
+                    ),
                 ),
                 # Performance stats with hero component design style
                 rx.cond(

@@ -1,7 +1,11 @@
 from openai import OpenAI
 import os
+from ark.services import weather
 
-_DEFAULT_SYSTEM_MESSAGE = "You are a helpful assistant."
+_DEFAULT_SYSTEM_MESSAGE = "You are a helpful assistant. You have access to a weather tool. Only use it when users specifically ask about weather. For all other topics, respond normally without using any tools."
+_TOOLS = [
+    weather.schema(),
+]
 
 # Provider configurations
 PROVIDER_CONFIGS = {
@@ -67,9 +71,21 @@ def ask(messages: list[dict[str, str]], model=None, provider="openrouter"):
     if not full_messages or full_messages[0]["role"] != "system":
         full_messages.insert(0, {"role": "system", "content": _DEFAULT_SYSTEM_MESSAGE})
 
-    completion = provider_client.chat.completions.create(
-        model=model, messages=full_messages
-    )
+    # Determine whether to include tools based on model
+    # Skip tools for Perplexity models and other models that don't support them
+    should_include_tools = True
+    if model and ("perplexity" in model.lower() or "sonar" in model.lower()):
+        should_include_tools = False
+
+    # Create completion with or without tools
+    if should_include_tools:
+        completion = provider_client.chat.completions.create(
+            model=model, messages=full_messages, tools=_TOOLS, tool_choice="auto"
+        )
+    else:
+        completion = provider_client.chat.completions.create(
+            model=model, messages=full_messages
+        )
 
     return completion
 
