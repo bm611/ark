@@ -57,6 +57,16 @@ class DailyForecast(TypedDict):
     is_sunny: bool
 
 
+# Define the structure for hourly forecast item
+class HourlyForecast(TypedDict):
+    time: str
+    time_24: str
+    temperature: int
+    weather_main: str
+    weather_icon: str
+    timestamp: int
+
+
 # Define the structure for weather units
 class WeatherUnits(TypedDict):
     temperature: str
@@ -78,6 +88,7 @@ class WeatherData(TypedDict):
     current: CurrentWeather
     timestamp: WeatherTimestamp
     daily_forecast: List[DailyForecast]
+    hourly_forecast: List[HourlyForecast]
     units: WeatherUnits
     api_info: WeatherApiInfo
 
@@ -155,9 +166,7 @@ class State(rx.State):
     def toggle_tool(self, message_index: int):
         """Toggle the tool section for a specific message"""
         if message_index in self.tool_expanded:
-            self.tool_expanded[message_index] = not self.tool_expanded[
-                message_index
-            ]
+            self.tool_expanded[message_index] = not self.tool_expanded[message_index]
         else:
             self.tool_expanded[message_index] = True
 
@@ -175,7 +184,7 @@ class State(rx.State):
                     provider=self.selected_provider,
                 )
                 # Safely get citations if they exist
-                citations = getattr(response, 'citations', [])
+                citations = getattr(response, "citations", [])
             else:
                 # Use the selected offline provider for search
                 model = self.selected_model if self.selected_model else None
@@ -223,8 +232,17 @@ class State(rx.State):
             tool_name = tool_call.function.name
             tool_args = json.loads(tool_call.function.arguments)
             if tool_name == "get_weather_data":
-                self.weather_data = get_weather_data(tool_args["location"], tool_args.get("units", "imperial"))
-                self.weather_location = tool_args["location"]
+                weather_result = get_weather_data(
+                    tool_args["location"], tool_args.get("units", "imperial")
+                )
+                # Only set weather_data if it's not an error response
+                if not weather_result.get("error", False):
+                    self.weather_data = weather_result
+                    self.weather_location = tool_args["location"]
+                else:
+                    # Keep weather_data as None when there's an error
+                    self.weather_data = None
+                    self.weather_location = tool_args["location"]
         else:
             self.is_tool_use = False
 
@@ -269,7 +287,9 @@ class State(rx.State):
         # Add tool information if tools were used
         if tool_name:
             message_dict["tool_name"] = tool_name
-            message_dict["tool_args"] = json.dumps(tool_args, indent=2) if tool_args else "{}"
+            message_dict["tool_args"] = (
+                json.dumps(tool_args, indent=2) if tool_args else "{}"
+            )
 
         # Add weather data if available
         if self.weather_data:
