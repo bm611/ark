@@ -2,6 +2,8 @@ import reflex as rx
 from typing import Dict, Any
 from ark.state import State
 from ark.components.custom.weather import weather_card
+from ark.components.ui.buttons import expandable_section_button
+from ark.components.ui.layout import navigation_header
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -107,55 +109,13 @@ def markdown_component_map() -> Dict[str, Any]:
 
 
 def chat_nav():
-    return rx.hstack(
-        # Left side - empty with flex-1 to take equal space
-        rx.box(class_name="flex-1"),
-        # Middle - Model provider section
-        rx.flex(
-            rx.flex(
-                rx.text(
-                    State.selected_provider.upper(),
-                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
-                ),
-                class_name="hidden md:flex bg-green-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
-            ),
-            rx.flex(
-                rx.text(
-                    State.selected_model.upper(),
-                    class_name="font-[dm] text-xs md:text-sm font-bold text-black",
-                ),
-                class_name="bg-pink-300 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
-            ),
-            class_name="gap-2 md:gap-4",
-        ),
-        # Right side - New Chat button with flex-1 and flex-end to align right
-        rx.box(
-            rx.button(
-                rx.flex(
-                    rx.icon(
-                        "plus", size=24, color="rgb(75, 85, 99)", class_name="md:hidden"
-                    ),
-                    rx.text(
-                        "New Chat",
-                        class_name="hidden md:block font-[dm] text-black tracking-wide text-lg font-bold",
-                    ),
-                    align="center",
-                    justify="center",
-                    class_name="flex items-center",
-                ),
-                class_name="text-left p-4 md:p-6 rounded-2xl shadow-[0px_8px_0px_0px_rgba(75,85,99,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
-                style={
-                    "background": "linear-gradient(135deg, #e2e8f0 0%, #d1d5db 50%, #bcc3ce 100%)",
-                    "border": "2px solid #4a5568",
-                },
-                on_click=[
-                    rx.redirect("/"),
-                    State.reset_chat,
-                ],
-            ),
-            class_name="flex-1 flex justify-end",
-        ),
-        class_name="p-4 items-center",
+    return navigation_header(
+        provider_name=State.selected_provider,
+        model_name=State.selected_model,
+        new_chat_handler=[
+            rx.redirect("/"),
+            State.reset_chat,
+        ],
     )
 
 
@@ -181,38 +141,14 @@ def response_message(message: dict, index: int) -> rx.Component:
                     rx.cond(
                         message.get("citations", []),
                         rx.box(
-                            rx.button(
-                                rx.hstack(
-                                    rx.icon(
-                                        "list",
-                                        size=16,
-                                        class_name="text-white",
-                                    ),
-                                    rx.text(
-                                        "Sources",
-                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
-                                    ),
-                                    rx.cond(
-                                        State.citations_expanded.get(index, False),
-                                        rx.icon(
-                                            "chevron-down",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                        rx.icon(
-                                            "chevron-right",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                    ),
-                                    class_name="items-center gap-1",
-                                ),
+                            expandable_section_button(
+                                label="Sources",
+                                icon="list",
+                                is_expanded=State.citations_expanded.get(index, False),
+                                gradient="linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
+                                border_color="#1e40af",
+                                shadow_color="rgba(59,130,246,0.8)",
                                 on_click=State.toggle_citations(index),
-                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(59,130,246,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(59,130,246,0.8)] hover:translate-y-1 transition-all duration-200",
-                                style={
-                                    "background": "linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
-                                    "border": "2px solid #1e40af",
-                                },
                             ),
                         ),
                     ),

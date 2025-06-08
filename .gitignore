@@ -6,3 +6,4 @@ assets/external/
 __pycache__/
 .venv
 .ropeproject
+.claude

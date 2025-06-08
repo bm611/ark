@@ -1,101 +1,12 @@
 import reflex as rx
-import time
-from typing import TypedDict, List, Optional
-from ark.services import openrouter
-from ark.services.weather import get_weather_data
-import json
-
-
-# Define the structure for weather coordinates
-class WeatherCoordinates(TypedDict):
-    lat: float
-    lon: float
-
-
-# Define the structure for weather location
-class WeatherLocation(TypedDict):
-    city: str
-    state: str
-    country: str
-    coordinates: WeatherCoordinates
-
-
-# Define the structure for current weather
-class CurrentWeather(TypedDict):
-    temperature: int | float
-    feels_like: int | float
-    weather_main: str
-    weather_description: str
-    weather_icon: str
-    is_sunny: bool
-    humidity: int
-    pressure: int
-    visibility: float
-    uv_index: int | None
-    wind_speed: float
-    wind_direction: int
-
-
-# Define the structure for timestamp
-class WeatherTimestamp(TypedDict):
-    current_time: str
-    current_day: str
-    current_date: str
-    timezone_offset: int
-
-
-# Define the structure for daily forecast item
-class DailyForecast(TypedDict):
-    day: str
-    day_short: str
-    date: str
-    high_temp: int
-    low_temp: int
-    weather_main: str
-    weather_description: str
-    weather_icon: str
-    is_sunny: bool
-
-
-# Define the structure for hourly forecast item
-class HourlyForecast(TypedDict):
-    time: str
-    time_24: str
-    temperature: int
-    weather_main: str
-    weather_icon: str
-    timestamp: int
-
-
-# Define the structure for weather units
-class WeatherUnits(TypedDict):
-    temperature: str
-    wind_speed: str
-    pressure: str
-    visibility: str
-
-
-# Define the structure for API info
-class WeatherApiInfo(TypedDict):
-    provider: str
-    last_updated: str
-    units_system: str
-
-
-# Define the complete weather data structure
-class WeatherData(TypedDict):
-    location: WeatherLocation
-    current: CurrentWeather
-    timestamp: WeatherTimestamp
-    daily_forecast: List[DailyForecast]
-    hourly_forecast: List[HourlyForecast]
-    units: WeatherUnits
-    api_info: WeatherApiInfo
+from typing import List, Optional
+from ark.models import WeatherData, ChatMessage
+from ark.handlers.message_handler import message_handler
 
 
 class State(rx.State):
     prompt: str = ""
-    messages: list[dict[str, str]] = []
+    messages: List[ChatMessage] = []
     is_gen: bool = False
     selected_action: str = ""
     is_tool_use: bool = False
@@ -171,133 +82,45 @@ class State(rx.State):
             self.tool_expanded[message_index] = True
 
     def send_message(self):
-        # Record start time for response generation
-        start_time = time.time()
-
-        # Determine which model to use based on action and selection
-        if self.selected_action == "Search":
-            # For search, use Perplexity if on OpenRouter, otherwise use selected provider
-            if self.selected_provider == "openrouter":
-                response = openrouter.ask(
-                    self.messages,
-                    model=self.selected_model,
-                    provider=self.selected_provider,
-                )
-                # Safely get citations if they exist
-                citations = getattr(response, "citations", [])
-            else:
-                # Use the selected offline provider for search
-                model = self.selected_model if self.selected_model else None
-                response = openrouter.ask(
-                    self.messages, model=model, provider=self.selected_provider
-                )
-                citations = []
-        else:
-            # For regular chat, use the selected provider and model
-            model = self.selected_model if self.selected_model else None
-            response = openrouter.ask(
-                self.messages, model=model, provider=self.selected_provider
-            )
-            citations = []
-
-        # Calculate response generation time
-        end_time = time.time()
-        generation_time_seconds = round(end_time - start_time, 2)
-        generation_time = f"{generation_time_seconds}s"
-
-        # Extract token usage information - use completion_tokens (output only) for accurate per-response metrics
-        current_response_tokens = (
-            response.usage.completion_tokens
-            if hasattr(response, "usage")
-            and response.usage
-            and hasattr(response.usage, "completion_tokens")
-            else 0
+        """Send message using the new message handler."""
+        # Determine model based on action and selection
+        model = self._get_model_for_action()
+        
+        # Process the message
+        message_dict, new_weather_data, new_weather_location = message_handler.process_message(
+            messages=self.messages,
+            provider=self.selected_provider,
+            model=model,
+            action=self.selected_action,
+            weather_data=self.weather_data,
+            weather_location=self.weather_location
         )
-
-        tokens_per_second = (
-            round(current_response_tokens / generation_time_seconds, 2)
-            if generation_time_seconds > 0 and current_response_tokens > 0
-            else 0
-        )
-
+        
+        # Update state
         self.is_gen = False
-        response_text = response.choices[0].message.content
-
-        # check if tools were used [TODO: using first index]
-        tool_name = None
-        tool_args = None
-        if response.choices[0].message.tool_calls:
-            tool_call = response.choices[0].message.tool_calls[0]
-            self.is_tool_use = True
-            tool_name = tool_call.function.name
-            tool_args = json.loads(tool_call.function.arguments)
-            if tool_name == "get_weather_data":
-                weather_result = get_weather_data(
-                    tool_args["location"], tool_args.get("units", "imperial")
-                )
-                # Only set weather_data if it's not an error response
-                if not weather_result.get("error", False):
-                    self.weather_data = weather_result
-                    self.weather_location = tool_args["location"]
-                else:
-                    # Keep weather_data as None when there's an error
-                    self.weather_data = None
-                    self.weather_location = tool_args["location"]
-        else:
-            self.is_tool_use = False
-
-        # Extract thinking tokens if they exist
-        thinking_content = None
-        actual_response = response_text
-
-        # Method 1: Check for thinking tokens in the format <think>...</think>
-        import re
-
-        think_pattern = r"<think>(.*?)</think>"
-        think_match = re.search(think_pattern, response_text, re.DOTALL)
-
-        if think_match:
-            thinking_content = think_match.group(1).strip()
-            # Remove the thinking tokens from the actual response
-            actual_response = re.sub(
-                think_pattern, "", response_text, flags=re.DOTALL
-            ).strip()
-        # Method 2: Check for reasoning parameter in OpenRouter responses
-        elif (
-            hasattr(response.choices[0].message, "reasoning")
-            and response.choices[0].message.reasoning
-        ):
-            thinking_content = response.choices[0].message.reasoning.strip()
-            # The actual response is already clean in this case
-
-        # Prepare the message dictionary
-        message_dict = {
-            "role": "assistant",
-            "content": actual_response,
-            "citations": citations,
-            "generation_time": generation_time,
-            "total_tokens": current_response_tokens,  # Show tokens for this response only
-            "tokens_per_second": tokens_per_second,
-        }
-
-        # Add thinking content if it exists
-        if thinking_content:
-            message_dict["thinking"] = thinking_content
-
-        # Add tool information if tools were used
-        if tool_name:
-            message_dict["tool_name"] = tool_name
-            message_dict["tool_args"] = (
-                json.dumps(tool_args, indent=2) if tool_args else "{}"
-            )
-
-        # Add weather data if available
-        if self.weather_data:
-            message_dict["weather_data"] = self.weather_data
-            message_dict["weather_location"] = self.weather_location
-
-        # Add assistant response with generation time and token metrics
+        self.is_tool_use = bool(message_dict.get("tool_name"))
+        
+        if new_weather_data:
+            self.weather_data = new_weather_data
+            self.weather_location = new_weather_location
+        
+        # Add the message to the conversation
         self.messages.append(message_dict)
+
+    def _get_model_for_action(self) -> str:
+        """Get the appropriate model based on the selected action."""
+        if self.selected_action == "Search":
+            if self.selected_provider == "openrouter":
+                return "perplexity/sonar"
+            # For offline providers, use their selected model
+            return self.selected_model if self.selected_model else None
+        elif self.selected_action == "Turbo":
+            if self.selected_provider == "openrouter":
+                return "qwen/qwen3-32b"
+            return self.selected_model if self.selected_model else None
+        else:
+            # Regular chat - use selected model
+            return self.selected_model if self.selected_model else None
 
     def select_action(self, action: str):
         if self.selected_action == action:

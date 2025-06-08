@@ -205,6 +205,7 @@ def get_weather_data(location, units="imperial"):
 def schema():
     """
     Returns a tool schema for the get_weather_data function.
+    Deprecated: Use ark.tools.weather.WeatherTool instead.
     """
     return {
         "type": "function",
