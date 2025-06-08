@@ -1,6 +1,7 @@
 """
 Offline models component for provider selection.
 """
+
 import reflex as rx
 from typing import List
 from ark.state import State
@@ -96,7 +97,9 @@ def offline_models_overlay() -> rx.Component:
         position="fixed",
         top="0",
         left="0",
-        background_color="rgba(0, 0, 0, 0.5)",
+        background_color=rx.cond(
+            State.is_dark_theme, "rgba(0, 0, 0, 0.7)", "rgba(0, 0, 0, 0.5)"
+        ),
         z_index="999",
         display=rx.cond(OfflineModelsState.is_open, "block", "none"),
         on_click=OfflineModelsState.close_drawer,
@@ -119,15 +122,30 @@ def model_item(model_name: str, provider: str) -> rx.Component:
                 class_name="flex-shrink-0",
             ),
             rx.box(
-                rx.text(model_name, class_name="font-[dm] font-medium text-sm"),
+                rx.text(
+                    model_name,
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "font-[dm] font-medium text-sm text-white",
+                        "font-[dm] font-medium text-sm text-gray-900",
+                    ),
+                ),
                 class_name="flex-1 min-w-0",
             ),
-            rx.icon("chevron-right", size=16, color="#9CA3AF"),
+            rx.icon(
+                "chevron-right",
+                size=16,
+                color=rx.cond(State.is_dark_theme, "#9CA3AF", "#6B7280"),
+            ),
             align="center",
             class_name="w-full gap-3",
         ),
         on_click=lambda: OfflineModelsState.select_model(model_name),
-        class_name="p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 border-b border-gray-100 last:border-b-0",
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "p-3 hover:bg-gray-700 cursor-pointer transition-colors duration-150 border-b border-gray-600 last:border-b-0",
+            "p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 border-b border-gray-100 last:border-b-0",
+        ),
     )
 
 
@@ -151,7 +169,18 @@ def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
                 height="18px",
                 class_name="object-contain",
             ),
-            rx.text(label, class_name="font-[dm] font-medium text-sm"),
+            rx.text(
+                label,
+                class_name=rx.cond(
+                    is_active,
+                    "font-[dm] font-semibold text-sm text-white",
+                    rx.cond(
+                        State.is_dark_theme,
+                        "font-[dm] font-medium text-sm text-gray-300",
+                        "font-[dm] font-medium text-sm text-gray-700",
+                    ),
+                ),
+            ),
             # Status indicator
             rx.box(
                 class_name=rx.cond(
@@ -167,8 +196,19 @@ def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
         on_click=lambda: OfflineModelsState.select_provider(provider),
         class_name=rx.cond(
             is_active,
-            "flex-1 py-2 px-4 bg-gray-200 text-gray-900 rounded-lg transition-all duration-200",
-            "flex-1 py-2 px-4 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200",
+            "flex-1 py-3 px-4 rounded-xl shadow-[0px_4px_0px_0px_rgba(147,51,234,0.6)] active:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.6)] active:translate-y-1 transition-all duration-200 border-2 border-purple-600 md:hover:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.6)] md:hover:translate-y-1",
+            rx.cond(
+                State.is_dark_theme,
+                "flex-1 py-3 px-4 bg-gray-700 active:bg-gray-600 rounded-xl transition-all duration-200 border-2 border-gray-600 md:hover:bg-gray-600",
+                "flex-1 py-3 px-4 bg-gray-50 active:bg-gray-100 rounded-xl transition-all duration-200 border-2 border-gray-200 md:hover:bg-gray-100",
+            ),
+        ),
+        style=rx.cond(
+            is_active,
+            {
+                "background": "linear-gradient(135deg, rgba(168,85,247,0.7) 0%, rgba(147,51,234,0.7) 50%, rgba(124,58,237,0.7) 100%)",
+            },
+            {},
         ),
     )
 
@@ -182,7 +222,7 @@ def offline_models_content() -> rx.Component:
             rx.box(
                 width="40px",
                 height="4px",
-                background_color="#D1D5DB",
+                background_color=rx.cond(State.is_dark_theme, "#6B7280", "#D1D5DB"),
                 border_radius="2px",
                 margin="12px auto 20px auto",
                 class_name="cursor-pointer",
@@ -192,12 +232,24 @@ def offline_models_content() -> rx.Component:
                 rx.heading(
                     "Offline Models",
                     size="5",
-                    class_name="font-[dm] font-bold",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "font-[dm] font-bold text-white",
+                        "font-[dm] font-bold text-gray-900",
+                    ),
                 ),
                 rx.button(
-                    rx.icon("x", size=20),
+                    rx.icon(
+                        "x",
+                        size=20,
+                        color="black",
+                    ),
                     on_click=OfflineModelsState.close_drawer,
-                    class_name="p-2 hover:bg-gray-100 rounded-full",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "p-2 active:bg-gray-700 rounded-xl border-2 border-gray-600 shadow-[0px_3px_0px_0px_rgba(75,85,99,0.8)] active:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] active:translate-y-1 transition-all duration-200 md:hover:bg-gray-700 md:hover:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] md:hover:translate-y-1",
+                        "p-2 active:bg-gray-100 rounded-xl border-2 border-gray-300 shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] active:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-1 transition-all duration-200 md:hover:bg-gray-100 md:hover:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] md:hover:translate-y-1",
+                    ),
                     variant="surface",
                 ),
                 justify="between",
@@ -208,8 +260,12 @@ def offline_models_content() -> rx.Component:
             rx.flex(
                 provider_tab("ollama", "Ollama", "/ollama.png"),
                 provider_tab("lmstudio", "LM Studio", "/lmstudio.png"),
-                gap="2",
-                class_name="mb-6 p-1 bg-gray-50 rounded-xl",
+                gap="3",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "mb-6 p-2 bg-gray-800 rounded-2xl border-2 border-gray-600 shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                    "mb-6 p-2 bg-gray-50 rounded-2xl border-2 border-gray-200 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                ),
             ),
             # Models list
             rx.box(
@@ -226,7 +282,11 @@ def offline_models_content() -> rx.Component:
                                     OfflineModelsState.ollama_models,
                                     lambda model: model_item(model, "ollama"),
                                 ),
-                                class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "bg-gray-800 rounded-2xl border-2 border-gray-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                    "bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                                ),
                             ),
                             # Connected but no models
                             rx.box(
@@ -234,11 +294,19 @@ def offline_models_content() -> rx.Component:
                                     rx.icon("inbox", size=24, color="#9CA3AF"),
                                     rx.text(
                                         "No models found",
-                                        class_name="font-[dm] text-sm font-medium text-gray-700",
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "font-[dm] text-sm font-medium text-white",
+                                            "font-[dm] text-sm font-medium text-gray-700",
+                                        ),
                                     ),
                                     rx.text(
                                         "Make sure you have models installed in Ollama",
-                                        class_name="font-[dm] text-xs text-gray-500",
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "font-[dm] text-xs text-gray-400",
+                                            "font-[dm] text-xs text-gray-500",
+                                        ),
                                     ),
                                     direction="column",
                                     align="center",
@@ -253,11 +321,19 @@ def offline_models_content() -> rx.Component:
                                 rx.icon("wifi-off", size=24, color="#EF4444"),
                                 rx.text(
                                     "Ollama not available",
-                                    class_name="font-[dm] text-sm font-medium text-gray-700",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "font-[dm] text-sm font-medium text-white",
+                                        "font-[dm] text-sm font-medium text-gray-700",
+                                    ),
                                 ),
                                 rx.text(
                                     "Make sure Ollama is running on localhost:11434",
-                                    class_name="font-[dm] text-xs text-gray-500",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "font-[dm] text-xs text-gray-400",
+                                        "font-[dm] text-xs text-gray-500",
+                                    ),
                                 ),
                                 rx.button(
                                     rx.icon("refresh-cw", size=14),
@@ -265,13 +341,21 @@ def offline_models_content() -> rx.Component:
                                     on_click=OfflineModelsState.refresh_ollama_models,
                                     size="1",
                                     variant="outline",
-                                    class_name="mt-2 font-[dm] bg-white hover:bg-gray-50 border-gray-300 text-gray-700",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "mt-2 font-[dm] bg-gray-700 active:bg-gray-600 border-gray-500 text-white rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(75,85,99,0.8)] active:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-600 md:hover:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] md:hover:translate-y-0.5",
+                                        "mt-2 font-[dm] bg-white active:bg-gray-50 border-gray-300 text-gray-700 rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.2)] active:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-50 md:hover:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] md:hover:translate-y-0.5",
+                                    ),
                                 ),
                                 direction="column",
                                 align="center",
                                 class_name="gap-2",
                             ),
-                            class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "bg-gray-800 rounded-2xl border-2 border-gray-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-white rounded-2xl border-2 border-gray-300 p-6 text-center shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                            ),
                         ),
                     ),
                     # LM Studio models section
@@ -285,7 +369,11 @@ def offline_models_content() -> rx.Component:
                                     OfflineModelsState.lmstudio_models,
                                     lambda model: model_item(model, "lmstudio"),
                                 ),
-                                class_name="bg-white rounded-xl border border-gray-200 overflow-hidden",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "bg-gray-800 rounded-2xl border-2 border-gray-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                    "bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                                ),
                             ),
                             # Connected but no models
                             rx.box(
@@ -293,17 +381,29 @@ def offline_models_content() -> rx.Component:
                                     rx.icon("inbox", size=24, color="#9CA3AF"),
                                     rx.text(
                                         "No models found",
-                                        class_name="font-[dm] text-sm font-medium text-gray-700",
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "font-[dm] text-sm font-medium text-white",
+                                            "font-[dm] text-sm font-medium text-gray-700",
+                                        ),
                                     ),
                                     rx.text(
                                         "Make sure you have models loaded in LM Studio",
-                                        class_name="font-[dm] text-xs text-gray-500",
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "font-[dm] text-xs text-gray-400",
+                                            "font-[dm] text-xs text-gray-500",
+                                        ),
                                     ),
                                     direction="column",
                                     align="center",
                                     class_name="gap-2",
                                 ),
-                                class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "bg-gray-800 rounded-2xl border-2 border-gray-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                    "bg-white rounded-2xl border-2 border-gray-300 p-6 text-center shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                                ),
                             ),
                         ),
                         # Not connected
@@ -312,11 +412,19 @@ def offline_models_content() -> rx.Component:
                                 rx.icon("wifi-off", size=24, color="#EF4444"),
                                 rx.text(
                                     "LM Studio not available",
-                                    class_name="font-[dm] text-sm font-medium text-gray-700",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "font-[dm] text-sm font-medium text-white",
+                                        "font-[dm] text-sm font-medium text-gray-700",
+                                    ),
                                 ),
                                 rx.text(
                                     "Make sure LM Studio is running on localhost:1234",
-                                    class_name="font-[dm] text-xs text-gray-500",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "font-[dm] text-xs text-gray-400",
+                                        "font-[dm] text-xs text-gray-500",
+                                    ),
                                 ),
                                 rx.button(
                                     rx.icon("refresh-cw", size=14),
@@ -324,13 +432,21 @@ def offline_models_content() -> rx.Component:
                                     on_click=OfflineModelsState.refresh_lmstudio_models,
                                     size="1",
                                     variant="outline",
-                                    class_name="mt-2 font-[dm] bg-white hover:bg-gray-50 border-gray-300 text-gray-700",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "mt-2 font-[dm] bg-gray-700 active:bg-gray-600 border-gray-500 text-white rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(75,85,99,0.8)] active:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-600 md:hover:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] md:hover:translate-y-0.5",
+                                        "mt-2 font-[dm] bg-white active:bg-gray-50 border-gray-300 text-gray-700 rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.2)] active:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-50 md:hover:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] md:hover:translate-y-0.5",
+                                    ),
                                 ),
                                 direction="column",
                                 align="center",
                                 class_name="gap-2",
                             ),
-                            class_name="bg-white rounded-xl border border-gray-200 p-6 text-center",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "bg-gray-800 rounded-2xl border-2 border-gray-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-white rounded-2xl border-2 border-gray-300 p-6 text-center shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                            ),
                         ),
                     ),
                 ),
@@ -340,14 +456,29 @@ def offline_models_content() -> rx.Component:
             rx.box(
                 rx.text(
                     "Select a model to start chatting offline",
-                    class_name="font-[dm] text-sm text-gray-500 text-center",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "font-[dm] text-sm text-gray-400 text-center",
+                        "font-[dm] text-sm text-gray-500 text-center",
+                    ),
                 ),
-                class_name="mt-6 pt-4 border-t border-gray-100",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "mt-6 pt-4 border-t border-gray-600",
+                    "mt-6 pt-4 border-t border-gray-100",
+                ),
             ),
             padding="0 24px 32px 24px",
-            background_color="white",
+            background_color=rx.cond(State.is_dark_theme, "#1f2937", "white"),
             border_radius="20px 20px 0 0",
-            box_shadow="0 -4px 20px rgba(0, 0, 0, 0.1)",
+            box_shadow=rx.cond(
+                State.is_dark_theme,
+                "0 -4px 20px rgba(0, 0, 0, 0.3)",
+                "0 -4px 20px rgba(0, 0, 0, 0.1)",
+            ),
+            border=rx.cond(
+                State.is_dark_theme, "3px solid #374151", "3px solid #e5e7eb"
+            ),
             class_name="max-h-[80vh] w-full max-w-md mx-auto md:max-w-lg",
         ),
         # Sheet positioning and animation

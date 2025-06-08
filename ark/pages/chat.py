@@ -40,7 +40,11 @@ def markdown_component_map() -> Dict[str, Any]:
         "p": lambda text: rx.text(text, margin_y="1em", class_name="font-[dm]"),
         "code": lambda text: rx.code(
             text,
-            class_name="font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
+            class_name=rx.cond(
+                State.is_dark_theme,
+                "font-mono text-sm bg-gray-700 text-gray-200 px-1.5 py-0.5 rounded-md border border-gray-600",
+                "font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200"
+            ),
             style={
                 "font-family": "ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace",
                 "font-size": "0.875rem",
@@ -125,7 +129,11 @@ def response_message(message: dict, index: int) -> rx.Component:
             message["role"] == "user",
             rx.text(
                 message["content"],
-                class_name="ml-2 text-xl md:text-4xl tracking-wide",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "ml-2 text-xl md:text-4xl tracking-wide text-white",
+                    "ml-2 text-xl md:text-4xl tracking-wide text-gray-900"
+                ),
                 style={
                     "display": "-webkit-box",
                     "-webkit-line-clamp": "2",
@@ -242,12 +250,20 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 rx.link(
                                     f"[{citation_index + 1}] {citation}",
                                     href=citation,
-                                    class_name="font-[dm] text-sm md:text-lg text-black mb-1",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "font-[dm] text-sm md:text-lg text-white mb-1",
+                                        "font-[dm] text-sm md:text-lg text-black mb-1"
+                                    ),
                                 ),
                                 class_name="mb-1",
                             ),
                         ),
-                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                        ),
                         width="100%",
                         max_width="100%",
                         overflow_x="auto",
@@ -262,9 +278,17 @@ def response_message(message: dict, index: int) -> rx.Component:
                     rx.box(
                         rx.text(
                             f"Tool Name: {message.get('tool_name', '')}",
-                            class_name="font-[dm] text-sm md:text-lg font-semibold text-black",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "font-[dm] text-sm md:text-lg font-semibold text-white",
+                                "font-[dm] text-sm md:text-lg font-semibold text-black"
+                            ),
                         ),
-                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                        ),
                         # width="100%",
                         # max_width="100%",
                         overflow_x="auto",
@@ -280,9 +304,17 @@ def response_message(message: dict, index: int) -> rx.Component:
                         rx.markdown(
                             message["thinking"],
                             component_map=markdown_component_map(),
-                            class_name="font-[dm] text-sm md:text-lg text-black",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "font-[dm] text-sm md:text-lg text-white",
+                                "font-[dm] text-sm md:text-lg text-black"
+                            ),
                         ),
-                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                        ),
                         width="100%",
                         max_width="100%",
                         overflow_x="auto",
@@ -299,9 +331,17 @@ def response_message(message: dict, index: int) -> rx.Component:
                         rx.markdown(
                             message["content"],
                             component_map=markdown_component_map(),
-                            class_name="font-[dm] text-sm md:text-lg",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "font-[dm] text-sm md:text-lg text-white",
+                                "font-[dm] text-sm md:text-lg text-gray-900"
+                            ),
                         ),
-                        class_name="bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                        ),
                         width="100%",
                         max_width="100%",
                         overflow_x="auto",
@@ -326,23 +366,47 @@ def response_message(message: dict, index: int) -> rx.Component:
                         rx.flex(
                             rx.text(
                                 f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
-                                class_name="font-[dm] text-xs font-bold text-black",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-black"
+                                ),
                             ),
-                            class_name="bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
+                            ),
                         ),
                         rx.flex(
                             rx.text(
                                 f"{message.get('total_tokens', 'N/A'):.2f} TOKENS",
-                                class_name="font-[dm] text-xs font-bold text-black",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-black"
+                                ),
                             ),
-                            class_name="bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
+                            ),
                         ),
                         rx.flex(
                             rx.text(
                                 f"{message.get('generation_time', 'N/A'):.2f} SEC",
-                                class_name="font-[dm] text-xs font-bold text-black",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-black"
+                                ),
                             ),
-                            class_name="bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
+                            ),
                         ),
                         class_name="gap-2 md:gap-4 mb-20 ml-2",
                     ),
@@ -364,28 +428,44 @@ def chat_messages():
             rx.vstack(
                 rx.hstack(
                     rx.skeleton(
-                        class_name="h-4 w-32 rounded-full bg-gray-200 dark:bg-gray-700",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "h-4 w-32 rounded-full bg-gray-700",
+                            "h-4 w-32 rounded-full bg-gray-200"
+                        ),
                         loading=State.is_gen,
                     ),
                     class_name="w-full items-start gap-3 px-4 py-2",
                 ),
                 rx.hstack(
                     rx.skeleton(
-                        class_name="h-4 w-full rounded-lg bg-gray-200 dark:bg-gray-700",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "h-4 w-full rounded-lg bg-gray-700",
+                            "h-4 w-full rounded-lg bg-gray-200"
+                        ),
                         loading=State.is_gen,
                     ),
                     class_name="w-full px-4 py-2",
                 ),
                 rx.hstack(
                     rx.skeleton(
-                        class_name="h-4 w-3/4 rounded-lg bg-gray-200 dark:bg-gray-700",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "h-4 w-3/4 rounded-lg bg-gray-700",
+                            "h-4 w-3/4 rounded-lg bg-gray-200"
+                        ),
                         loading=State.is_gen,
                     ),
                     class_name="w-full px-4 py-1",
                 ),
                 rx.hstack(
                     rx.skeleton(
-                        class_name="h-4 w-1/2 rounded-lg bg-gray-200 dark:bg-gray-700",
+                        class_name=rx.cond(
+                            State.is_dark_theme,
+                            "h-4 w-1/2 rounded-lg bg-gray-700",
+                            "h-4 w-1/2 rounded-lg bg-gray-200"
+                        ),
                         loading=State.is_gen,
                     ),
                     class_name="w-full px-4 py-1 pb-4",

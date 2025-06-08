@@ -4,6 +4,7 @@ from ark.components.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
 from ark.pages.chat import chat_nav, chat_messages
 from ark.components.custom.weather import weather_card
+from ark.state import State
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -12,6 +13,11 @@ def index() -> rx.Component:
         navbar(),
         hero(),
         input_section(),
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "min-h-screen bg-gray-900 text-white transition-colors duration-300",
+            "min-h-screen bg-white text-gray-900 transition-colors duration-300"
+        ),
     )
 
 
@@ -21,7 +27,11 @@ def chat() -> rx.Component:
         chat_nav(),
         chat_messages(),
         input_section(),
-        class_name="h-screen flex flex-col",
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "h-screen flex flex-col bg-gray-900 text-white transition-colors duration-300",
+            "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300"
+        ),
     )
 
 
@@ -54,7 +64,11 @@ def changelog() -> rx.Component:
             ],
             class_name="max-w-4xl mx-auto px-4 pb-16 md:pb-20",
         ),
-        class_name="min-h-screen",
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "min-h-screen bg-gray-900 text-white transition-colors duration-300",
+            "min-h-screen bg-white text-gray-900 transition-colors duration-300"
+        ),
     )
 
 
