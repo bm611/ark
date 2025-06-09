@@ -1,175 +1,187 @@
 {
-  "entries": [
-    {
-      "version": "0.5.0",
-      "date": "Jun 06 2025",
-      "is_latest": true,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Function calling scaffold"
-        },
-        {
-          "type": "added",
-          "description": "Openweather API for weather card"
-        }
-      ]
-    },
-    {
-      "version": "0.4.1",
-      "date": "Jun 01 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Turbo option to use cerebras hosted qwen3-32b"
-        },
-        {
-          "type": "added",
-          "description": "Alternate option to extract thinking token from openrouter response"
-        },
-        {
-          "type": "fixed",
-          "description": "Fixed output TPS based on completion_tokens"
-        },
-        {
-          "type": "improved",
-          "description": "Card display in medium screens"
-        }
-      ]
-    },
+	"entries": [
+		{
+			"version": "0.5.0",
+			"date": "Jun 06 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Function calling scaffold"
+				},
+				{
+					"type": "added",
+					"description": "Openweather API for weather card"
+				},
+				{
+					"type": "added",
+					"description": "Dark Theme support"
+				},
+				{
+					"type": "improved",
+					"description": "Code Refactoring for better maintainability"
+				},
+				{
+					"type": "fixed",
+					"description": "Base model updated to gemini 2.5 flash"
+				}
+			]
+		},
+		{
+			"version": "0.4.1",
+			"date": "Jun 01 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Turbo option to use cerebras hosted qwen3-32b"
+				},
+				{
+					"type": "added",
+					"description": "Alternate option to extract thinking token from openrouter response"
+				},
+				{
+					"type": "fixed",
+					"description": "Fixed output TPS based on completion_tokens"
+				},
+				{
+					"type": "improved",
+					"description": "Card display in medium screens"
+				}
+			]
+		},
 
-    {
-      "version": "0.4.2",
-      "date": "May 30 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "improved",
-          "description": "Improved input text and button component"
-        },
-        {
-          "type": "fixed",
-          "description": "Fixed delay in opening offline bottom drawer"
-        }
-      ]
-    },
+		{
+			"version": "0.4.2",
+			"date": "May 30 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "improved",
+					"description": "Improved input text and button component"
+				},
+				{
+					"type": "fixed",
+					"description": "Fixed delay in opening offline bottom drawer"
+				}
+			]
+		},
 
-    {
-      "version": "0.4.1",
-      "date": "May 29 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Added thinking tokens component in chat message view"
-        },
-        {
-          "type": "improved",
-          "description": "Improved button design for sources and thinking"
-        },
-        {
-          "type": "fixed",
-          "description": "Fixed hero section cards for better visual flow"
-        },
-        {
-          "type": "added",
-          "description": "Added collapsible section for citations"
-        }
-      ]
-    },
+		{
+			"version": "0.4.1",
+			"date": "May 29 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Added thinking tokens component in chat message view"
+				},
+				{
+					"type": "improved",
+					"description": "Improved button design for sources and thinking"
+				},
+				{
+					"type": "fixed",
+					"description": "Fixed hero section cards for better visual flow"
+				},
+				{
+					"type": "added",
+					"description": "Added collapsible section for citations"
+				}
+			]
+		},
 
-    {
-      "version": "0.4.0",
-      "date": "May 28 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Added local model support"
-        },
-        {
-          "type": "added",
-          "description": "Token Generation stats"
-        },
-        {
-          "type": "improved",
-          "description": "Chat response page design"
-        },
-        {
-          "type": "added",
-          "description": "Added bottom drawer for selecting local models from Ollama and LM Studio"
-        },
-        {
-          "type": "fixed",
-          "description": "home page and chat UI layout"
-        },
-        {
-          "type": "improved",
-          "description": "Loading placeholder and animation"
-        },
-        {
-          "type": "improved",
-          "description": "UI layout for mobile screen"
-        },
-        {
-          "type": "fixed",
-          "description": "Markdown rendering issues"
-        }
-      ]
-    },
-    {
-      "version": "0.3.0",
-      "date": "May 26 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Enabled web search powered by Perplexity"
-        },
-        {
-          "type": "added",
-          "description": "UI refinements"
-        }
-      ]
-    },
-    {
-      "version": "0.2.0",
-      "date": "May 24 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Openrouter for Unified LLM provider access"
-        },
-        {
-          "type": "added",
-          "description": "Chat reponse with follow up with Gemini"
-        },
-        {
-          "type": "added",
-          "description": "Loading placeholder and animation"
-        }
-      ]
-    },
-    {
-      "version": "0.1.0",
-      "date": "May 23 2025",
-      "is_latest": false,
-      "changes": [
-        {
-          "type": "added",
-          "description": "Responsive design with mobile-first approach"
-        },
-        {
-          "type": "added",
-          "description": "Interactive hero section with feature cards"
-        },
-        {
-          "type": "added",
-          "description": "Navigation bar with branding and GitHub link"
-        }
-      ]
-    }
-  ]
+		{
+			"version": "0.4.0",
+			"date": "May 28 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Added local model support"
+				},
+				{
+					"type": "added",
+					"description": "Token Generation stats"
+				},
+				{
+					"type": "improved",
+					"description": "Chat response page design"
+				},
+				{
+					"type": "added",
+					"description": "Added bottom drawer for selecting local models from Ollama and LM Studio"
+				},
+				{
+					"type": "fixed",
+					"description": "home page and chat UI layout"
+				},
+				{
+					"type": "improved",
+					"description": "Loading placeholder and animation"
+				},
+				{
+					"type": "improved",
+					"description": "UI layout for mobile screen"
+				},
+				{
+					"type": "fixed",
+					"description": "Markdown rendering issues"
+				}
+			]
+		},
+		{
+			"version": "0.3.0",
+			"date": "May 26 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Enabled web search powered by Perplexity"
+				},
+				{
+					"type": "added",
+					"description": "UI refinements"
+				}
+			]
+		},
+		{
+			"version": "0.2.0",
+			"date": "May 24 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Openrouter for Unified LLM provider access"
+				},
+				{
+					"type": "added",
+					"description": "Chat reponse with follow up with Gemini"
+				},
+				{
+					"type": "added",
+					"description": "Loading placeholder and animation"
+				}
+			]
+		},
+		{
+			"version": "0.1.0",
+			"date": "May 23 2025",
+			"is_latest": false,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Responsive design with mobile-first approach"
+				},
+				{
+					"type": "added",
+					"description": "Interactive hero section with feature cards"
+				},
+				{
+					"type": "added",
+					"description": "Navigation bar with branding and GitHub link"
+				}
+			]
+		}
+	]
 }
