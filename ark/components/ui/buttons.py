@@ -39,26 +39,30 @@ def action_button(
                 class_name=rx.cond(
                     is_active,
                     "text-white",
-                    rx.cond(
-                        State.is_dark_theme,
-                        "text-gray-300",
-                        "text-gray-600"
-                    )
+                    rx.cond(State.is_dark_theme, "text-gray-300", "text-gray-600"),
                 ),
             ),
-            rx.text(
-                label,
-                class_name=rx.cond(
-                    is_active,
-                    "font-[dm] text-xs md:text-sm font-semibold text-white",
-                    rx.cond(
-                        State.is_dark_theme,
-                        "font-[dm] text-xs md:text-sm font-semibold text-gray-300",
-                        "font-[dm] text-xs md:text-sm font-semibold text-gray-600"
-                    )
+            rx.cond(
+                label != "",
+                rx.text(
+                    label,
+                    class_name=rx.cond(
+                        is_active,
+                        "font-[dm] text-xs md:text-sm font-semibold text-white",
+                        rx.cond(
+                            State.is_dark_theme,
+                            "font-[dm] text-xs md:text-sm font-semibold text-gray-300",
+                            "font-[dm] text-xs md:text-sm font-semibold text-gray-600",
+                        ),
+                    ),
                 ),
+                None,
             ),
-            class_name="items-center gap-1 md:gap-2",
+            class_name=rx.cond(
+                label != "",
+                "items-center gap-1 md:gap-2",
+                "items-center",
+            ),
         ),
         on_click=on_click,
         class_name=rx.cond(
@@ -81,7 +85,7 @@ def action_button(
                 {
                     "background": "white",
                     "border": "1px solid #d1d5db",
-                }
+                },
             ),
         ),
         **kwargs,
@@ -182,7 +186,7 @@ def gradient_card(
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent text-left",
-                                "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left"
+                                "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
                             ),
                             as_="h2",
                         ),
@@ -191,7 +195,7 @@ def gradient_card(
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "font-[dm] text-sm md:text-lg text-gray-300 font-medium text-left",
-                                "font-[dm] text-sm md:text-lg text-gray-700 font-medium text-left"
+                                "font-[dm] text-sm md:text-lg text-gray-700 font-medium text-left",
                             ),
                         ),
                         class_name="flex-1",
@@ -203,7 +207,7 @@ def gradient_card(
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "bg-gray-800/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
-                    "bg-white/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden"
+                    "bg-white/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
                 ),
             ),
             class_name=f"{background_color} p-[2px] rounded-xl md:rounded-3xl shadow-lg md:shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300",

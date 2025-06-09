@@ -9,7 +9,6 @@ class ModelConfig:
     DEFAULT_PROVIDER = "openrouter"
     CHAT_MODEL = "google/gemini-2.5-flash-preview"
     SEARCH_MODEL = "perplexity/sonar"
-    TURBO_MODEL = "qwen/qwen3-32b"
 
 
 class State(rx.State):
@@ -127,10 +126,6 @@ class State(rx.State):
                 return ModelConfig.SEARCH_MODEL
             # For offline providers, use their selected model
             return self.selected_model if self.selected_model else None
-        elif self.selected_action == "Turbo":
-            if self.selected_provider == ModelConfig.DEFAULT_PROVIDER:
-                return ModelConfig.TURBO_MODEL
-            return self.selected_model if self.selected_model else None
         else:
             # Regular chat - use selected model
             return self.selected_model if self.selected_model else None
@@ -157,18 +152,6 @@ class State(rx.State):
             self.selected_provider = ModelConfig.DEFAULT_PROVIDER
             self.selected_model = ModelConfig.SEARCH_MODEL
 
-    def handle_turbo_click(self):
-        """Handle turbo button click - toggle action and set/reset model accordingly"""
-        if self.selected_action == "Turbo":
-            # Deactivating turbo - reset to defaults
-            self.selected_action = ""
-            self.selected_provider = ModelConfig.DEFAULT_PROVIDER
-            self.selected_model = ModelConfig.CHAT_MODEL
-        else:
-            # Activating turbo - set turbo model
-            self.selected_action = "Turbo"
-            self.selected_provider = ModelConfig.DEFAULT_PROVIDER
-            self.selected_model = ModelConfig.TURBO_MODEL
 
     def toggle_theme(self):
         """Toggle between light and dark theme"""
