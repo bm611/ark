@@ -140,7 +140,7 @@ class State(rx.State):
             # Deactivating the current action - reset to defaults
             self.selected_action = ""
             self.selected_provider = ModelConfig.DEFAULT_PROVIDER
-            self.selected_model = ModelConfig.GENERAL_CHAT_MODEL
+            self.selected_model = ModelConfig.CHAT_MODEL
         else:
             self.selected_action = action
 
