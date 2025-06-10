@@ -1,9 +1,24 @@
 {
 	"entries": [
 		{
+			"version": "0.5.1",
+			"date": "Jun 10 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Image input and utility for converting to base64 encoding"
+				},
+				{
+					"type": "fixed",
+					"description": "Issue with thinking token for offline model"
+				}
+			]
+		},
+		{
 			"version": "0.5.0",
 			"date": "Jun 06 2025",
-			"is_latest": true,
+			"is_latest": false,
 			"changes": [
 				{
 					"type": "added",

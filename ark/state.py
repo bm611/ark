@@ -2,6 +2,7 @@ import reflex as rx
 from typing import List, Optional
 from ark.models import WeatherData, ChatMessage
 from ark.handlers.message_handler import message_handler
+import base64
 
 
 # Model Configuration Constants
@@ -17,6 +18,7 @@ class State(rx.State):
     is_gen: bool = False
     selected_action: str = ""
     is_tool_use: bool = False
+    img: list[str] = []
 
     # Thinking section expansion state
     thinking_expanded: dict[int, bool] = {}
@@ -51,7 +53,24 @@ class State(rx.State):
 
     def handle_generation(self):
         self.is_gen = True
-        self.messages.append({"role": "user", "content": self.prompt})
+        
+        # Create content array starting with text
+        content = [{"type": "text", "text": self.prompt}]
+        
+        # Add base64 images if any are uploaded
+        if self.img:
+            base64_images = self.base64_imgs
+            for image_data_url in base64_images:
+                content.append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": image_data_url
+                    }
+                })
+        
+        # Create user message
+        user_message = {"role": "user", "content": content, "display_text": self.prompt}
+        self.messages.append(user_message)
         self.prompt = ""
 
     def reset_chat(self):
@@ -118,6 +137,9 @@ class State(rx.State):
 
         # Add the message to the conversation
         self.messages.append(message_dict)
+        
+        # Clear uploaded images after sending
+        self.img = []
 
     def _get_model_for_action(self) -> str:
         """Get the appropriate model based on the selected action."""
@@ -152,7 +174,64 @@ class State(rx.State):
             self.selected_provider = ModelConfig.DEFAULT_PROVIDER
             self.selected_model = ModelConfig.SEARCH_MODEL
 
-
     def toggle_theme(self):
         """Toggle between light and dark theme"""
         self.is_dark_theme = not self.is_dark_theme
+
+    @rx.var
+    def base64_imgs(self) -> list[str]:
+        """Return a list of base64 data URLs for all uploaded images."""
+        base64_list = []
+        upload_dir = rx.get_upload_dir()
+        for filename in self.img:
+            image_path = upload_dir / filename
+            try:
+                base64_list.append(self.encode_image_to_base64(str(image_path)))
+            except Exception:
+                # If file not found or error, skip
+                continue
+        return base64_list
+
+
+
+    @staticmethod
+    def encode_image_to_base64(image_path: str) -> str:
+        """Encode an image file to a base64 data URL.
+
+        Args:
+            image_path: The path to the image file.
+
+        Returns:
+            The base64 data URL of the image.
+        """
+        with open(image_path, "rb") as image_file:
+            encoded = base64.b64encode(image_file.read()).decode("utf-8")
+        # Guess MIME type from extension (simple version)
+        if image_path.lower().endswith(".png"):
+            mime = "image/png"
+        else:
+            mime = "image/jpeg"
+        return f"data:{mime};base64,{encoded}"
+
+    @rx.event
+    async def handle_upload(self, files: list[rx.UploadFile]):
+        """Handle the upload of file(s).
+
+        Args:
+            files: The uploaded files.
+        """
+        for file in files:
+            upload_data = await file.read()
+            outfile = rx.get_upload_dir() / file.name
+
+            # Save the file.
+            with outfile.open("wb") as file_object:
+                file_object.write(upload_data)
+
+            # Update the img var.
+            self.img.append(file.name)
+
+    @rx.event
+    def clear_images(self):
+        """Clear the uploaded images list."""
+        self.img = []

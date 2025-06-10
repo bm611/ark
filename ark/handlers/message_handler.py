@@ -114,7 +114,11 @@ class MessageHandler:
     def _extract_thinking(self, response_text: str, response) -> Tuple[Optional[str], str]:
         """Extract thinking content and actual response."""
         thinking_content = None
-        actual_response = response_text
+        actual_response = response_text or ""
+        
+        # Handle None response_text
+        if response_text is None:
+            return thinking_content, actual_response
         
         # Method 1: Check for thinking tokens in the format <think>...</think>
         think_pattern = r"<think>(.*?)</think>"

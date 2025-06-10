@@ -128,7 +128,7 @@ def response_message(message: dict, index: int) -> rx.Component:
         rx.cond(
             message["role"] == "user",
             rx.text(
-                message["content"],
+                message.get("display_text", message["content"]),
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "ml-2 text-xl md:text-4xl tracking-wide text-white",
