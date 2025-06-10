@@ -3,8 +3,8 @@ from ark.components.nav import navbar
 from ark.components.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
 from ark.pages.chat import chat_nav, chat_messages
-from ark.components.custom.weather import weather_card
 from ark.state import State
+from ark.components.upload import upload_component
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -16,7 +16,7 @@ def index() -> rx.Component:
         class_name=rx.cond(
             State.is_dark_theme,
             "min-h-screen bg-gray-900 text-white transition-colors duration-300",
-            "min-h-screen bg-white text-gray-900 transition-colors duration-300"
+            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )
 
@@ -30,7 +30,7 @@ def chat() -> rx.Component:
         class_name=rx.cond(
             State.is_dark_theme,
             "h-screen flex flex-col bg-gray-900 text-white transition-colors duration-300",
-            "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300"
+            "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300",
         ),
     )
 
@@ -38,7 +38,7 @@ def chat() -> rx.Component:
 @rx.page(route="/demo", title="demo")
 def demo() -> rx.Component:
     return rx.container(
-        weather_card(),
+        upload_component(),
     )
 
 
@@ -67,7 +67,7 @@ def changelog() -> rx.Component:
         class_name=rx.cond(
             State.is_dark_theme,
             "min-h-screen bg-gray-900 text-white transition-colors duration-300",
-            "min-h-screen bg-white text-gray-900 transition-colors duration-300"
+            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )
 
