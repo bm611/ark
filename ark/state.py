@@ -3,6 +3,7 @@ from typing import List, Optional
 from ark.models import WeatherData, ChatMessage
 from ark.handlers.message_handler import message_handler
 import base64
+import os
 
 
 # Model Configuration Constants
@@ -53,21 +54,18 @@ class State(rx.State):
 
     def handle_generation(self):
         self.is_gen = True
-        
+
         # Create content array starting with text
         content = [{"type": "text", "text": self.prompt}]
-        
+
         # Add base64 images if any are uploaded
         if self.img:
             base64_images = self.base64_imgs
             for image_data_url in base64_images:
-                content.append({
-                    "type": "image_url",
-                    "image_url": {
-                        "url": image_data_url
-                    }
-                })
-        
+                content.append(
+                    {"type": "image_url", "image_url": {"url": image_data_url}}
+                )
+
         # Create user message
         user_message = {"role": "user", "content": content, "display_text": self.prompt}
         self.messages.append(user_message)
@@ -137,7 +135,7 @@ class State(rx.State):
 
         # Add the message to the conversation
         self.messages.append(message_dict)
-        
+
         # Clear uploaded images after sending
         self.img = []
 
@@ -187,12 +185,11 @@ class State(rx.State):
             image_path = upload_dir / filename
             try:
                 base64_list.append(self.encode_image_to_base64(str(image_path)))
+                os.remove(image_path)
             except Exception:
                 # If file not found or error, skip
                 continue
         return base64_list
-
-
 
     @staticmethod
     def encode_image_to_base64(image_path: str) -> str:
