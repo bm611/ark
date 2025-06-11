@@ -181,37 +181,153 @@ def hero():
         rx.box(
             rx.flex(
                 rx.box(
-                    rx.heading(
-                        "Welcome to Ark!",
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-white",
-                            "text-3xl md:text-6xl font-bold mb-8 md:mb-12 tracking-wide text-gray-900",
+                    rx.box(
+                        rx.heading(
+                            "Meet Ark: Your AI Chat Companion",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "text-3xl md:text-6xl font-bold mb-3 md:mb-4 tracking-wide text-white animate-fade-in-up px-8 md:px-0 leading-tight",
+                                "text-3xl md:text-6xl font-bold mb-3 md:mb-4 tracking-wide text-gray-900 animate-fade-in-up px-8 md:px-0 leading-tight",
+                            ),
+                            as_="h1",
                         ),
-                        as_="h1",
+                        rx.text(
+                            "Chat, search, and learn—smarter, faster, anywhere.",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-300 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
+                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-700 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
+                            ),
+                        ),
+                        rx.box(
+                            rx.vstack(
+                                rx.text(
+                                    "Try these examples:",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "text-sm sm:text-base font-semibold text-gray-300 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
+                                        "text-sm sm:text-base font-semibold text-gray-600 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
+                                    ),
+                                ),
+                                rx.flex(
+                                    rx.button(
+                                        rx.vstack(
+                                            rx.box(
+                                                rx.icon(
+                                                    "message-circle",
+                                                    size=20,
+                                                    color=rx.cond(
+                                                        State.is_dark_theme,
+                                                        "#60a5fa",
+                                                        "#3b82f6",
+                                                    ),
+                                                ),
+                                                class_name="mb-2",
+                                            ),
+                                            rx.text(
+                                                "What's the weather?",
+                                                class_name="font-medium text-center leading-tight",
+                                            ),
+                                            spacing="1",
+                                            align="center",
+                                        ),
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-blue-50/50 border border-gray-200/60 hover:border-blue-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
+                                        ),
+                                        on_click=[
+                                            State.set_prompt(
+                                                "What's the weather in New York?"
+                                            ),
+                                            rx.redirect("/chat"),
+                                            State.handle_generation,
+                                            State.send_message,
+                                        ],
+                                    ),
+                                    rx.button(
+                                        rx.vstack(
+                                            rx.box(
+                                                rx.icon(
+                                                    "globe",
+                                                    size=20,
+                                                    color=rx.cond(
+                                                        State.is_dark_theme,
+                                                        "#22c55e",
+                                                        "#16a34a",
+                                                    ),
+                                                ),
+                                                class_name="mb-2",
+                                            ),
+                                            rx.text(
+                                                "Search for latest AI news",
+                                                class_name="font-medium text-center leading-tight",
+                                            ),
+                                            spacing="1",
+                                            align="center",
+                                        ),
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-green-50/50 border border-gray-200/60 hover:border-green-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
+                                        ),
+                                        on_click=[
+                                            State.set_prompt(
+                                                "Search for latest AI news"
+                                            ),
+                                            State.handle_search_click,
+                                            rx.redirect("/chat"),
+                                            State.handle_generation,
+                                            State.send_message,
+                                        ],
+                                    ),
+                                    rx.button(
+                                        rx.vstack(
+                                            rx.box(
+                                                rx.icon(
+                                                    "book-open",
+                                                    size=20,
+                                                    color=rx.cond(
+                                                        State.is_dark_theme,
+                                                        "#a855f7",
+                                                        "#9333ea",
+                                                    ),
+                                                ),
+                                                class_name="mb-2",
+                                            ),
+                                            rx.text(
+                                                "Explain quantum computing",
+                                                class_name="font-medium text-center leading-tight",
+                                            ),
+                                            spacing="1",
+                                            align="center",
+                                        ),
+                                        class_name=rx.cond(
+                                            State.is_dark_theme,
+                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-purple-50/50 border border-gray-200/60 hover:border-purple-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
+                                        ),
+                                        on_click=[
+                                            State.set_prompt(
+                                                "Explain quantum computing"
+                                            ),
+                                            rx.redirect("/chat"),
+                                            State.handle_generation,
+                                            State.send_message,
+                                        ],
+                                    ),
+                                    wrap="wrap",
+                                    spacing="3",
+                                    justify="center",
+                                    class_name="gap-3 sm:gap-4 max-w-3xl mx-auto px-3 sm:px-4",
+                                ),
+                                spacing="2",
+                                align="center",
+                            ),
+                            class_name="mb-6 sm:mb-8",
+                        ),
+                        class_name="text-center relative",
                     ),
-                    rx.flex(
-                        gradient_card(
-                            title="Chat",
-                            description="Great for everyday conversations.",
-                            image_src="/go_pop.png",
-                            background_color="bg-amber-200",
-                        ),
-                        gradient_card(
-                            title="Search",
-                            description="Get real-time information with AI-powered search.",
-                            image_src="/g_search.png",
-                            background_color="bg-sky-200",
-                        ),
-                        gradient_card(
-                            title="Learn",
-                            description="Explore topics in-depth with an AI learning companion.",
-                            image_src="/g_learn.png",
-                            background_color="bg-purple-200",
-                        ),
-                        class_name="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-8 max-w-sm md:max-w-6xl mx-auto px-2 md:px-4",
-                    ),
-                    class_name="text-center",
                 ),
                 direction="column",
                 align="center",
@@ -219,6 +335,40 @@ def hero():
             ),
             offline_models_overlay(),
             offline_models_content(),
-            class_name="flex items-center justify-center min-h-[60vh] pb-4",
+            rx.html(
+                """
+                <style>
+                .example-prompt-card {
+                    min-height: 120px;
+                    min-width: 180px;
+                    max-width: 200px;
+                    flex: 1;
+                    backdrop-filter: blur(10px);
+                }
+
+                @media (max-width: 640px) {
+                    .example-prompt-card {
+                        min-width: 140px;
+                        max-width: 150px;
+                        min-height: 85px;
+                        font-size: 0.75rem;
+                    }
+                }
+
+                @media (min-width: 641px) and (max-width: 768px) {
+                    .example-prompt-card {
+                        min-width: 160px;
+                        max-width: 170px;
+                        min-height: 95px;
+                    }
+                }
+
+                .example-prompt-card:active {
+                    transform: scale(0.98);
+                }
+                </style>
+                """
+            ),
+            class_name="flex items-center justify-center min-h-[70vh] pb-4 pt-8 md:pt-0 relative overflow-hidden",
         ),
     )

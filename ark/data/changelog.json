@@ -1,9 +1,36 @@
 {
 	"entries": [
 		{
+			"version": "0.5.2",
+			"date": "Jun 11 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "improved",
+					"description": "Enhanced hero section with interactive example prompts"
+				},
+				{
+					"type": "improved",
+					"description": "Mobile-optimized layout with better spacing and typography"
+				},
+				{
+					"type": "improved",
+					"description": "Updated navigation logo with complementary blue color scheme"
+				},
+				{
+					"type": "added",
+					"description": "Card-style example prompts with hover animations and theme-aware styling"
+				},
+				{
+					"type": "improved",
+					"description": "Responsive design improvements for mobile devices"
+				}
+			]
+		},
+		{
 			"version": "0.5.1",
 			"date": "Jun 10 2025",
-			"is_latest": true,
+			"is_latest": false,
 			"changes": [
 				{
 					"type": "added",

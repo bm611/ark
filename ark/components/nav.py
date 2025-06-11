@@ -7,15 +7,29 @@ def navbar() -> rx.Component:
         rx.hstack(
             rx.hstack(
                 rx.button(
+                    rx.icon("ship"),
                     rx.text(
                         "Ark",
                         class_name="text-xl md:text-3xl font-bold mt-1 text-gray-50",
                     ),
-                    class_name="px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl transition-all duration-200 shadow-[0px_4px_0px_0px_rgba(251,146,60,0.6)] hover:shadow-[0px_6px_0px_0px_rgba(251,146,60,0.8)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(251,146,60,0.6)] active:translate-y-1",
-                    style={
-                        "background": "linear-gradient(135deg, rgba(253,186,116,0.8) 0%, rgba(251,146,60,0.8) 50%, rgba(249,115,22,0.8) 100%)",
-                        "border": "2px solid rgba(249,115,22,0.7)",
-                    },
+                    class_name="px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl transition-all duration-200 shadow-[0px_4px_0px_0px_rgba(30,41,59,0.6)] hover:shadow-[0px_6px_0px_0px_rgba(30,41,59,0.8)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(30,41,59,0.6)] active:translate-y-1",
+                    style=rx.cond(
+                        State.is_dark_theme,
+                        {
+                            "background": "linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%)",
+                            "border": "2px solid rgba(59,130,246,0.8)",
+                            "backdropFilter": "blur(12px) saturate(180%)",
+                            "WebkitBackdropFilter": "blur(12px) saturate(180%)",
+                            "backgroundColor": "rgba(255,255,255,0.10)",
+                        },
+                        {
+                            "background": "linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%)",
+                            "border": "2px solid rgba(30,64,175,0.8)",
+                            "backdropFilter": "blur(12px) saturate(180%)",
+                            "WebkitBackdropFilter": "blur(12px) saturate(180%)",
+                            "backgroundColor": "rgba(255,255,255,0.10)",
+                        },
+                    ),
                     on_click=rx.redirect("/"),
                 ),
                 class_name="flex justify-center items-center cursor-pointer",
