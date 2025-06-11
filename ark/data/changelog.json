@@ -7,11 +7,15 @@
 			"changes": [
 				{
 					"type": "added",
-					"description": "Image input and utility for converting to base64 encoding"
+					"description": "Image attachment support"
 				},
 				{
 					"type": "fixed",
 					"description": "Issue with thinking token for offline model"
+				},
+				{
+					"type": "improved",
+					"description": "Code block formatting"
 				}
 			]
 		},

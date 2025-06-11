@@ -140,7 +140,10 @@ def model_item(model_name: str, provider: str) -> rx.Component:
             align="center",
             class_name="w-full gap-3",
         ),
-        on_click=lambda: OfflineModelsState.select_model(model_name),
+        on_click=[
+            lambda: OfflineModelsState.select_model(model_name),
+            rx.toast(model_name),
+        ],
         class_name=rx.cond(
             State.is_dark_theme,
             "p-3 hover:bg-gray-700 cursor-pointer transition-colors duration-150 border-b border-gray-600 last:border-b-0",

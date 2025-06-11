@@ -3,7 +3,7 @@ from typing import Dict, Any
 from ark.state import State
 from ark.components.custom.weather import weather_card
 from ark.components.ui.buttons import expandable_section_button
-from ark.components.ui.layout import navigation_header
+from ark.components.ui.layout import navigation_header, loading_skeleton
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -43,7 +43,7 @@ def markdown_component_map() -> Dict[str, Any]:
             class_name=rx.cond(
                 State.is_dark_theme,
                 "font-mono text-sm bg-gray-700 text-gray-200 px-1.5 py-0.5 rounded-md border border-gray-600",
-                "font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200"
+                "font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
             ),
             style={
                 "font-family": "ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace",
@@ -53,28 +53,49 @@ def markdown_component_map() -> Dict[str, Any]:
                 "white-space": "pre-wrap",
             },
         ),
-        "codeblock": lambda text, **props: rx.code_block(
-            text,
-            **props,
-            theme=rx.code_block.themes.vsc_dark_plus,
-            margin_y="1em",
-            border_radius="16px",
-            width="100%",
-            max_width="100%",
-            overflow_x="auto",
-            custom_style={
-                "font-size": "12px",
-                "font_family": "Inter",
-                "white-space": "pre",
-                "word-wrap": "break-word",
-                "overflow-wrap": "break-word",
-            },
-            css={
-                "@media (max-width: 768px)": {
-                    "font-size": "8px",
-                    "padding": "8px",
+        "codeblock": lambda text, **props: rx.box(
+            # Header section with language and copy button
+            rx.box(
+                rx.text(
+                    props.get("language", "text"),
+                    size="1",
+                    class_name="text-gray-300 font-mono text-xs font-semibold",
+                ),
+                rx.button(
+                    rx.icon("copy", size=14),
+                    rx.text("Copy", class_name="ml-1 text-xs font-mono"),
+                    on_click=[rx.set_clipboard(text), rx.toast("Copied!")],
+                    variant="ghost",
+                    size="1",
+                    class_name="text-gray-300 hover:text-white hover:bg-gray-600 px-2 py-1 rounded transition-colors duration-200",
+                ),
+                class_name="flex justify-between items-center px-4 py-3 bg-gray-700 rounded-t-lg border-b border-gray-600",
+            ),
+            # Code block section
+            rx.code_block(
+                text,
+                theme=rx.code_block.themes.vsc_dark_plus,
+                width="100%",
+                max_width="100%",
+                overflow_x="auto",
+                custom_style={
+                    "font-size": "12px",
+                    "font_family": "Inter",
+                    "white-space": "pre",
+                    "word-wrap": "break-word",
+                    "overflow-wrap": "break-word",
+                    "border-radius": "0",
+                    "margin": "0",
                 },
-            },
+                css={
+                    "@media (max-width: 768px)": {
+                        "font-size": "10px",
+                        "padding": "12px",
+                    },
+                },
+            ),
+            margin_y="1em",
+            class_name="bg-gray-800 rounded-lg shadow-lg border border-gray-600 overflow-hidden",
         ),
         "a": lambda text, **props: rx.link(
             text, **props, color="orange", _hover={"color": "red"}
@@ -132,7 +153,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "ml-2 text-xl md:text-4xl tracking-wide text-white",
-                    "ml-2 text-xl md:text-4xl tracking-wide text-gray-900"
+                    "ml-2 text-xl md:text-4xl tracking-wide text-gray-900",
                 ),
                 style={
                     "display": "-webkit-box",
@@ -253,7 +274,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                                     class_name=rx.cond(
                                         State.is_dark_theme,
                                         "font-[dm] text-sm md:text-lg text-white mb-1",
-                                        "font-[dm] text-sm md:text-lg text-black mb-1"
+                                        "font-[dm] text-sm md:text-lg text-black mb-1",
                                     ),
                                 ),
                                 class_name="mb-1",
@@ -262,7 +283,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                         class_name=rx.cond(
                             State.is_dark_theme,
                             "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
                         max_width="100%",
@@ -281,13 +302,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "font-[dm] text-sm md:text-lg font-semibold text-white",
-                                "font-[dm] text-sm md:text-lg font-semibold text-black"
+                                "font-[dm] text-sm md:text-lg font-semibold text-black",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
                             "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         # width="100%",
                         # max_width="100%",
@@ -307,13 +328,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "font-[dm] text-sm md:text-lg text-white",
-                                "font-[dm] text-sm md:text-lg text-black"
+                                "font-[dm] text-sm md:text-lg text-black",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
                             "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
                         max_width="100%",
@@ -334,13 +355,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "font-[dm] text-sm md:text-lg text-white",
-                                "font-[dm] text-sm md:text-lg text-gray-900"
+                                "font-[dm] text-sm md:text-lg text-gray-900",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
                             "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4"
+                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
                         max_width="100%",
@@ -369,13 +390,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 class_name=rx.cond(
                                     State.is_dark_theme,
                                     "font-[dm] text-xs font-bold text-white",
-                                    "font-[dm] text-xs font-bold text-black"
+                                    "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
-                                "bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
+                                "bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
                         rx.flex(
@@ -384,13 +405,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 class_name=rx.cond(
                                     State.is_dark_theme,
                                     "font-[dm] text-xs font-bold text-white",
-                                    "font-[dm] text-xs font-bold text-black"
+                                    "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
-                                "bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
+                                "bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
                         rx.flex(
@@ -399,13 +420,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 class_name=rx.cond(
                                     State.is_dark_theme,
                                     "font-[dm] text-xs font-bold text-white",
-                                    "font-[dm] text-xs font-bold text-black"
+                                    "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
                                 "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
-                                "bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]"
+                                "bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
                         class_name="gap-2 md:gap-4 mb-20 ml-2",
@@ -425,53 +446,7 @@ def chat_messages():
         ),
         rx.cond(
             State.is_gen,
-            rx.vstack(
-                rx.hstack(
-                    rx.skeleton(
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "h-4 w-32 rounded-full bg-gray-700",
-                            "h-4 w-32 rounded-full bg-gray-200"
-                        ),
-                        loading=State.is_gen,
-                    ),
-                    class_name="w-full items-start gap-3 px-4 py-2",
-                ),
-                rx.hstack(
-                    rx.skeleton(
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "h-4 w-full rounded-lg bg-gray-700",
-                            "h-4 w-full rounded-lg bg-gray-200"
-                        ),
-                        loading=State.is_gen,
-                    ),
-                    class_name="w-full px-4 py-2",
-                ),
-                rx.hstack(
-                    rx.skeleton(
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "h-4 w-3/4 rounded-lg bg-gray-700",
-                            "h-4 w-3/4 rounded-lg bg-gray-200"
-                        ),
-                        loading=State.is_gen,
-                    ),
-                    class_name="w-full px-4 py-1",
-                ),
-                rx.hstack(
-                    rx.skeleton(
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "h-4 w-1/2 rounded-lg bg-gray-700",
-                            "h-4 w-1/2 rounded-lg bg-gray-200"
-                        ),
-                        loading=State.is_gen,
-                    ),
-                    class_name="w-full px-4 py-1 pb-4",
-                ),
-                class_name="w-full space-y-1 py-2 animate-pulse",
-            ),
+            loading_skeleton(),
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
     )
