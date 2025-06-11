@@ -6,10 +6,19 @@ def navbar() -> rx.Component:
     return rx.box(
         rx.hstack(
             rx.hstack(
-                rx.icon("zap", size=24, class_name="md:h-8 md:w-8"),
-                rx.text("Ark", class_name="text-3xl md:text-4xl"),
-                class_name="flex justify-center items-center gap-1 cursor-pointer",
-                on_click=rx.redirect("/"),
+                rx.button(
+                    rx.text(
+                        "Ark",
+                        class_name="text-xl md:text-3xl font-bold mt-1 text-gray-50",
+                    ),
+                    class_name="px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl transition-all duration-200 shadow-[0px_4px_0px_0px_rgba(251,146,60,0.6)] hover:shadow-[0px_6px_0px_0px_rgba(251,146,60,0.8)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(251,146,60,0.6)] active:translate-y-1",
+                    style={
+                        "background": "linear-gradient(135deg, rgba(253,186,116,0.8) 0%, rgba(251,146,60,0.8) 50%, rgba(249,115,22,0.8) 100%)",
+                        "border": "2px solid rgba(249,115,22,0.7)",
+                    },
+                    on_click=rx.redirect("/"),
+                ),
+                class_name="flex justify-center items-center cursor-pointer",
             ),
             rx.hstack(
                 rx.button(
