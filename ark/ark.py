@@ -73,7 +73,7 @@ def changelog() -> rx.Component:
 
 
 style = {
-    "font_family": "Bouge",
+    "font_family": "styrene",
 }
 
 

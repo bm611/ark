@@ -90,6 +90,18 @@ def model_badge(model_name: str, color_class: str = "bg-pink-300") -> rx.Compone
 def loading_skeleton() -> rx.Component:
     """Reusable loading skeleton component."""
     return rx.vstack(
+        # Shimmer text
+        rx.hstack(
+            rx.text(
+                "Generating Response...",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-lg font-semibold text-gray-300 bg-gradient-to-r from-gray-300 via-white to-gray-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                    "text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                ),
+            ),
+            class_name="w-full justify-left px-4 py-4",
+        ),
         rx.hstack(
             rx.skeleton(
                 class_name=rx.cond(
@@ -135,6 +147,12 @@ def loading_skeleton() -> rx.Component:
             class_name="w-full px-4 py-1 pb-4",
         ),
         class_name="w-full space-y-1 py-2 animate-pulse",
+        style={
+            "@keyframes shimmer": {
+                "0%": {"background-position": "-200% 0"},
+                "100%": {"background-position": "200% 0"},
+            }
+        },
     )
 
 

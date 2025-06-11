@@ -1,11 +1,11 @@
 @font-face {
-	font-family: Bouge;
-	src: url('/fonts/bogue-black.ttf') format('truetype');
+	font-family: dm;
+	src: url('/fonts/DMSans.ttf') format('truetype');
 }
 
 @font-face {
-	font-family: dm;
-	src: url('/fonts/DMSans.ttf') format('truetype');
+	font-family: styrene;
+	src: url('/fonts/Styrene-Regular.otf') format('opentype');
 }
 
 /* Hide scrollbar for webkit browsers (Chrome, Safari) */
@@ -15,6 +15,6 @@
 
 /* Hide scrollbar for all browsers */
 .hide-scrollbar {
-	-ms-overflow-style: none;  /* IE and Edge */
-	scrollbar-width: none;  /* Firefox */
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
 }

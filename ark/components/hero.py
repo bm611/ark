@@ -68,8 +68,8 @@ def input_section():
                         value=State.prompt,
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "w-full font-[dm] mx-auto text-white text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 px-4 md:px-6",
-                            "w-full font-[dm] mx-auto text-gray-900 text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 px-4 md:px-6",
+                            "w-full mx-auto text-white text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 px-4 md:px-6",
+                            "w-full mx-auto text-gray-900 text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 px-4 md:px-6",
                         ),
                         placeholder="Ask Anything...",
                         style={

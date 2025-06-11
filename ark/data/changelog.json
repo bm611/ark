@@ -16,6 +16,14 @@
 				{
 					"type": "improved",
 					"description": "Code block formatting"
+				},
+				{
+					"type": "improved",
+					"description": "Updated font for better readability"
+				},
+				{
+					"type": "added",
+					"description": "Loading message and animation for chat response"
 				}
 			]
 		},
