@@ -234,7 +234,7 @@ def hero():
                                                 class_name="mb-2",
                                             ),
                                             rx.text(
-                                                "What's the weather?",
+                                                "Python programming tips",
                                                 class_name="font-medium text-center leading-tight",
                                             ),
                                             spacing="1",
@@ -247,7 +247,7 @@ def hero():
                                         ),
                                         on_click=[
                                             State.set_prompt(
-                                                "What's the weather in New York?"
+                                                "Give me some Python programming tips with code examples."
                                             ),
                                             rx.redirect("/chat"),
                                             State.handle_generation,
@@ -269,7 +269,7 @@ def hero():
                                                 class_name="mb-2",
                                             ),
                                             rx.text(
-                                                "Search for latest AI news",
+                                                "What's the latest news?",
                                                 class_name="font-medium text-center leading-tight",
                                             ),
                                             spacing="1",
@@ -282,7 +282,7 @@ def hero():
                                         ),
                                         on_click=[
                                             State.set_prompt(
-                                                "Search for latest AI news"
+                                                "What's the latest news in US, World, Technology & Science?"
                                             ),
                                             State.handle_search_click,
                                             rx.redirect("/chat"),

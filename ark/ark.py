@@ -5,6 +5,7 @@ from ark.pages.changelog import changelog_entry, changelog_header, load_changelo
 from ark.pages.chat import chat_nav, chat_messages
 from ark.state import State
 from ark.components.upload import upload_component
+import os
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -86,5 +87,11 @@ app = rx.App(
     head_components=[
         rx.el.link(rel="manifest", href="/manifest.json"),
         rx.el.meta(name="theme-color", content="#ffffff"),
+        # for website analytics
+        rx.script(
+            src="https://cloud.umami.is/script.js",
+            defer=True,
+            custom_attrs={"data-website-id": os.environ.get("UMAMI_WEBSITE_ID", "")},
+        ),
     ],
 )

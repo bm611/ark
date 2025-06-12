@@ -17,9 +17,9 @@ class ProviderManager:
         self.tool_manager = tool_manager
         self._initialize_providers()
         self._default_system_message = (
-            "You are a helpful assistant. You have access to a weather tool. "
-            "Only use it when users specifically ask about weather. "
-            "For all other topics, respond normally without using any tools."
+            "You are a helpful assistant. Answer all questions directly and comprehensively. "
+            "When you have access to tools, use them only when necessary to provide accurate information. "
+            "Do not mention or reference the availability of tools in your responses."
         )
     
     def _initialize_providers(self):

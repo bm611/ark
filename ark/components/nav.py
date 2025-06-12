@@ -10,9 +10,17 @@ def navbar() -> rx.Component:
                     rx.icon("ship"),
                     rx.text(
                         "Ark",
-                        class_name="text-xl md:text-3xl font-bold mt-1 text-gray-50",
+                        class_name="text-xl md:text-2xl lg:text-xl xl:text-3xl font-bold mt-1 text-gray-50",
                     ),
-                    class_name="px-4 py-4 md:px-6 md:py-8 rounded-xl md:rounded-3xl transition-all duration-200 shadow-[0px_4px_0px_0px_rgba(30,41,59,0.6)] hover:shadow-[0px_6px_0px_0px_rgba(30,41,59,0.8)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(30,41,59,0.6)] active:translate-y-1",
+                    class_name=(
+                        "px-4 py-4 rounded-xl transition-all duration-200 "
+                        "shadow-[0px_4px_0px_0px_rgba(30,41,59,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgba(30,41,59,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(30,41,59,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-3xl"
+                    ),
                     style=rx.cond(
                         State.is_dark_theme,
                         {
@@ -42,7 +50,13 @@ def navbar() -> rx.Component:
                         size=18,
                     ),
                     rx.text("Changelog", class_name="hidden md:block"),
-                    class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 md:shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] md:hover:shadow-[0px_6px_0px_0px_rgb(147,51,234,0.8)] md:hover:brightness-110 md:active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] md:active:translate-y-1",
+                    class_name=(
+                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                        "shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                    ),
                     style={
                         "background": "linear-gradient(135deg, rgba(168,85,247,0.7) 0%, rgba(147,51,234,0.7) 50%, rgba(124,58,237,0.7) 100%)",
                         "border": "1px solid rgba(124,58,237,0.7)",
@@ -56,7 +70,13 @@ def navbar() -> rx.Component:
                         size=18,
                     ),
                     rx.text("Github", class_name="hidden md:block"),
-                    class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 md:shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] md:hover:shadow-[0px_6px_0px_0px_rgb(59,130,246,0.8)] md:hover:brightness-110 md:active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] md:active:translate-y-1",
+                    class_name=(
+                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                        "shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                    ),
                     style={
                         "background": "linear-gradient(135deg, rgba(96,165,250,0.7) 0%, rgba(59,130,246,0.7) 50%, rgba(37,99,235,0.7) 100%)",
                         "border": "1px solid rgba(37,99,235,0.7)",
@@ -71,8 +91,13 @@ def navbar() -> rx.Component:
                         rx.icon("sun", size=18, class_name="text-white"),
                         rx.icon("moon", size=18, class_name="text-white"),
                     ),
-                    # rx.text("Theme", class_name="hidden md:block text-white font-semibold"),
-                    class_name="p-2 rounded-xl md:px-6 md:py-8 md:rounded-3xl text-white text-sm md:text-xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center gap-2 shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 md:shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] md:hover:shadow-[0px_6px_0px_0px_rgb(75,85,99,0.8)] md:hover:brightness-110 md:active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] md:active:translate-y-1",
+                    class_name=(
+                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center gap-2 "
+                        "shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                    ),
                     style=rx.cond(
                         State.is_dark_theme,
                         {

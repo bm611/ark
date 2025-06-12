@@ -152,8 +152,8 @@ def response_message(message: dict, index: int) -> rx.Component:
                 message.get("display_text", message["content"]),
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "ml-2 text-xl md:text-4xl tracking-wide text-white",
-                    "ml-2 text-xl md:text-4xl tracking-wide text-gray-900",
+                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-white",
+                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
                 ),
                 style={
                     "display": "-webkit-box",
