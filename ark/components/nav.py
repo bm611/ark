@@ -12,7 +12,7 @@ def navbar() -> rx.Component:
                         "Ark",
                         class_name="text-xl md:text-3xl font-bold mt-1 text-gray-50",
                     ),
-                    class_name="px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl transition-all duration-200 shadow-[0px_4px_0px_0px_rgba(30,41,59,0.6)] hover:shadow-[0px_6px_0px_0px_rgba(30,41,59,0.8)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(30,41,59,0.6)] active:translate-y-1",
+                    class_name="px-4 py-4 md:px-6 md:py-8 rounded-xl md:rounded-3xl transition-all duration-200 shadow-[0px_4px_0px_0px_rgba(30,41,59,0.6)] hover:shadow-[0px_6px_0px_0px_rgba(30,41,59,0.8)] hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(30,41,59,0.6)] active:translate-y-1",
                     style=rx.cond(
                         State.is_dark_theme,
                         {
