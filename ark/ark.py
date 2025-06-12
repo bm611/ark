@@ -88,7 +88,7 @@ app = rx.App(
         rx.el.link(rel="manifest", href="/manifest.json"),
         rx.el.meta(name="theme-color", content="#ffffff"),
         # for website analytics
-        rx.script(
+        rx.el.script(
             src="https://cloud.umami.is/script.js",
             defer=True,
             custom_attrs={"data-website-id": os.environ.get("UMAMI_WEBSITE_ID", "")},
