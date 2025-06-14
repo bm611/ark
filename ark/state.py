@@ -4,6 +4,7 @@ from ark.models import WeatherData, ChatMessage
 from ark.handlers.message_handler import message_handler
 import base64
 import os
+import reflex_clerk_api as clerk
 
 
 # Model Configuration Constants
@@ -11,6 +12,12 @@ class ModelConfig:
     DEFAULT_PROVIDER = "openrouter"
     CHAT_MODEL = "google/gemini-2.5-flash-preview"
     SEARCH_MODEL = "perplexity/sonar"
+
+
+class UserState(clerk.ClerkUser):
+    """User state that extends ClerkUser for accessing user information."""
+
+    pass
 
 
 class State(rx.State):

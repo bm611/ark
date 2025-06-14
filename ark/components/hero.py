@@ -1,5 +1,6 @@
 import reflex as rx
-from ark.state import State
+import reflex_clerk_api as clerk
+from ark.state import State, UserState
 from ark.components.ui.buttons import action_button, gradient_card
 from ark.components.offline_models import (
     OfflineModelsState,
@@ -182,14 +183,31 @@ def hero():
             rx.flex(
                 rx.box(
                     rx.box(
-                        rx.heading(
-                            "Welcome to Ark!",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-fade-in-up px-8 md:px-0 leading-tight",
-                                "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
+                        clerk.signed_in(
+                            rx.heading(
+                                rx.cond(
+                                    UserState.first_name != "",
+                                    "Welcome back, " + UserState.first_name + "!",
+                                    "Welcome back!",
+                                ),
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                ),
+                                as_="h1",
                             ),
-                            as_="h1",
+                        ),
+                        clerk.signed_out(
+                            rx.heading(
+                                "Welcome to Ark!",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                ),
+                                as_="h1",
+                            ),
                         ),
                         rx.heading(
                             "Your AI Chat Companion",
