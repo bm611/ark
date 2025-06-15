@@ -2,6 +2,7 @@ import reflex as rx
 from typing import List, Optional
 from ark.models import WeatherData, ChatMessage
 from ark.handlers.message_handler import message_handler
+import reflex_clerk_api as clerk
 import base64
 import os
 
@@ -232,3 +233,12 @@ class State(rx.State):
     def clear_images(self):
         """Clear the uploaded images list."""
         self.img = []
+
+    @rx.event
+    async def handle_auth_change(self):
+        """Handle authentication state changes (login/logout)."""
+        clerk_state = await self.get_state(clerk.ClerkState)
+        if clerk_state.is_signed_in:
+            print(f"User signed in: {clerk_state.user_id}")
+        else:
+            print("User signed out")

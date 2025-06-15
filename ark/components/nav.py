@@ -1,5 +1,6 @@
 import reflex as rx
 from ark.state import State
+import reflex_clerk_api as clerk
 
 
 def navbar() -> rx.Component:
@@ -52,7 +53,9 @@ def navbar() -> rx.Component:
                     rx.text("Changelog", class_name="hidden md:block"),
                     class_name=(
                         "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 "
+                        "shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(147,51,234,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 "
                         "md:px-3 md:py-4 md:rounded-xl md:text-lg "
                         "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
                         "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
@@ -72,7 +75,9 @@ def navbar() -> rx.Component:
                     rx.text("Github", class_name="hidden md:block"),
                     class_name=(
                         "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 "
+                        "shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(59,130,246,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 "
                         "md:px-3 md:py-4 md:rounded-xl md:text-lg "
                         "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
                         "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
@@ -85,6 +90,63 @@ def navbar() -> rx.Component:
                         "https://github.com/bm611/ark", is_external=True
                     ),
                 ),
+                # Authentication buttons
+                clerk.signed_out(
+                    rx.hstack(
+                        clerk.sign_in_button(
+                            rx.button(
+                                rx.icon(
+                                    "log-in",
+                                    class_name="block md:hidden",
+                                    size=18,
+                                ),
+                                rx.text("Sign In", class_name="hidden md:block"),
+                                class_name=(
+                                    "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                                    "shadow-[0px_4px_0px_0px_rgb(34,197,94,0.6)] "
+                                    "hover:shadow-[0px_6px_0px_0px_rgb(34,197,94,0.8)] "
+                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(34,197,94,0.6)] active:translate-y-1 "
+                                    "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                                    "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                                    "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                                ),
+                                style={
+                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.7) 0%, rgba(22,163,74,0.7) 50%, rgba(21,128,61,0.7) 100%)",
+                                    "border": "1px solid rgba(21,128,61,0.7)",
+                                },
+                            )
+                        ),
+                        class_name="flex gap-3",
+                    )
+                ),
+                clerk.signed_in(
+                    rx.hstack(
+                        clerk.sign_out_button(
+                            rx.button(
+                                rx.icon(
+                                    "log-out",
+                                    class_name="block md:hidden",
+                                    size=18,
+                                ),
+                                rx.text("Sign Out", class_name="hidden md:block"),
+                                class_name=(
+                                    "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                                    "shadow-[0px_4px_0px_0px_rgb(239,68,68,0.6)] "
+                                    "hover:shadow-[0px_6px_0px_0px_rgb(239,68,68,0.8)] "
+                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(239,68,68,0.6)] active:translate-y-1 "
+                                    "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                                    "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                                    "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                                ),
+                                style={
+                                    "background": "linear-gradient(135deg, rgba(239,68,68,0.7) 0%, rgba(220,38,38,0.7) 50%, rgba(185,28,28,0.7) 100%)",
+                                    "border": "1px solid rgba(185,28,28,0.7)",
+                                },
+                            )
+                        ),
+                        class_name="flex gap-3",
+                    )
+                ),
                 rx.button(
                     rx.cond(
                         State.is_dark_theme,
@@ -93,7 +155,9 @@ def navbar() -> rx.Component:
                     ),
                     class_name=(
                         "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center gap-2 "
-                        "shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 "
+                        "shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(75,85,99,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 "
                         "md:px-3 md:py-4 md:rounded-xl md:text-lg "
                         "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
                         "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"

@@ -5,6 +5,7 @@ from ark.pages.changelog import changelog_entry, changelog_header, load_changelo
 from ark.pages.chat import chat_nav, chat_messages
 from ark.state import State
 from ark.components.upload import upload_component
+import reflex_clerk_api as clerk
 import os
 
 
@@ -95,3 +96,18 @@ app = rx.App(
         ),
     ],
 )
+
+# Register authentication change handler
+clerk.register_on_auth_change_handler(State.handle_auth_change)
+
+# Wrap the entire app with ClerkProvider
+clerk.wrap_app(
+    app,
+    publishable_key=os.environ["CLERK_PUBLISHABLE_KEY"],
+    secret_key=os.environ.get("CLERK_SECRET_KEY"),
+    register_user_state=True,
+)
+
+# Add sign-in and sign-up pages
+clerk.add_sign_in_page(app)
+clerk.add_sign_up_page(app)
