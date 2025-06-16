@@ -18,4 +18,5 @@ config = ReflextemplateConfig(
     if railway_domain in os.environ
     else "http://0.0.0.0:8000",
     plugins=[rx.plugins.TailwindV3Plugin()],
+    show_built_with_reflex=False,
 )
