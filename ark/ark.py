@@ -2,7 +2,7 @@ import reflex as rx
 from ark.components.nav import navbar
 from ark.components.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
-from ark.pages.chat import chat_nav, chat_messages
+from ark.pages.chat import chat_nav, chat_messages, chat_input
 from ark.state import State
 from ark.components.upload import upload_component
 import reflex_clerk_api as clerk
@@ -28,7 +28,7 @@ def chat() -> rx.Component:
     return rx.box(
         chat_nav(),
         chat_messages(),
-        input_section(),
+        chat_input(),
         class_name=rx.cond(
             State.is_dark_theme,
             "h-screen flex flex-col bg-slate-900 text-slate-50 transition-colors duration-300",

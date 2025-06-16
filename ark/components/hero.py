@@ -69,15 +69,16 @@ def input_section():
                         value=State.prompt,
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "w-full mx-auto text-white text-lg md:text-2xl rounded-3xl min-h-32 max-h-48 shadow-[0px_0px_0px_2px_rgba(34,197,94,0.5),0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_0px_0px_2px_rgba(34,197,94,0.7),0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_0px_0px_3px_rgba(34,197,94,0.8),0px_6px_0px_0px_rgba(0,0,0,0.2)] border-1 transition-all duration-200 px-4 md:px-6 py-4 pb-16 resize-none",
-                            "w-full mx-auto text-gray-900 text-lg md:text-2xl rounded-3xl min-h-32 max-h-48 shadow-[0px_0px_0px_2px_rgba(168,85,247,0.5),0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_0px_0px_2px_rgba(168,85,247,0.7),0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_0px_0px_3px_rgba(168,85,247,0.8),0px_6px_0px_0px_rgba(0,0,0,0.2)] border-1 transition-all duration-200 px-4 md:px-6 py-4 pb-16 resize-none",
+                            "w-full mx-auto text-white text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(white,white),linear-gradient(90deg,#fb923c,#a21caf)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_20px_rgba(251,146,60,0.5),0_0_40px_rgba(162,28,175,0.3)]",
+                            "w-full mx-auto text-gray-900 text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(white,white),linear-gradient(90deg,#fb923c,#a21caf)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_20px_rgba(251,146,60,0.5),0_0_40px_rgba(162,28,175,0.3)]",
                         ),
                         placeholder="Ask Anything...",
                         style={
                             "background": rx.cond(
-                                State.is_dark_theme, "#1f2937", "white"
+                                State.is_dark_theme, "#374151", "white"
                             ),
                             "color": rx.cond(State.is_dark_theme, "white", "#111827"),
+                            "outline": "none",
                             "& textarea::placeholder": {
                                 "color": rx.cond(
                                     State.is_dark_theme, "#9ca3af", "#6b7280"
@@ -137,46 +138,36 @@ def input_section():
                                             OfflineModelsState.open_drawer,
                                         ],
                                     ),
-                                    class_name="gap-0",
+                                    class_name="gap-0 mb-2",
                                 ),
                             ),
                             rx.button(
                                 rx.hstack(
                                     rx.icon(
                                         "arrow-up",
-                                        size=24,
-                                        color=rx.cond(
-                                            State.is_dark_theme, "white", "#111827"
-                                        ),
+                                        size=20,
+                                        color="white",
+                                        class_name="sm:hidden w-5 h-5",
+                                    ),
+                                    rx.text(
+                                        "Send",
+                                        class_name="hidden sm:block text-sm font-medium text-white ml-1",
                                     ),
                                     class_name="flex items-center justify-center",
                                 ),
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "ml-auto text-white rounded-2xl h-12 px-4 shadow-xl active:shadow-md active:translate-y-1 transition-all duration-200 md:hover:shadow-xl md:hover:brightness-110 backdrop-blur-md border border-white/20",
-                                    "ml-auto text-gray-900 rounded-2xl h-12 px-4 shadow-xl active:shadow-md active:translate-y-1 transition-all duration-200 md:hover:shadow-xl md:hover:brightness-110 backdrop-blur-md border border-gray-300/30",
+                                    "ml-auto text-white rounded-full h-8 sm:h-10 w-10 sm:w-auto sm:px-4 shadow-[0px_4px_0px_0px_rgba(107,114,128,0.6)] hover:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.7)] active:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.8)] transition-all duration-150 flex items-center justify-center mb-1",
+                                    "ml-auto text-white rounded-full h-8 sm:h-10 w-10 sm:w-auto sm:px-4 shadow-[0px_4px_0px_0px_rgba(107,114,128,0.6)] hover:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.7)] active:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.8)] transition-all duration-150 flex items-center justify-center mb-1",
                                 ),
                                 style={
                                     "background": rx.cond(
                                         State.is_dark_theme,
-                                        "linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(29,78,216,0.18) 50%, rgba(30,64,175,0.15) 100%)",
-                                        "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(243,244,246,0.6) 100%)",
+                                        "linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%)",
+                                        "linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%)",
                                     ),
-                                    "backdropFilter": "blur(16px)",
-                                    "WebkitBackdropFilter": "blur(16px)",
-                                    "border": rx.cond(
-                                        State.is_dark_theme,
-                                        "1px solid rgba(255,255,255,0.18)",
-                                        "1px solid rgba(209,213,219,0.25)",
-                                    ),
-                                    "boxShadow": rx.cond(
-                                        State.is_dark_theme,
-                                        "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-                                        "0 8px 32px 0 rgba(31, 38, 135, 0.10)",
-                                    ),
-                                    "color": rx.cond(
-                                        State.is_dark_theme, "white", "#111827"
-                                    ),
+                                    "border": "2px solid #374151",
+                                    "boxShadow": "0px 4px 0px 0px rgba(107,114,128,0.6)",
                                 },
                                 on_click=[
                                     rx.redirect("/chat"),

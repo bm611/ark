@@ -438,6 +438,64 @@ def response_message(message: dict, index: int) -> rx.Component:
     )
 
 
+def chat_input():
+    return rx.box(
+        rx.box(
+            rx.box(
+                rx.input(
+                    value=State.prompt,
+                    placeholder="Ask Follow Up...",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "w-full text-white text-base md:text-lg rounded-xl h-12 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] border border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 pl-3 md:pl-4 pr-12 md:pr-14 outline-none focus:outline-none",
+                        "w-full text-gray-900 text-base md:text-lg rounded-xl h-12 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] border border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 pl-3 md:pl-4 pr-12 md:pr-14 outline-none focus:outline-none",
+                    ),
+                    style={
+                        "background": rx.cond(State.is_dark_theme, "#1f2937", "white"),
+                        "color": rx.cond(State.is_dark_theme, "white", "#111827"),
+                        "outline": "none",
+                    },
+                    on_change=State.set_prompt,
+                ),
+                rx.button(
+                    rx.icon(
+                        "send",
+                        size=16,
+                        color="white",
+                    ),
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "absolute right-1.5 top-1/2 transform -translate-y-1/2 text-white rounded-lg h-8 w-8 shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(34,197,94,0.9)] active:shadow-[0px_4px_0px_0px_rgba(34,197,94,1)] transition-all duration-150",
+                        "absolute right-1.5 top-1/2 transform -translate-y-1/2 text-white rounded-lg h-8 w-8 shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(34,197,94,0.9)] active:shadow-[0px_4px_0px_0px_rgba(34,197,94,1)] transition-all duration-150",
+                    ),
+                    style={
+                        "background": rx.cond(
+                            State.is_dark_theme,
+                            "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
+                            "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
+                        ),
+                        "border": "2px solid #166534",
+                        "boxShadow": "0px 4px 0px 0px rgba(34,197,94,0.8)",
+                    },
+                    on_click=[
+                        State.handle_generation,
+                        State.send_message,
+                    ],
+                    loading=State.is_gen,
+                    disabled=State.is_gen,
+                ),
+                class_name="relative w-full max-w-2xl mx-auto",
+            ),
+            class_name="p-4",
+        ),
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md",
+            "fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md",
+        ),
+    )
+
+
 def chat_messages():
     return rx.box(
         rx.foreach(
