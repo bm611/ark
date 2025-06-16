@@ -17,7 +17,7 @@ def index() -> rx.Component:
         input_section(),
         class_name=rx.cond(
             State.is_dark_theme,
-            "min-h-screen bg-gray-900 text-white transition-colors duration-300",
+            "min-h-screen bg-slate-900 text-slate-50 transition-colors duration-300",
             "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )
@@ -31,7 +31,7 @@ def chat() -> rx.Component:
         input_section(),
         class_name=rx.cond(
             State.is_dark_theme,
-            "h-screen flex flex-col bg-gray-900 text-white transition-colors duration-300",
+            "h-screen flex flex-col bg-slate-900 text-slate-50 transition-colors duration-300",
             "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300",
         ),
     )
@@ -68,7 +68,7 @@ def changelog() -> rx.Component:
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            "min-h-screen bg-gray-900 text-white transition-colors duration-300",
+            "min-h-screen bg-slate-900 text-slate-50 transition-colors duration-300",
             "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )

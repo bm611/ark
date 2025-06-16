@@ -42,7 +42,7 @@ def markdown_component_map() -> Dict[str, Any]:
             text,
             class_name=rx.cond(
                 State.is_dark_theme,
-                "font-mono text-sm bg-gray-700 text-gray-200 px-1.5 py-0.5 rounded-md border border-gray-600",
+                "font-mono text-sm bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-600",
                 "font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
             ),
             style={
@@ -69,7 +69,7 @@ def markdown_component_map() -> Dict[str, Any]:
                     size="1",
                     class_name="text-gray-300 hover:text-white hover:bg-gray-600 px-2 py-1 rounded transition-colors duration-200",
                 ),
-                class_name="flex justify-between items-center px-4 py-3 bg-gray-700 rounded-t-lg border-b border-gray-600",
+                class_name="flex justify-between items-center px-4 py-3 bg-slate-700 rounded-t-lg border-b border-slate-600",
             ),
             # Code block section
             rx.code_block(
@@ -95,7 +95,7 @@ def markdown_component_map() -> Dict[str, Any]:
                 },
             ),
             margin_y="1em",
-            class_name="bg-gray-800 rounded-lg shadow-lg border border-gray-600 overflow-hidden",
+            class_name="bg-slate-800 rounded-lg shadow-lg border border-slate-600 overflow-hidden",
         ),
         "a": lambda text, **props: rx.link(
             text, **props, color="orange", _hover={"color": "red"}
@@ -152,7 +152,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                 message.get("display_text", message["content"]),
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-white",
+                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-slate-50",
                     "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
                 ),
                 style={
@@ -273,7 +273,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                                     href=citation,
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "font-[dm] text-sm md:text-lg text-white mb-1",
+                                        "font-[dm] text-sm md:text-lg text-slate-50 mb-1",
                                         "font-[dm] text-sm md:text-lg text-black mb-1",
                                     ),
                                 ),
@@ -282,7 +282,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
@@ -301,13 +301,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             f"Tool Name: {message.get('tool_name', '')}",
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg font-semibold text-white",
+                                "font-[dm] text-sm md:text-lg font-semibold text-slate-50",
                                 "font-[dm] text-sm md:text-lg font-semibold text-black",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         # width="100%",
@@ -327,13 +327,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             component_map=markdown_component_map(),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-white",
+                                "font-[dm] text-sm md:text-lg text-slate-50",
                                 "font-[dm] text-sm md:text-lg text-black",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
@@ -354,13 +354,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             component_map=markdown_component_map(),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-white",
+                                "font-[dm] text-sm md:text-lg text-slate-50",
                                 "font-[dm] text-sm md:text-lg text-gray-900",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
@@ -389,13 +389,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-slate-50",
                                     "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
                                 "bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
@@ -404,13 +404,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 f"{message.get('total_tokens', 'N/A'):.2f} TOKENS",
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-slate-50",
                                     "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
                                 "bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
@@ -419,13 +419,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 f"{message.get('generation_time', 'N/A'):.2f} SEC",
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-slate-50",
                                     "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
                                 "bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
