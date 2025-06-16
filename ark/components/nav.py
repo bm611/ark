@@ -11,7 +11,7 @@ def navbar() -> rx.Component:
                     rx.icon("ship"),
                     rx.text(
                         "Ark",
-                        class_name="text-xl md:text-2xl lg:text-xl xl:text-3xl font-bold mt-1 text-slate-50",
+                        class_name="text-xl md:text-2xl lg:text-xl xl:text-3xl font-bold mt-1 text-neutral-50",
                     ),
                     class_name=(
                         "px-4 py-4 rounded-xl transition-all duration-200 "

@@ -34,7 +34,7 @@ def input_section():
                                             filename,
                                             class_name=rx.cond(
                                                 State.is_dark_theme,
-                                                "text-sm text-gray-200 font-[dm] font-medium",
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
                                                 "text-sm text-gray-700 font-[dm] font-medium",
                                             ),
                                         ),
@@ -43,7 +43,7 @@ def input_section():
                                             variant="ghost",
                                             class_name=rx.cond(
                                                 State.is_dark_theme,
-                                                "ml-2 p-1 rounded-full hover:bg-gray-600/30 text-gray-400 hover:text-gray-200 border-0 bg-transparent",
+                                                "ml-2 p-1 rounded-full hover:bg-neutral-600/30 text-neutral-400 hover:text-neutral-200 border-0 bg-transparent",
                                                 "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
                                             ),
                                             on_click=State.clear_images,
@@ -53,7 +53,7 @@ def input_section():
                                     ),
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "bg-gray-800/80 border border-gray-600/50 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
                                         "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
                                     ),
                                 ),
@@ -69,19 +69,19 @@ def input_section():
                         value=State.prompt,
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "w-full mx-auto text-white text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(white,white),linear-gradient(90deg,#fb923c,#a21caf)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_20px_rgba(251,146,60,0.5),0_0_40px_rgba(162,28,175,0.3)]",
+                            "w-full mx-auto text-white text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(#0a0a0a,#0a0a0a),linear-gradient(90deg,#f97316,#c026d3)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_15px_rgba(249,115,22,0.4),0_0_30px_rgba(192,38,211,0.2),0_4px_20px_rgba(0,0,0,0.3)]",
                             "w-full mx-auto text-gray-900 text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(white,white),linear-gradient(90deg,#fb923c,#a21caf)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_20px_rgba(251,146,60,0.5),0_0_40px_rgba(162,28,175,0.3)]",
                         ),
                         placeholder="Ask Anything...",
                         style={
                             "background": rx.cond(
-                                State.is_dark_theme, "#374151", "white"
+                                State.is_dark_theme, "#0a0a0a", "white"
                             ),
                             "color": rx.cond(State.is_dark_theme, "white", "#111827"),
                             "outline": "none",
                             "& textarea::placeholder": {
                                 "color": rx.cond(
-                                    State.is_dark_theme, "#9ca3af", "#6b7280"
+                                    State.is_dark_theme, "#a3a3a3", "#6b7280"
                                 ),
                             },
                         },
@@ -236,7 +236,7 @@ def hero():
                             "Chat, search, and learn—smarter, faster, anywhere.",
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-300 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
+                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-neutral-300 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
                                 "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-700 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
                             ),
                         ),
@@ -246,7 +246,7 @@ def hero():
                                     "Try these examples:",
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "text-sm sm:text-base font-semibold text-gray-300 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
+                                        "text-sm sm:text-base font-semibold text-neutral-300 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
                                         "text-sm sm:text-base font-semibold text-gray-600 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
                                     ),
                                 ),
@@ -274,7 +274,7 @@ def hero():
                                         ),
                                         class_name=rx.cond(
                                             State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
                                             "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-blue-50/50 border border-gray-200/60 hover:border-blue-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
                                         ),
                                         on_click=[
@@ -309,7 +309,7 @@ def hero():
                                         ),
                                         class_name=rx.cond(
                                             State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
                                             "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-green-50/50 border border-gray-200/60 hover:border-green-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
                                         ),
                                         on_click=[
@@ -345,7 +345,7 @@ def hero():
                                         ),
                                         class_name=rx.cond(
                                             State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
                                             "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-purple-50/50 border border-gray-200/60 hover:border-purple-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
                                         ),
                                         on_click=[

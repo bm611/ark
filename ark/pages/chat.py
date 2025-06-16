@@ -454,13 +454,16 @@ def chat_input():
                         "background": rx.cond(State.is_dark_theme, "#1f2937", "white"),
                         "color": rx.cond(State.is_dark_theme, "white", "#111827"),
                         "outline": "none",
+                        "& input::placeholder": {
+                            "color": rx.cond(State.is_dark_theme, "#a3a3a3", "#6b7280"),
+                        },
                     },
                     on_change=State.set_prompt,
                 ),
                 rx.button(
                     rx.icon(
-                        "send",
-                        size=16,
+                        "arrow-right",
+                        size=24,
                         color="white",
                     ),
                     class_name=rx.cond(
@@ -490,8 +493,8 @@ def chat_input():
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            "fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md",
-            "fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md",
+            "fixed bottom-0 left-0 right-0 backdrop-blur-lg",
+            "fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg",
         ),
     )
 
