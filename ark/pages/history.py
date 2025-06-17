@@ -13,13 +13,12 @@ def search_bar():
                 "w-full h-14 bg-white/90 border border-gray-200/80 rounded-2xl pl-4 pr-4 py-3.5 text-gray-800 placeholder-gray-400 focus:border-gray-300 focus:bg-white focus:ring-0 focus:outline-none transition-all duration-300 backdrop-blur-sm shadow-sm",
             ),
             style={
-                "fontSize": "15px",
-                "fontWeight": "500",
-                "boxShadow": rx.cond(
-                    State.is_dark_theme,
-                    "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-                    "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-                ),
+                "background": rx.cond(State.is_dark_theme, "#1f2937", "white"),
+                "color": rx.cond(State.is_dark_theme, "white", "#111827"),
+                "outline": "none",
+                "& input::placeholder": {
+                    "color": rx.cond(State.is_dark_theme, "#a3a3a3", "#6b7280"),
+                },
             },
         ),
         class_name="relative mb-6",
@@ -55,8 +54,8 @@ def chat_history_item(title: str, last_message: str, timestamp: str):
                 title,
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "text-neutral-200 font-medium text-md leading-tight",
-                    "text-gray-900 font-medium text-md leading-tight",
+                    "text-neutral-200 font-medium text-sm md:text-md leading-tight",
+                    "text-gray-900 font-medium text-sm md:text-md leading-tight",
                 ),
                 style={
                     "display": "-webkit-box",
@@ -69,8 +68,8 @@ def chat_history_item(title: str, last_message: str, timestamp: str):
                 last_message,
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "text-neutral-400 text-sm mt-1",
-                    "text-gray-600 text-sm mt-1",
+                    "text-neutral-400 text-xs md:text-sm mt-1",
+                    "text-gray-600 text-xs md:text-sm mt-1",
                 ),
             ),
             spacing="1",
@@ -151,7 +150,7 @@ def history_header():
     return rx.box(
         rx.flex(
             rx.heading(
-                "Chat History",
+                "Chats",
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "text-2xl md:text-4xl ml-2 font-bold text-neutral-200",
@@ -175,8 +174,8 @@ def chat_count_info():
             "You have 450 previous chats with Claude ",
             class_name=rx.cond(
                 State.is_dark_theme,
-                "text-neutral-400 text-sm",
-                "text-gray-600 text-sm",
+                "text-neutral-400 text-sm ml-2",
+                "text-gray-600 text-sm ml-2",
             ),
         ),
         spacing="0",

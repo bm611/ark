@@ -466,24 +466,9 @@ def chat_input():
                         size=24,
                         color="white",
                     ),
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        "absolute right-1.5 top-1/2 transform -translate-y-1/2 text-white rounded-lg h-8 w-8 shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(34,197,94,0.9)] active:shadow-[0px_4px_0px_0px_rgba(34,197,94,1)] transition-all duration-150",
-                        "absolute right-1.5 top-1/2 transform -translate-y-1/2 text-white rounded-lg h-8 w-8 shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(34,197,94,0.9)] active:shadow-[0px_4px_0px_0px_rgba(34,197,94,1)] transition-all duration-150",
-                    ),
-                    style={
-                        "background": rx.cond(
-                            State.is_dark_theme,
-                            "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
-                            "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
-                        ),
-                        "border": "2px solid #166534",
-                        "boxShadow": "0px 4px 0px 0px rgba(34,197,94,0.8)",
-                    },
-                    on_click=[
-                        State.handle_generation,
-                        State.send_message,
-                    ],
+                    class_name="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-transparent rounded-none h-8 w-8 p-0 m-0 flex items-center justify-center",
+                    style={"boxShadow": "none", "background": "none"},
+                    on_click=State.handle_generation,
                     loading=State.is_gen,
                     disabled=State.is_gen,
                 ),

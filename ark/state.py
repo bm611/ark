@@ -141,8 +141,6 @@ class State(rx.State):
         # Clear uploaded images after sending
         self.img = []
 
-        print(f"Full Message: {self.messages}")
-
     def _get_model_for_action(self) -> str:
         """Get the appropriate model based on the selected action."""
         if self.selected_action == "Search":

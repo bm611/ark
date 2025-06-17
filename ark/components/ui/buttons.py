@@ -39,7 +39,7 @@ def action_button(
                 class_name=rx.cond(
                     is_active,
                     "text-white",
-                    rx.cond(State.is_dark_theme, "text-slate-300", "text-gray-600"),
+                    rx.cond(State.is_dark_theme, "text-[#A2C4FF]", "text-gray-600"),
                 ),
             ),
             rx.cond(
@@ -51,7 +51,7 @@ def action_button(
                         "font-[dm] text-xs md:text-sm font-semibold text-white",
                         rx.cond(
                             State.is_dark_theme,
-                            "font-[dm] text-xs md:text-sm font-semibold text-slate-300",
+                            "font-[dm] text-xs md:text-sm font-semibold text-[#A2C4FF]",
                             "font-[dm] text-xs md:text-sm font-semibold text-gray-600",
                         ),
                     ),
@@ -68,7 +68,11 @@ def action_button(
         class_name=rx.cond(
             is_active,
             f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_{shadow_color}] active:shadow-[0px_4px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_4px_0px_0px_{shadow_color}] hover:md:translate-y-1",
-            f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_{shadow_color}] hover:md:translate-y-1",
+            rx.cond(
+                State.is_dark_theme,
+                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_rgba(0,255,247,0.8)] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_rgba(0,255,247,0.8)] hover:md:translate-y-1 hover:shadow-[0_0_20px_rgba(0,255,247,0.4)]",
+                f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_{shadow_color}] hover:md:translate-y-1",
+            ),
         ),
         style=rx.cond(
             is_active,
@@ -79,8 +83,8 @@ def action_button(
             rx.cond(
                 State.is_dark_theme,
                 {
-                    "background": "#334155",
-                    "border": "1px solid #475569",
+                    "background": "linear-gradient(135deg, #1E2A3A 0%, #273B53 100%)",
+                    "border": "1px solid #273B53",
                 },
                 {
                     "background": "white",
