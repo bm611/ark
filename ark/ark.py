@@ -7,6 +7,7 @@ from ark.state import State
 from ark.components.upload import upload_component
 import reflex_clerk_api as clerk
 import os
+from ark.pages.history import history_nav
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -33,6 +34,18 @@ def chat() -> rx.Component:
             State.is_dark_theme,
             "h-screen flex flex-col bg-gray-950 text-gray-50 transition-colors duration-300",
             "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300",
+        ),
+    )
+
+
+@rx.page(route="/history", title="Ark - History")
+def history() -> rx.Component:
+    return rx.box(
+        history_nav(),
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "min-h-screen bg-gray-950 text-gray-50 transition-colors duration-300",
+            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )
 

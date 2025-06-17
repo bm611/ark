@@ -1,3 +1,4 @@
+from ctypes import memset
 import reflex as rx
 from typing import List, Optional
 from ark.models import WeatherData, ChatMessage
@@ -139,6 +140,8 @@ class State(rx.State):
 
         # Clear uploaded images after sending
         self.img = []
+
+        print(f"Full Message: {self.messages}")
 
     def _get_model_for_action(self) -> str:
         """Get the appropriate model based on the selected action."""

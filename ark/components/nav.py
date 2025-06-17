@@ -46,6 +46,28 @@ def navbar() -> rx.Component:
             rx.hstack(
                 rx.button(
                     rx.icon(
+                        "history",
+                        class_name="block md:hidden",
+                        size=18,
+                    ),
+                    rx.text("History", class_name="hidden md:block"),
+                    class_name=(
+                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                        "shadow-[0px_4px_0px_0px_rgb(251,191,36,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(251,191,36,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(251,191,36,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                    ),
+                    style={
+                        "background": "linear-gradient(135deg, rgba(251,191,36,0.85) 0%, rgba(245,158,11,0.85) 50%, rgba(202,138,4,0.85) 100%)",
+                        "border": "1px solid rgba(202,138,4,0.7)",
+                    },
+                    on_click=rx.redirect("/history"),
+                ),
+                rx.button(
+                    rx.icon(
                         "scroll-text",
                         class_name="block md:hidden",
                         size=18,

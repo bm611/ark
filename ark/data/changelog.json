@@ -1,9 +1,28 @@
 {
 	"entries": [
 		{
+			"version": "0.5.3",
+			"date": "Jun 16 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "added",
+					"description": "History page (WIP)"
+				},
+				{
+					"type": "improved",
+					"description": "Text input design"
+				},
+				{
+					"type": "added",
+					"description": "Clerk authentication"
+				}
+			]
+		},
+		{
 			"version": "0.5.2",
 			"date": "Jun 11 2025",
-			"is_latest": true,
+			"is_latest": false,
 			"changes": [
 				{
 					"type": "improved",
