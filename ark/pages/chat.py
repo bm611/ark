@@ -464,11 +464,14 @@ def chat_input():
                     rx.icon(
                         "arrow-right",
                         size=24,
-                        color="white",
+                        color=rx.cond(State.is_dark_theme, "white", "gray"),
                     ),
                     class_name="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-transparent rounded-none h-8 w-8 p-0 m-0 flex items-center justify-center",
                     style={"boxShadow": "none", "background": "none"},
-                    on_click=State.handle_generation,
+                    on_click=[
+                        State.handle_generation,
+                        State.send_message,
+                    ],
                     loading=State.is_gen,
                     disabled=State.is_gen,
                 ),
