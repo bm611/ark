@@ -1,4 +1,3 @@
-from ctypes import memset
 import reflex as rx
 from typing import List, Optional
 from ark.models import WeatherData, ChatMessage
@@ -22,6 +21,7 @@ class State(rx.State):
     selected_action: str = ""
     is_tool_use: bool = False
     img: list[str] = []
+    logged_user_name: str = ""
 
     # Thinking section expansion state
     thinking_expanded: dict[int, bool] = {}
@@ -239,7 +239,10 @@ class State(rx.State):
     async def handle_auth_change(self):
         """Handle authentication state changes (login/logout)."""
         clerk_state = await self.get_state(clerk.ClerkState)
+        clerk_user_state = await self.get_state(clerk.ClerkUser)
         if clerk_state.is_signed_in:
             print(f"User signed in: {clerk_state.user_id}")
+            print(f"User Name: {clerk_user_state.first_name}")
+            self.logged_user_name = clerk_user_state.first_name
         else:
             print("User signed out")

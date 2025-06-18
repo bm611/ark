@@ -86,6 +86,7 @@ def input_section():
                             },
                         },
                         on_change=State.set_prompt,
+                        size="3",
                     ),
                     rx.box(
                         rx.hstack(
@@ -200,9 +201,9 @@ def hero():
                         clerk.signed_in(
                             rx.heading(
                                 rx.cond(
-                                    clerk.ClerkUser.first_name == "",
+                                    State.logged_user_name == "",
                                     "Welcome back!",
-                                    "Welcome back, " + clerk.ClerkUser.first_name + "!",
+                                    "Welcome back, " + State.logged_user_name + "!",
                                 ),
                                 class_name=rx.cond(
                                     State.is_dark_theme,
