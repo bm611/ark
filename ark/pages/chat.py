@@ -54,33 +54,22 @@ def markdown_component_map() -> Dict[str, Any]:
             },
         ),
         "codeblock": lambda text, **props: rx.box(
-            # Modern header with language and copy button
-            rx.flex(
-                rx.flex(
-                    rx.icon("code", size=16, class_name="text-slate-400 mr-2"),
-                    rx.text(
-                        props.get("language", "text"),
-                        size="1",
-                        class_name="text-slate-400",
-                    ),
-                    align="center",
-                    class_name="gap-1",
+            # Header section with language and copy button
+            rx.box(
+                rx.text(
+                    props.get("language", "text"),
+                    size="1",
+                    class_name="text-gray-300 font-mono text-xs font-semibold",
                 ),
                 rx.button(
-                    rx.icon("copy", size=16),
+                    rx.icon("copy", size=14),
                     rx.text("Copy", class_name="ml-1 text-xs font-mono"),
                     on_click=[rx.set_clipboard(text), rx.toast("Copied!")],
-                    variant="soft",
+                    variant="ghost",
                     size="1",
-                    class_name="text-slate-400 hover:text-white hover:bg-slate-700 px-2 py-1 rounded-lg transition-colors duration-200 border border-slate-600",
-                    style={
-                        "backdropFilter": "blur(2px)",
-                        "background": "rgba(30,41,59,0.7)",
-                    },
+                    class_name="text-gray-300 hover:text-white hover:bg-gray-600 px-2 py-1 rounded transition-colors duration-200",
                 ),
-                justify="between",
-                align="center",
-                class_name="px-4 py-2 bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 rounded-t-xl border-b border-slate-700",
+                class_name="flex justify-between items-center px-4 py-3 bg-slate-700 rounded-t-lg border-b border-slate-600",
             ),
             # Code block section
             rx.code_block(
@@ -90,29 +79,23 @@ def markdown_component_map() -> Dict[str, Any]:
                 max_width="100%",
                 overflow_x="auto",
                 custom_style={
-                    "font-size": "14px",
-                    "font-family": "JetBrains Mono, Fira Mono, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+                    "font-size": "12px",
+                    "font_family": "Inter",
                     "white-space": "pre",
                     "word-wrap": "break-word",
                     "overflow-wrap": "break-word",
-                    "border-radius": "0 0 1rem 1rem",
+                    "border-radius": "0",
                     "margin": "0",
-                    "background": "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
-                    "padding": "1.25rem",
-                    "color": "#e0e7ef",
                 },
                 css={
                     "@media (max-width: 768px)": {
-                        "font-size": "12px",
-                        "padding": "0.75rem",
+                        "font-size": "10px",
+                        "padding": "12px",
                     },
                 },
             ),
-            margin_y="1.5em",
-            class_name="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl shadow-xl border border-slate-700 overflow-hidden",
-            style={
-                "boxShadow": "0 4px 32px 0 rgba(30,41,59,0.25)",
-            },
+            margin_y="1em",
+            class_name="bg-slate-800 rounded-lg shadow-lg border border-slate-600 overflow-hidden",
         ),
         "a": lambda text, **props: rx.link(
             text, **props, color="orange", _hover={"color": "red"}
