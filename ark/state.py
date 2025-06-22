@@ -6,6 +6,7 @@ import reflex_clerk_api as clerk
 import base64
 import os
 import uuid
+from ark.logs.message_log import save_messages_to_log
 
 
 # Model Configuration Constants
@@ -80,6 +81,7 @@ class State(rx.State):
         self.prompt = ""
 
     def reset_chat(self):
+        save_messages_to_log(self.messages)
         self.messages = []
         self.is_gen = False
         self.selected_provider = ModelConfig.DEFAULT_PROVIDER

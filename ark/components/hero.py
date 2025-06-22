@@ -283,7 +283,6 @@ def hero():
                                             ),
                                             State.generate_chat_id_and_redirect,
                                             State.handle_generation,
-                                            State.send_message,
                                         ],
                                     ),
                                     rx.button(
@@ -319,7 +318,6 @@ def hero():
                                             State.handle_search_click,
                                             State.generate_chat_id_and_redirect,
                                             State.handle_generation,
-                                            State.send_message,
                                         ],
                                     ),
                                     rx.button(
@@ -354,7 +352,6 @@ def hero():
                                             ),
                                             State.generate_chat_id_and_redirect,
                                             State.handle_generation,
-                                            State.send_message,
                                         ],
                                     ),
                                     wrap="wrap",
