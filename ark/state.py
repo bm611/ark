@@ -5,6 +5,7 @@ from ark.handlers.message_handler import message_handler
 import reflex_clerk_api as clerk
 import base64
 import os
+import uuid
 
 
 # Model Configuration Constants
@@ -22,6 +23,7 @@ class State(rx.State):
     is_tool_use: bool = False
     img: list[str] = []
     logged_user_name: str = ""
+    chat_id: str = ""
 
     # Thinking section expansion state
     thinking_expanded: dict[int, bool] = {}
@@ -40,6 +42,10 @@ class State(rx.State):
 
     # Theme state
     is_dark_theme: bool = False
+
+    def generate_chat_id_and_redirect(self):
+        self.chat_id = str(uuid.uuid4())
+        return rx.redirect(f"/chat/{self.chat_id}")
 
     @rx.var
     def current_url(self) -> str:
@@ -84,6 +90,7 @@ class State(rx.State):
         self.tool_expanded = {}
         self.weather_data = None
         self.weather_location = ""
+        self.chat_id = ""
 
     def toggle_thinking(self, message_index: int):
         """Toggle the thinking section for a specific message"""
