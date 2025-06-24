@@ -192,7 +192,8 @@ class MessageHandler:
         
         message_dict: ChatMessage = {
             "role": "assistant",
-            "content": actual_response,
+            "content": actual_response,  # Keep as string for UI compatibility
+            "display_text": actual_response,  # Add display_text field
             "citations": citations,
             "generation_time": generation_time,
             "total_tokens": current_response_tokens,

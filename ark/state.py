@@ -147,6 +147,10 @@ class State(rx.State):
 
     def send_message(self):
         """Send message using the new message handler."""
+        if self.messages and self.messages[-1].get("role") == "assistant":
+            # If last message is assistant, don't allow sending another message
+            return
+
         # Determine model based on action and selection
         model = self._get_model_for_action()
 
@@ -356,9 +360,21 @@ class State(rx.State):
             # Convert database messages to your ChatMessage format
             self.messages = []
             for msg in db_messages:
+                # For assistant messages, extract text from content list for UI compatibility
+                if msg["role"] == "assistant" and isinstance(msg["content"], list):
+                    # Extract text from content list (content is parsed as JSON)
+                    content_text = ""
+                    for item in msg["content"]:
+                        if isinstance(item, dict) and item.get("type") == "text":
+                            content_text = item.get("text", "")
+                            break
+                    content = content_text
+                else:
+                    content = msg["content"]
+                
                 chat_message = {
                     "role": msg["role"],
-                    "content": msg["content"],
+                    "content": content,
                     "display_text": msg["display_text"]
                 }
                 
@@ -372,7 +388,7 @@ class State(rx.State):
                 if msg.get("total_tokens"):
                     chat_message["total_tokens"] = msg["total_tokens"]
                 if msg.get("tokens_per_second"):
-                    chat_message["tokens_per_second"] = msg["tokens_per_second"]
+                    chat_message["tokens_per_second"] = round(msg["tokens_per_second"])
                 if msg.get("tool_name"):
                     chat_message["tool_name"] = msg["tool_name"]
                 if msg.get("tool_args"):
