@@ -7,6 +7,7 @@ import base64
 import os
 import uuid
 from ark.logs.message_log import save_messages_to_log
+from ark.db.utils import init_user_if_not_exists
 
 
 # Model Configuration Constants
@@ -25,6 +26,7 @@ class State(rx.State):
     img: list[str] = []
     logged_user_name: str = ""
     chat_id: str = ""
+    user_chats: List[dict] = []
 
     # Thinking section expansion state
     thinking_expanded: dict[int, bool] = {}
@@ -245,20 +247,38 @@ class State(rx.State):
         self.img = []
 
     @rx.event
+    async def load_user_chats(self):
+        """Load user's chats from database"""
+        from ark.db.utils import get_user_chats
+        
+        clerk_state = await self.get_state(clerk.ClerkState)
+        if not clerk_state.is_signed_in:
+            self.user_chats = []
+            return
+        
+        chats = await get_user_chats(clerk_state.user_id, limit=50)
+        self.user_chats = chats
+
+
+
+    @rx.event
     async def handle_auth_change(self):
         """Handle authentication state changes (login/logout)."""
+        from ark.db.utils import init_user_if_not_exists
+        
         clerk_state = await self.get_state(clerk.ClerkState)
+        clerk_user_state = await self.get_state(clerk.ClerkUser)
         
         if clerk_state.is_signed_in:
             print(f"User signed in: {clerk_state.user_id}")
-            
-            # Small delay to allow user data to load
-            import asyncio
-            await asyncio.sleep(0.5)
-            
-            clerk_user_state = await self.get_state(clerk.ClerkUser)
+            print(f"User Name: {clerk_user_state.first_name}")
             self.logged_user_name = clerk_user_state.first_name or ""
-            print(f"User Name: {self.logged_user_name}")
+            
+            # Initialize user in database
+            await init_user_if_not_exists(
+                clerk_state.user_id, 
+                clerk_user_state.first_name or ""
+            )
         else:
             print("User signed out")
             self.logged_user_name = ""

@@ -1,5 +1,6 @@
 import reflex as rx
 from ark.state import State
+import reflex_clerk_api as clerk
 
 
 def search_bar():
@@ -46,12 +47,12 @@ def new_chat_button():
     )
 
 
-def chat_history_item(title: str, last_message: str, timestamp: str):
+def chat_history_item(chat):
     """Individual chat history item component"""
     return rx.box(
         rx.vstack(
             rx.text(
-                title,
+                chat["title"],
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "text-neutral-200 font-medium text-sm md:text-md leading-tight",
@@ -65,7 +66,7 @@ def chat_history_item(title: str, last_message: str, timestamp: str):
                 },
             ),
             rx.text(
-                last_message,
+                f"Last updated {chat['updated_at']}",
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "text-neutral-400 text-xs md:text-sm mt-1",
@@ -81,67 +82,114 @@ def chat_history_item(title: str, last_message: str, timestamp: str):
             "w-full bg-neutral-800/30 hover:bg-neutral-800/50 border border-neutral-700/50 hover:border-neutral-600/70 rounded-xl p-4 cursor-pointer transition-all duration-200 backdrop-blur-sm",
             "w-full bg-white/60 hover:bg-white/80 border border-gray-200/60 hover:border-gray-300/80 rounded-xl p-4 cursor-pointer transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
         ),
-        on_click=rx.redirect("/chat"),
+        on_click=rx.redirect(f"/chat/{chat['id']}"),
+    )
+
+
+def empty_state_not_logged_in():
+    """Empty state when user is not logged in"""
+    return rx.center(
+        rx.vstack(
+            rx.icon(
+                "message-circle",
+                size=48,
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-neutral-500 mb-4",
+                    "text-gray-400 mb-4",
+                ),
+            ),
+            rx.text(
+                "Login to see your chat history",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-neutral-400 text-lg font-medium",
+                    "text-gray-600 text-lg font-medium",
+                ),
+            ),
+            rx.text(
+                "Sign in to access your previous conversations",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-neutral-500 text-sm text-center",
+                    "text-gray-500 text-sm text-center",
+                ),
+            ),
+            spacing="2",
+            align="center",
+            class_name="py-16",
+        ),
+        class_name="w-full",
+    )
+
+
+def empty_state_no_chats():
+    """Empty state when user is logged in but has no chats"""
+    return rx.center(
+        rx.vstack(
+            rx.icon(
+                "message-circle-off",
+                size=48,
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-neutral-500 mb-4",
+                    "text-gray-400 mb-4",
+                ),
+            ),
+            rx.text(
+                "Nothing to display yet",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-neutral-400 text-lg font-medium",
+                    "text-gray-600 text-lg font-medium",
+                ),
+            ),
+            rx.text(
+                "Start chatting to see your conversation history appear here",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "text-neutral-500 text-sm text-center",
+                    "text-gray-500 text-sm text-center",
+                ),
+            ),
+            rx.button(
+                "Start New Chat",
+                on_click=rx.redirect("/"),
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "mt-4 px-6 py-3 bg-neutral-700 hover:bg-neutral-600 border-neutral-600 hover:border-neutral-500 text-neutral-200 hover:text-neutral-100 rounded-lg transition-all duration-200",
+                    "mt-4 px-6 py-3 bg-black hover:bg-gray-900 border-gray-900 hover:border-black text-white hover:text-gray-100 rounded-lg transition-all duration-200",
+                ),
+            ),
+            spacing="2",
+            align="center",
+            class_name="py-16",
+        ),
+        class_name="w-full",
     )
 
 
 def chat_history_list():
     """List of chat history items"""
-    # Mock data - replace with actual state data later
-    chat_items = [
-        {
-            "title": "Removing Active Tab Light Effect in Reflex",
-            "last_message": "Last message 2 hours ago",
-            "timestamp": "2 hours ago",
-        },
-        {
-            "title": "Kinde Auth Google Social Login Setup",
-            "last_message": "Last message 2 days ago",
-            "timestamp": "2 days ago",
-        },
-        {
-            "title": "Google Auth Setup for Reflex",
-            "last_message": "Last message 2 days ago",
-            "timestamp": "2 days ago",
-        },
-        {
-            "title": "Google Sign-In for Reflex App",
-            "last_message": "Last message 2 days ago",
-            "timestamp": "2 days ago",
-        },
-        {
-            "title": "Reflex Python Authentication Setup",
-            "last_message": "Last message 2 days ago",
-            "timestamp": "2 days ago",
-        },
-        {
-            "title": "Clerk Auth DNS Configuration Issue",
-            "last_message": "Last message 2 days ago",
-            "timestamp": "2 days ago",
-        },
-        {
-            "title": "Umami Analytics Tracking in Reflex",
-            "last_message": "Last message 3 days ago",
-            "timestamp": "3 days ago",
-        },
-        {
-            "title": "Self-Hosting Plausible Analytics",
-            "last_message": "Last message 3 days ago",
-            "timestamp": "3 days ago",
-        },
-    ]
-
-    return rx.vstack(
-        *[
-            chat_history_item(
-                title=item["title"],
-                last_message=item["last_message"],
-                timestamp=item["timestamp"],
-            )
-            for item in chat_items
-        ],
-        spacing="3",
-        class_name="w-full",
+    return rx.cond(
+        clerk.ClerkState.is_signed_in,
+        # User is logged in - show chats or empty state
+        rx.cond(
+            State.user_chats,
+            # User has chats
+            rx.vstack(
+                rx.foreach(
+                    State.user_chats,
+                    chat_history_item
+                ),
+                spacing="3",
+                class_name="w-full",
+            ),
+            # User has no chats
+            empty_state_no_chats(),
+        ),
+        # User is not logged in
+        empty_state_not_logged_in(),
     )
 
 
@@ -169,17 +217,25 @@ def history_header():
 
 def chat_count_info():
     """Information about number of previous chats"""
-    return rx.hstack(
-        rx.text(
-            "You have 450 previous chats with Claude ",
-            class_name=rx.cond(
-                State.is_dark_theme,
-                "text-neutral-400 text-sm ml-2",
-                "text-gray-600 text-sm ml-2",
+    return rx.cond(
+        clerk.ClerkState.is_signed_in,
+        rx.cond(
+            State.user_chats,
+            rx.hstack(
+                rx.text(
+                    "You have ", State.user_chats.length(), " previous chats",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "text-neutral-400 text-sm ml-2",
+                        "text-gray-600 text-sm ml-2",
+                    ),
+                ),
+                spacing="0",
+                class_name="mb-6 max-w-4xl mx-auto",
             ),
+            rx.fragment(),
         ),
-        spacing="0",
-        class_name="mb-6 max-w-4xl mx-auto",
+        rx.fragment(),
     )
 
 
@@ -194,4 +250,5 @@ def history_nav():
             class_name="w-full max-w-4xl mx-auto px-4 py-6 md:py-8",
         ),
         class_name="min-h-screen pt-4 md:pt-8",
+        on_mount=State.load_user_chats,
     )
