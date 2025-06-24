@@ -82,7 +82,10 @@ def chat_history_item(chat):
             "w-full bg-neutral-800/30 hover:bg-neutral-800/50 border border-neutral-700/50 hover:border-neutral-600/70 rounded-xl p-4 cursor-pointer transition-all duration-200 backdrop-blur-sm",
             "w-full bg-white/60 hover:bg-white/80 border border-gray-200/60 hover:border-gray-300/80 rounded-xl p-4 cursor-pointer transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
         ),
-        on_click=rx.redirect(f"/chat/{chat['id']}"),
+        on_click=[
+            State.load_chat_history(chat["id"]),
+            rx.redirect(f"/chat/{chat['id']}"),
+        ],
     )
 
 
