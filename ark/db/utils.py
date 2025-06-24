@@ -3,10 +3,50 @@ from dotenv import load_dotenv
 import os
 from typing import Optional, List, Dict, Any, Union
 import json
+from datetime import datetime, timezone
 
 
 load_dotenv()
 DB_URL = os.getenv("NEON_DB_URL")
+
+
+def format_time_ago(timestamp):
+    """
+    Convert timestamp to human readable format like '2 hours ago', '3 days ago'
+    
+    Args:
+        timestamp: datetime object with timezone info
+        
+    Returns:
+        str: Human readable time format
+    """
+    if not timestamp:
+        return "unknown"
+    
+    now = datetime.now(timezone.utc)
+    if timestamp.tzinfo is None:
+        timestamp = timestamp.replace(tzinfo=timezone.utc)
+    
+    diff = now - timestamp
+    seconds = diff.total_seconds()
+    
+    if seconds < 60:
+        return "just now"
+    elif seconds < 3600:  # less than 1 hour
+        minutes = int(seconds // 60)
+        return f"{minutes} minute{'s' if minutes != 1 else ''} ago"
+    elif seconds < 86400:  # less than 1 day
+        hours = int(seconds // 3600)
+        return f"{hours} hour{'s' if hours != 1 else ''} ago"
+    elif seconds < 604800:  # less than 1 week
+        days = int(seconds // 86400)
+        return f"{days} day{'s' if days != 1 else ''} ago"
+    elif seconds < 2419200:  # less than 4 weeks
+        weeks = int(seconds // 604800)
+        return f"{weeks} week{'s' if weeks != 1 else ''} ago"
+    else:
+        months = int(seconds // 2419200)
+        return f"{months} month{'s' if months != 1 else ''} ago"
 
 
 async def get_connection():
@@ -108,7 +148,13 @@ async def get_user_chats(user_id: str, limit: int = 50, offset: int = 0) -> List
         )
         await conn.close()
         
-        return [dict(row) for row in rows]
+        chats = []
+        for row in rows:
+            chat = dict(row)
+            chat['updated_at'] = format_time_ago(chat['updated_at'])
+            chats.append(chat)
+        
+        return chats
     except Exception as e:
         print(f"Error fetching user chats: {e}")
         return []

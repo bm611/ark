@@ -66,7 +66,7 @@ def chat_history_item(chat):
                 },
             ),
             rx.text(
-                f"Last updated {chat['updated_at']}",
+                chat['updated_at'],
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "text-neutral-400 text-xs md:text-sm mt-1",
