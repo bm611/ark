@@ -42,6 +42,8 @@ class WeatherTool(BaseTool):
             },
         }
     
-    def execute(self, location: str, units: str = "imperial") -> Dict[str, Any]:
+    def execute(self, **kwargs) -> Dict[str, Any]:
         """Execute the weather tool."""
+        location = kwargs.get("location")
+        units = kwargs.get("units", "imperial")
         return get_weather_data(location, units)

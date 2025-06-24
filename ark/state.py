@@ -12,8 +12,8 @@ from ark.logs.message_log import save_messages_to_log
 # Model Configuration Constants
 class ModelConfig:
     DEFAULT_PROVIDER = "openrouter"
-    CHAT_MODEL = "google/gemini-2.5-flash-preview"
-    SEARCH_MODEL = "perplexity/sonar"
+    CHAT_MODEL = "google/gemini-2.5-flash"
+    SEARCH_MODEL = "perplexity/sonar-pro"
 
 
 class State(rx.State):
@@ -248,10 +248,17 @@ class State(rx.State):
     async def handle_auth_change(self):
         """Handle authentication state changes (login/logout)."""
         clerk_state = await self.get_state(clerk.ClerkState)
-        clerk_user_state = await self.get_state(clerk.ClerkUser)
+        
         if clerk_state.is_signed_in:
             print(f"User signed in: {clerk_state.user_id}")
-            print(f"User Name: {clerk_user_state.first_name}")
-            self.logged_user_name = clerk_user_state.first_name
+            
+            # Small delay to allow user data to load
+            import asyncio
+            await asyncio.sleep(0.5)
+            
+            clerk_user_state = await self.get_state(clerk.ClerkUser)
+            self.logged_user_name = clerk_user_state.first_name or ""
+            print(f"User Name: {self.logged_user_name}")
         else:
             print("User signed out")
+            self.logged_user_name = ""
