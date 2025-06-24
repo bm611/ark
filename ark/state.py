@@ -6,7 +6,6 @@ import reflex_clerk_api as clerk
 import base64
 import os
 import uuid
-from ark.logs.message_log import save_messages_to_log
 from ark.db.utils import init_user_if_not_exists
 
 
@@ -107,9 +106,6 @@ class State(rx.State):
             clerk_state = await self.get_state(clerk.ClerkState)
             if clerk_state.is_signed_in:
                 await save_all_messages(self.chat_id, self.messages)
-        
-        # Save to log file (existing functionality)
-        save_messages_to_log(self.messages)
         
         # Clear state
         self.messages = []
