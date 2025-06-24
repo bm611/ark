@@ -9,3 +9,4 @@ __pycache__/
 .claude
 logs/
 .env
+CLAUDE.md
