@@ -4,7 +4,6 @@ from ark.components.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
 from ark.pages.chat import chat_nav, chat_messages, chat_input
 from ark.state import State
-from ark.components.upload import upload_component
 import reflex_clerk_api as clerk
 import os
 from ark.pages.history import history_nav
@@ -49,12 +48,6 @@ def history() -> rx.Component:
         ),
     )
 
-
-@rx.page(route="/demo", title="demo")
-def demo() -> rx.Component:
-    return rx.container(
-        upload_component(),
-    )
 
 
 @rx.page(route="/changelog", title="Changelog - Ark")
