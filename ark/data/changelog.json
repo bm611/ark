@@ -8,6 +8,10 @@
 				{
 					"type": "added",
 					"description": "Chat history support with Neon database 🎉"
+				},
+				{
+					"type": "added",
+					"description": "Human readable timestamp for chat history"
 				}
 			]
 		},
