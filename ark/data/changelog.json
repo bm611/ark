@@ -1,9 +1,20 @@
 {
 	"entries": [
 		{
+			"version": "0.6.0",
+			"date": "Jun 23 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Chat history support with Neon database 🎉"
+				}
+			]
+		},
+		{
 			"version": "0.5.3",
 			"date": "Jun 16 2025",
-			"is_latest": true,
+			"is_latest": false,
 			"changes": [
 				{
 					"type": "added",
@@ -123,7 +134,6 @@
 				}
 			]
 		},
-
 		{
 			"version": "0.4.2",
 			"date": "May 30 2025",
@@ -139,7 +149,6 @@
 				}
 			]
 		},
-
 		{
 			"version": "0.4.1",
 			"date": "May 29 2025",
@@ -163,7 +172,6 @@
 				}
 			]
 		},
-
 		{
 			"version": "0.4.0",
 			"date": "May 28 2025",
