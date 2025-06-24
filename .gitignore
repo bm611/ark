@@ -7,3 +7,5 @@ __pycache__/
 .venv
 .ropeproject
 .claude
+logs/
+.env

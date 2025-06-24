@@ -24,7 +24,7 @@ def index() -> rx.Component:
     )
 
 
-@rx.page(route="/chat", title="Ark - Chat")
+@rx.page(route="/chat/[conversation]", title="Ark - Chat", on_load=State.send_message)
 def chat() -> rx.Component:
     return rx.box(
         chat_nav(),

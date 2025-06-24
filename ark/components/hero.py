@@ -171,9 +171,8 @@ def input_section():
                                     "boxShadow": "0px 4px 0px 0px rgba(107,114,128,0.6)",
                                 },
                                 on_click=[
-                                    rx.redirect("/chat"),
+                                    State.generate_chat_id_and_redirect,
                                     State.handle_generation,
-                                    State.send_message,
                                 ],
                                 loading=State.is_gen,
                                 disabled=State.is_gen,
@@ -282,9 +281,8 @@ def hero():
                                             State.set_prompt(
                                                 "Give me some Python programming tips with code examples."
                                             ),
-                                            rx.redirect("/chat"),
+                                            State.generate_chat_id_and_redirect,
                                             State.handle_generation,
-                                            State.send_message,
                                         ],
                                     ),
                                     rx.button(
@@ -318,9 +316,8 @@ def hero():
                                                 "What's the latest news in US, World, Technology & Science?"
                                             ),
                                             State.handle_search_click,
-                                            rx.redirect("/chat"),
+                                            State.generate_chat_id_and_redirect,
                                             State.handle_generation,
-                                            State.send_message,
                                         ],
                                     ),
                                     rx.button(
@@ -353,9 +350,8 @@ def hero():
                                             State.set_prompt(
                                                 "Explain quantum computing"
                                             ),
-                                            rx.redirect("/chat"),
+                                            State.generate_chat_id_and_redirect,
                                             State.handle_generation,
-                                            State.send_message,
                                         ],
                                     ),
                                     wrap="wrap",

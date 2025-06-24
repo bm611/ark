@@ -2,3 +2,5 @@ openai==1.82.0
 reflex==0.7.14
 requests==2.32.3
 reflex-clerk-api
+python-dotenv==1.1.0
+asyncpg==0.30.0
