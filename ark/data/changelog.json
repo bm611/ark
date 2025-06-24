@@ -12,6 +12,10 @@
 				{
 					"type": "added",
 					"description": "Human readable timestamp for chat history"
+				},
+				{
+					"type": "added",
+					"description": "Image preivew support"
 				}
 			]
 		},

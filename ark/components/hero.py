@@ -1,6 +1,6 @@
 import reflex as rx
 from ark.state import State
-from ark.components.ui.buttons import action_button, gradient_card
+from ark.components.ui.buttons import action_button
 from ark.components.offline_models import (
     OfflineModelsState,
     offline_models_overlay,

@@ -35,7 +35,7 @@ def new_chat_button():
                 class_name="block md:hidden",
                 size=20,
             ),
-            rx.text("New Chat", class_name="hidden md:block"),
+            rx.text("New Chat", class_name="hidden md:block md:text-xl font-bold"),
             on_click=rx.redirect("/"),
             variant="outline",
             class_name=rx.cond(
@@ -66,7 +66,7 @@ def chat_history_item(chat):
                 },
             ),
             rx.text(
-                chat['updated_at'],
+                chat["updated_at"],
                 class_name=rx.cond(
                     State.is_dark_theme,
                     "text-neutral-400 text-xs md:text-sm mt-1",
@@ -181,10 +181,7 @@ def chat_history_list():
             State.user_chats,
             # User has chats
             rx.vstack(
-                rx.foreach(
-                    State.user_chats,
-                    chat_history_item
-                ),
+                rx.foreach(State.user_chats, chat_history_item),
                 spacing="3",
                 class_name="w-full",
             ),
@@ -210,9 +207,7 @@ def history_header():
                 as_="h1",
             ),
             new_chat_button(),
-            align="center",
-            justify="between",
-            class_name="w-full mb-4",
+            class_name="flex justify-between items-center w-full mb-4",
         ),
         class_name="w-full max-w-4xl mx-auto",
     )
@@ -226,7 +221,9 @@ def chat_count_info():
             State.user_chats,
             rx.hstack(
                 rx.text(
-                    "You have ", State.user_chats.length(), " previous chats",
+                    "You have ",
+                    State.user_chats.length(),
+                    " previous chats",
                     class_name=rx.cond(
                         State.is_dark_theme,
                         "text-neutral-400 text-sm ml-2",

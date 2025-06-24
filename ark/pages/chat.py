@@ -148,20 +148,44 @@ def response_message(message: dict, index: int) -> rx.Component:
     return rx.box(
         rx.cond(
             message["role"] == "user",
-            rx.text(
-                message.get("display_text", message["content"]),
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-slate-50",
-                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
+            rx.vstack(
+                rx.text(
+                    message.get("display_text", message["content"]),
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "ml-2 text-xl md:text-4xl font-bold tracking-wide text-slate-50",
+                        "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
+                    ),
+                    style={
+                        "display": "-webkit-box",
+                        "-webkit-line-clamp": "2",
+                        "-webkit-box-orient": "vertical",
+                        "overflow": "hidden",
+                        "text-overflow": "ellipsis",
+                    },
                 ),
-                style={
-                    "display": "-webkit-box",
-                    "-webkit-line-clamp": "2",
-                    "-webkit-box-orient": "vertical",
-                    "overflow": "hidden",
-                    "text-overflow": "ellipsis",
-                },
+                # Image preview section for user messages
+                rx.cond(
+                    State.current_message_image,
+                    rx.box(
+                        rx.image(
+                            src=State.current_message_image,
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
+                                "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
+                            ),
+                            style={
+                                "max-width": "300px",
+                                "max-height": "300px",
+                                "object-fit": "contain",
+                            },
+                        ),
+                        class_name="ml-2 mt-4",
+                    ),
+                ),
+                spacing="0",
+                align_items="start",
             ),
             rx.vstack(
                 # Buttons section in horizontal stack
