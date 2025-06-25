@@ -3,7 +3,7 @@ from typing import Dict, Any
 from ark.state import State
 from ark.components.custom.weather import weather_card
 from ark.components.ui.buttons import expandable_section_button
-from ark.components.ui.layout import navigation_header, loading_skeleton
+from ark.components.ui.layout import navigation_header
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -182,6 +182,21 @@ def response_message(message: dict, index: int) -> rx.Component:
                             },
                         ),
                         class_name="ml-2 mt-4",
+                    ),
+                ),
+                # Generating response indicator for user messages
+                rx.cond(
+                    State.is_streaming,
+                    rx.box(
+                        rx.text(
+                            "Generating Response...",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "text-lg font-semibold text-slate-300 bg-gradient-to-r from-slate-300 via-slate-50 to-slate-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                                "text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                            ),
+                        ),
+                        class_name="w-full justify-left px-4 py-4",
                     ),
                 ),
                 spacing="0",
@@ -494,10 +509,10 @@ def chat_input():
                     style={"boxShadow": "none", "background": "none"},
                     on_click=[
                         State.handle_generation,
-                        State.send_message,
+                        State.send_message_stream,
                     ],
-                    loading=State.is_gen,
-                    disabled=State.is_gen,
+                    loading=State.is_streaming,
+                    disabled=State.is_streaming,
                 ),
                 class_name="relative w-full max-w-2xl mx-auto",
             ),
@@ -516,10 +531,6 @@ def chat_messages():
         rx.foreach(
             State.messages,
             lambda message, index: response_message(message, index),
-        ),
-        rx.cond(
-            State.is_gen,
-            loading_skeleton(),
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
     )

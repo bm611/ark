@@ -15,7 +15,11 @@
 				},
 				{
 					"type": "added",
-					"description": "Image preivew support"
+					"description": "Image preview support"
+				},
+				{
+					"type": "added",
+					"description": "Streaming response support"
 				}
 			]
 		},

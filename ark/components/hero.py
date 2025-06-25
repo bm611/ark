@@ -171,8 +171,8 @@ def input_section():
                                     "boxShadow": "0px 4px 0px 0px rgba(107,114,128,0.6)",
                                 },
                                 on_click=[
-                                    State.generate_chat_id_and_redirect,
                                     State.handle_generation,
+                                    State.generate_chat_id_and_redirect,
                                 ],
                                 loading=State.is_gen,
                                 disabled=State.is_gen,
@@ -281,8 +281,8 @@ def hero():
                                             State.set_prompt(
                                                 "Give me some Python programming tips with code examples."
                                             ),
-                                            State.generate_chat_id_and_redirect,
                                             State.handle_generation,
+                                            State.generate_chat_id_and_redirect,
                                         ],
                                     ),
                                     rx.button(
@@ -316,8 +316,8 @@ def hero():
                                                 "What's the latest news in US, World, Technology & Science?"
                                             ),
                                             State.handle_search_click,
-                                            State.generate_chat_id_and_redirect,
                                             State.handle_generation,
+                                            State.generate_chat_id_and_redirect,
                                         ],
                                     ),
                                     rx.button(
@@ -350,8 +350,8 @@ def hero():
                                             State.set_prompt(
                                                 "Explain quantum computing"
                                             ),
-                                            State.generate_chat_id_and_redirect,
                                             State.handle_generation,
+                                            State.generate_chat_id_and_redirect,
                                         ],
                                     ),
                                     wrap="wrap",

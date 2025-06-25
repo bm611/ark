@@ -20,6 +20,7 @@ class State(rx.State):
     prompt: str = ""
     messages: List[ChatMessage] = []
     is_gen: bool = False
+    is_streaming: bool = False
     selected_action: str = ""
     is_tool_use: bool = False
     img: list[str] = []
@@ -67,6 +68,19 @@ class State(rx.State):
             )
 
         return rx.redirect(f"/chat/{self.chat_id}")
+    
+    async def handle_chat_page_load(self):
+        """Handle loading a chat page - either load existing chat or process new message."""
+        # Get the conversation ID from the URL
+        conversation_id = self.router.page.params.get("conversation", "")
+        
+        if conversation_id and conversation_id != self.chat_id:
+            # This is an existing chat, load its history
+            await self.load_chat_history(conversation_id)
+        elif self.messages and self.messages[-1].get("role") == "user" and not self.is_streaming:
+            # This is a new chat with a user message waiting to be processed
+            async for _ in self.send_message_stream():
+                yield
 
     @rx.var
     def current_url(self) -> str:
@@ -189,6 +203,84 @@ class State(rx.State):
             import asyncio
 
             asyncio.create_task(self._save_current_messages())
+    
+    async def send_message_stream(self):
+        """Send message with streaming response."""
+        if self.messages and self.messages[-1].get("role") == "assistant":
+            # If last message is assistant, don't allow sending another message
+            return
+
+        # Set streaming state
+        self.is_streaming = True
+        yield
+
+        # Determine model based on action and selection
+        model = self._get_model_for_action()
+
+        # Add empty assistant message that will be filled during streaming
+        assistant_message = {
+            "role": "assistant",
+            "content": "",
+            "display_text": "",
+        }
+        self.messages.append(assistant_message)
+        yield
+
+        try:
+            # Process the message with streaming
+            async for partial_message, new_weather_data, new_weather_location, is_complete in (
+                message_handler.process_message_stream(
+                    messages=self.messages[:-1],  # Exclude the empty assistant message we just added
+                    provider=self.selected_provider,
+                    model=model,
+                    action=self.selected_action,
+                    weather_data=self.weather_data,
+                    weather_location=self.weather_location,
+                )
+            ):
+                # Update the last message (assistant message) with streaming content
+                self.messages[-1] = partial_message
+                # Force Reflex to detect the state change
+                self.messages = self.messages
+                
+                # Update weather data if provided
+                if new_weather_data:
+                    self.weather_data = new_weather_data
+                    self.weather_location = new_weather_location
+                    # Add weather data to the message
+                    self.messages[-1]["weather_data"] = new_weather_data
+                    self.messages[-1]["weather_location"] = new_weather_location
+                
+                # Set tool use flag if applicable
+                self.is_tool_use = bool(partial_message.get("tool_name"))
+                
+                # Yield to update UI
+                yield
+                
+                # If this is the final complete message, break
+                if is_complete:
+                    break
+
+        except Exception as e:
+            # Handle errors by updating the last message with error info
+            self.messages[-1] = {
+                "role": "assistant",
+                "content": f"Error: {str(e)}",
+                "display_text": f"Error: {str(e)}",
+            }
+            yield
+
+        finally:
+            # Reset streaming state
+            self.is_streaming = False
+            self.is_gen = False
+            yield
+
+            # Save messages to database if chat_id exists
+            if self.chat_id:
+                # Save all messages that aren't saved yet
+                import asyncio
+                asyncio.create_task(self._save_current_messages())
 
     async def _save_current_messages(self):
         """Save current messages to database"""
