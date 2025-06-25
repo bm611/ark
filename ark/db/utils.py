@@ -229,21 +229,49 @@ async def delete_chat(chat_id: str, user_id: str) -> bool:
     Returns:
         bool: True if successful, False otherwise
     """
+    conn = None
     try:
         conn = await get_connection()
-        result = await conn.execute(
+        
+        # First check if the chat exists and belongs to the user
+        chat_check = await conn.fetchval(
             """
-            DELETE FROM chats 
-            WHERE id = $1 AND user_id = $2
+            SELECT COUNT(*) FROM chats 
+            WHERE id = $1::UUID AND user_id = $2
             """,
             chat_id, user_id
         )
-        await conn.close()
         
-        return result.split()[-1] == "1"
+        if chat_check == 0:
+            print(f"Chat {chat_id} not found or does not belong to user {user_id}")
+            return False
+        
+        # Delete the chat - CASCADE will handle messages automatically
+        result = await conn.execute(
+            """
+            DELETE FROM chats 
+            WHERE id = $1::UUID AND user_id = $2
+            """,
+            chat_id, user_id
+        )
+        
+        # Parse the result string (e.g., "DELETE 1" -> 1 row affected)
+        rows_affected = int(result.split()[-1]) if result else 0
+        success = rows_affected > 0
+        
+        if success:
+            print(f"Successfully deleted chat {chat_id}")
+        else:
+            print(f"Failed to delete chat {chat_id} - no rows affected")
+            
+        return success
+        
     except Exception as e:
-        print(f"Error deleting chat: {e}")
+        print(f"Error deleting chat {chat_id}: {e}")
         return False
+    finally:
+        if conn:
+            await conn.close()
 
 
 async def chat_exists(chat_id: str, user_id: str) -> bool:

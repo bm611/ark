@@ -448,6 +448,33 @@ class State(rx.State):
             print(f"Loaded {len(self.messages)} messages for chat {chat_id}")
 
     @rx.event
+    async def delete_chat(self, chat_id: str):
+        """Delete a chat and all its messages"""
+        from ark.db.utils import delete_chat
+
+        clerk_state = await self.get_state(clerk.ClerkState)
+        if not clerk_state.is_signed_in:
+            return
+
+        # Delete the chat (this will also delete messages due to foreign key cascade)
+        success = await delete_chat(chat_id, clerk_state.user_id)
+        
+        if success:
+            # Refresh the chat list from database to ensure UI is updated
+            await self.load_user_chats()
+            
+            # If the deleted chat is the current chat, reset the current chat
+            if self.chat_id == chat_id:
+                self.chat_id = ""
+                self.messages = []
+                
+            # Show success toast
+            return rx.toast.success("Chat deleted successfully")
+        else:
+            # Show error toast
+            return rx.toast.error("Failed to delete chat")
+
+    @rx.event
     async def handle_auth_change(self):
         """Handle authentication state changes (login/logout)."""
         from ark.db.utils import init_user_if_not_exists
