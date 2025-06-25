@@ -74,10 +74,23 @@ class MessageHandler:
     ):
         """
         Process a message with streaming and yield partial responses.
+        For search models, uses non-streaming to get citations properly.
         
         Yields:
             Tuple of (partial_message_dict, is_complete)
         """
+        # Check if this is a search model that needs citations
+        is_search_model = (
+            model and 
+            (model.lower().startswith("perplexity/") or "sonar" in model.lower()) and
+            action == "Search"
+        )
+        
+        if is_search_model:
+            # Use non-streaming for search models to get citations properly
+            message_dict = self.process_message(messages, provider, model, action)
+            yield message_dict, True
+            return
         start_time = time.time()
         
         # Make the streaming API call
@@ -185,35 +198,8 @@ class MessageHandler:
                     citations.append(annotation.url_citation.url)
                     print(f"Extracted citation: {annotation.url_citation.url}")
         
-        # If no citations found in streaming, try a non-streaming call ONLY for search models that should have citations
-        if (not citations and model and 
-            ("perplexity" in model.lower() or "sonar" in model.lower()) and 
-            action == "Search"):
-            print("No citations in streaming response for search model, making non-streaming call to get annotations...")
-            try:
-                non_stream_response = self.provider_manager.chat_completion(
-                    messages=messages,
-                    provider_name=provider,
-                    model=model,
-                    tools=None  # Don't include tools for citation-only call
-                )
-                
-                if (hasattr(non_stream_response, 'choices') and non_stream_response.choices and
-                    hasattr(non_stream_response.choices[0], 'message') and
-                    hasattr(non_stream_response.choices[0].message, 'annotations')):
-                    
-                    annotations = non_stream_response.choices[0].message.annotations or []
-                    print(f"Found {len(annotations)} annotations in non-streaming response")
-                    
-                    for annotation in annotations:
-                        if (hasattr(annotation, 'type') and annotation.type == 'url_citation' and 
-                            hasattr(annotation, 'url_citation') and hasattr(annotation.url_citation, 'url')):
-                            citations.append(annotation.url_citation.url)
-                            print(f"Extracted citation from non-streaming: {annotation.url_citation.url}")
-                            
-            except Exception as e:
-                print(f"Failed to get annotations from non-streaming call: {e}")
-        elif not citations:
+        # For non-search models, citations from streaming are not expected
+        if not citations:
             print("No citations expected for this model/action combination")
         
         # Build final message dictionary manually for streaming
@@ -290,8 +276,20 @@ class MessageHandler:
         response
     ) -> ChatMessage:
         """Build the message dictionary."""
-        # Get citations if available
-        citations = getattr(response, "citations", [])
+        # Extract citations from OpenRouter annotations
+        citations = []
+        if (hasattr(response, 'choices') and response.choices and
+            hasattr(response.choices[0], 'message') and
+            hasattr(response.choices[0].message, 'annotations')):
+            
+            annotations = response.choices[0].message.annotations or []
+            print(f"Found {len(annotations)} annotations in non-streaming response")
+            
+            for annotation in annotations:
+                if (hasattr(annotation, 'type') and annotation.type == 'url_citation' and 
+                    hasattr(annotation, 'url_citation') and hasattr(annotation.url_citation, 'url')):
+                    citations.append(annotation.url_citation.url)
+                    print(f"Extracted citation: {annotation.url_citation.url}")
         
         message_dict: ChatMessage = {
             "role": "assistant",

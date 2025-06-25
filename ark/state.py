@@ -150,35 +150,6 @@ class State(rx.State):
             self.citations_expanded[message_index] = True
 
 
-    def send_message(self):
-        """Send message using the new message handler."""
-        if self.messages and self.messages[-1].get("role") == "assistant":
-            # If last message is assistant, don't allow sending another message
-            return
-
-        # Determine model based on action and selection
-        model = self._get_model_for_action()
-
-        # Process the message
-        message_dict = message_handler.process_message(
-            messages=self.messages,
-            provider=self.selected_provider,
-            model=model,
-            action=self.selected_action,
-        )
-
-        # Update state
-        self.is_gen = False
-
-        # Add the message to the conversation
-        self.messages.append(message_dict)
-
-        # Save messages to database if chat_id exists
-        if self.chat_id:
-            # Save all messages that aren't saved yet
-            import asyncio
-
-            asyncio.create_task(self._save_current_messages())
     
     async def send_message_stream(self):
         """Send message with streaming response."""
