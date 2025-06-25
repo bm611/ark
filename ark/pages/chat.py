@@ -1,7 +1,6 @@
 import reflex as rx
 from typing import Dict, Any
 from ark.state import State
-from ark.components.custom.weather import weather_card
 from ark.components.ui.buttons import expandable_section_button
 from ark.components.ui.layout import navigation_header
 
@@ -220,45 +219,6 @@ def response_message(message: dict, index: int) -> rx.Component:
                             ),
                         ),
                     ),
-                    # Tool use section
-                    rx.cond(
-                        message.get("tool_name"),
-                        rx.box(
-                            rx.button(
-                                rx.hstack(
-                                    rx.icon(
-                                        "wrench",
-                                        size=16,
-                                        class_name="text-white",
-                                    ),
-                                    rx.text(
-                                        "Tools",
-                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
-                                    ),
-                                    rx.cond(
-                                        State.tool_expanded.get(index, False),
-                                        rx.icon(
-                                            "chevron-down",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                        rx.icon(
-                                            "chevron-right",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                    ),
-                                    class_name="items-center gap-1",
-                                ),
-                                on_click=State.toggle_tool(index),
-                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(34,197,94,0.8)] hover:translate-y-1 transition-all duration-200",
-                                style={
-                                    "background": "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
-                                    "border": "2px solid #166534",
-                                },
-                            ),
-                        ),
-                    ),
                     # Thinking tokens collapsible section
                     rx.cond(
                         message.get("thinking"),
@@ -334,31 +294,6 @@ def response_message(message: dict, index: int) -> rx.Component:
                     ),
                 ),
                 rx.cond(
-                    State.tool_expanded.get(index, False),
-                    rx.box(
-                        rx.text(
-                            f"Tool Name: {message.get('tool_name', '')}",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg font-semibold text-slate-50",
-                                "font-[dm] text-sm md:text-lg font-semibold text-black",
-                            ),
-                        ),
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                        ),
-                        # width="100%",
-                        # max_width="100%",
-                        overflow_x="auto",
-                        style={
-                            "word-wrap": "break-word",
-                            "overflow-wrap": "break-word",
-                        },
-                    ),
-                ),
-                rx.cond(
                     State.thinking_expanded.get(index, False),
                     rx.box(
                         rx.markdown(
@@ -409,14 +344,6 @@ def response_message(message: dict, index: int) -> rx.Component:
                             "word-wrap": "break-word",
                             "overflow-wrap": "break-word",
                         },
-                    ),
-                ),
-                # Weather component - display when weather data is available
-                rx.cond(
-                    message.get("weather_data"),
-                    rx.box(
-                        weather_card(),
-                        class_name="mb-4 w-full md:max-w-xl",
                     ),
                 ),
                 # Performance stats with hero component design style

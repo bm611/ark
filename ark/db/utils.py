@@ -336,11 +336,7 @@ async def save_message(
     citations: Optional[List[str]] = None,
     generation_time: str = "",
     total_tokens: int = 0,
-    tokens_per_second: float = 0.0,
-    tool_name: str = "",
-    tool_args: str = "",
-    weather_data: Optional[Dict] = None,
-    weather_location: str = ""
+    tokens_per_second: float = 0.0
 ) -> bool:
     """
     Save a message to the database
@@ -356,10 +352,6 @@ async def save_message(
         generation_time: Time taken to generate response
         total_tokens: Number of tokens used
         tokens_per_second: Generation speed
-        tool_name: Name of tool used
-        tool_args: Arguments passed to tool
-        weather_data: Weather data if applicable
-        weather_location: Weather location if applicable
         
     Returns:
         bool: True if successful, False otherwise
@@ -370,22 +362,19 @@ async def save_message(
         # Convert content to JSON if it's a list
         content_json = json.dumps(content) if isinstance(content, list) else json.dumps([{"type": "text", "text": content}])
         citations_json = json.dumps(citations) if citations else None
-        weather_data_json = json.dumps(weather_data) if weather_data else None
         
         await conn.execute(
             """
             INSERT INTO messages (
                 chat_id, message_order, role, content, display_text,
-                thinking, citations, generation_time, total_tokens, tokens_per_second,
-                tool_name, tool_args, weather_data, weather_location, created_at
+                thinking, citations, generation_time, total_tokens, tokens_per_second, created_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
             """,
             chat_id, message_order, role, content_json, display_text,
             thinking or None, citations_json, generation_time or None, 
             total_tokens if total_tokens > 0 else None, 
-            tokens_per_second if tokens_per_second > 0 else None,
-            tool_name or None, tool_args or None, weather_data_json, weather_location or None
+            tokens_per_second if tokens_per_second > 0 else None
         )
         
         # Update chat timestamp
@@ -423,11 +412,7 @@ async def save_message_from_dict(chat_id: str, message_order: int, message_dict:
         citations=message_dict.get("citations", []),
         generation_time=message_dict.get("generation_time", ""),
         total_tokens=message_dict.get("total_tokens", 0),
-        tokens_per_second=message_dict.get("tokens_per_second", 0.0),
-        tool_name=message_dict.get("tool_name", ""),
-        tool_args=message_dict.get("tool_args", ""),
-        weather_data=message_dict.get("weather_data"),
-        weather_location=message_dict.get("weather_location", "")
+        tokens_per_second=message_dict.get("tokens_per_second", 0.0)
     )
 
 
@@ -446,8 +431,7 @@ async def get_chat_messages(chat_id: str) -> List[Dict[str, Any]]:
         rows = await conn.fetch(
             """
             SELECT id, chat_id, message_order, role, content, display_text,
-                   thinking, citations, generation_time, total_tokens, tokens_per_second,
-                   tool_name, tool_args, weather_data, weather_location, created_at
+                   thinking, citations, generation_time, total_tokens, tokens_per_second, created_at
             FROM messages 
             WHERE chat_id = $1
             ORDER BY message_order ASC
@@ -462,7 +446,6 @@ async def get_chat_messages(chat_id: str) -> List[Dict[str, Any]]:
             # Parse JSON fields back to Python objects
             message['content'] = json.loads(message['content']) if message['content'] else []
             message['citations'] = json.loads(message['citations']) if message['citations'] else []
-            message['weather_data'] = json.loads(message['weather_data']) if message['weather_data'] else None
             messages.append(message)
         
         return messages

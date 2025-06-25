@@ -31,7 +31,6 @@ class BaseProvider(ABC):
         self, 
         messages: List[Dict[str, str]], 
         model: Optional[str] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
         **kwargs
     ):
         """Create a chat completion."""
@@ -46,17 +45,12 @@ class BaseProvider(ABC):
             **kwargs
         }
         
-        if tools:
-            completion_kwargs["tools"] = tools
-            completion_kwargs["tool_choice"] = "auto"
-        
         return self.client.chat.completions.create(**completion_kwargs)
     
     def chat_completion_stream(
         self, 
         messages: List[Dict[str, str]], 
         model: Optional[str] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
         **kwargs
     ):
         """Create a streaming chat completion."""
@@ -71,10 +65,6 @@ class BaseProvider(ABC):
             "stream": True,
             **kwargs
         }
-        
-        if tools:
-            completion_kwargs["tools"] = tools
-            completion_kwargs["tool_choice"] = "auto"
         
         return self.client.chat.completions.create(**completion_kwargs)
 

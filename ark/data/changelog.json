@@ -20,6 +20,10 @@
 				{
 					"type": "added",
 					"description": "Streaming response support"
+				},
+				{
+					"type": "fixed",
+					"description": "Tool calling support removed(weather api call)"
 				}
 			]
 		},

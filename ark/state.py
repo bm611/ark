@@ -1,6 +1,6 @@
 import reflex as rx
 from typing import List, Optional
-from ark.models import WeatherData, ChatMessage
+from ark.models import ChatMessage
 from ark.handlers.message_handler import message_handler
 import reflex_clerk_api as clerk
 import base64
@@ -22,7 +22,6 @@ class State(rx.State):
     is_gen: bool = False
     is_streaming: bool = False
     selected_action: str = ""
-    is_tool_use: bool = False
     img: list[str] = []
     logged_user_name: str = ""
     chat_id: str = ""
@@ -33,16 +32,11 @@ class State(rx.State):
     thinking_expanded: dict[int, bool] = {}
     # Citations section expansion state
     citations_expanded: dict[int, bool] = {}
-    # Tool section expansion state
-    tool_expanded: dict[int, bool] = {}
 
     # Provider and model selection
     selected_provider: str = ModelConfig.DEFAULT_PROVIDER
     selected_model: str = ModelConfig.CHAT_MODEL
 
-    # Weather-related state variables
-    weather_data: Optional[WeatherData] = None
-    weather_location: str = ""
 
     # Theme state
     is_dark_theme: bool = False
@@ -134,9 +128,6 @@ class State(rx.State):
         self.selected_action = ""
         self.thinking_expanded = {}
         self.citations_expanded = {}
-        self.tool_expanded = {}
-        self.weather_data = None
-        self.weather_location = ""
         self.chat_id = ""
         self.current_message_image = ""
 
@@ -158,12 +149,6 @@ class State(rx.State):
         else:
             self.citations_expanded[message_index] = True
 
-    def toggle_tool(self, message_index: int):
-        """Toggle the tool section for a specific message"""
-        if message_index in self.tool_expanded:
-            self.tool_expanded[message_index] = not self.tool_expanded[message_index]
-        else:
-            self.tool_expanded[message_index] = True
 
     def send_message(self):
         """Send message using the new message handler."""
@@ -175,24 +160,15 @@ class State(rx.State):
         model = self._get_model_for_action()
 
         # Process the message
-        message_dict, new_weather_data, new_weather_location = (
-            message_handler.process_message(
-                messages=self.messages,
-                provider=self.selected_provider,
-                model=model,
-                action=self.selected_action,
-                weather_data=self.weather_data,
-                weather_location=self.weather_location,
-            )
+        message_dict = message_handler.process_message(
+            messages=self.messages,
+            provider=self.selected_provider,
+            model=model,
+            action=self.selected_action,
         )
 
         # Update state
         self.is_gen = False
-        self.is_tool_use = bool(message_dict.get("tool_name"))
-
-        if new_weather_data:
-            self.weather_data = new_weather_data
-            self.weather_location = new_weather_location
 
         # Add the message to the conversation
         self.messages.append(message_dict)
@@ -228,31 +204,18 @@ class State(rx.State):
 
         try:
             # Process the message with streaming
-            async for partial_message, new_weather_data, new_weather_location, is_complete in (
+            async for partial_message, is_complete in (
                 message_handler.process_message_stream(
                     messages=self.messages[:-1],  # Exclude the empty assistant message we just added
                     provider=self.selected_provider,
                     model=model,
                     action=self.selected_action,
-                    weather_data=self.weather_data,
-                    weather_location=self.weather_location,
                 )
             ):
                 # Update the last message (assistant message) with streaming content
                 self.messages[-1] = partial_message
                 # Force Reflex to detect the state change
                 self.messages = self.messages
-                
-                # Update weather data if provided
-                if new_weather_data:
-                    self.weather_data = new_weather_data
-                    self.weather_location = new_weather_location
-                    # Add weather data to the message
-                    self.messages[-1]["weather_data"] = new_weather_data
-                    self.messages[-1]["weather_location"] = new_weather_location
-                
-                # Set tool use flag if applicable
-                self.is_tool_use = bool(partial_message.get("tool_name"))
                 
                 # Yield to update UI
                 yield
@@ -507,14 +470,6 @@ class State(rx.State):
                     chat_message["total_tokens"] = msg["total_tokens"]
                 if msg.get("tokens_per_second"):
                     chat_message["tokens_per_second"] = round(msg["tokens_per_second"])
-                if msg.get("tool_name"):
-                    chat_message["tool_name"] = msg["tool_name"]
-                if msg.get("tool_args"):
-                    chat_message["tool_args"] = msg["tool_args"]
-                if msg.get("weather_data"):
-                    chat_message["weather_data"] = msg["weather_data"]
-                if msg.get("weather_location"):
-                    chat_message["weather_location"] = msg["weather_location"]
 
                 self.messages.append(chat_message)
 

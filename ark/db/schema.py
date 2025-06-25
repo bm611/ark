@@ -60,13 +60,6 @@ async def test_connection():
             total_tokens INT,
             tokens_per_second REAL,
 
-            -- Tool usage metadata (nullable)
-            tool_name VARCHAR(100),
-            tool_args TEXT, -- Stored as text since it can be large
-            
-            -- Weather data (nullable)
-            weather_data JSONB,
-            weather_location VARCHAR(255),
 
             created_at TIMESTAMPTZ DEFAULT NOW(),
 

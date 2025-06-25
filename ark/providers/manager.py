@@ -7,7 +7,6 @@ from .base import ProviderRegistry, BaseProvider
 from .openrouter import OpenRouterProvider
 from .ollama import OllamaProvider
 from .lmstudio import LMStudioProvider
-from ark.tools.manager import tool_manager
 from .prompt import system_message_prompt
 
 
@@ -16,7 +15,6 @@ class ProviderManager:
 
     def __init__(self):
         self.registry = ProviderRegistry()
-        self.tool_manager = tool_manager
         self._initialize_providers()
         self._default_system_message = system_message_prompt
 
@@ -50,7 +48,6 @@ class ProviderManager:
         messages: List[Dict[str, str]],
         provider_name: str = "openrouter",
         model: Optional[str] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
         **kwargs,
     ):
         """Create a chat completion using specified provider."""
@@ -65,15 +62,8 @@ class ProviderManager:
                 0, {"role": "system", "content": self._default_system_message}
             )
 
-        # Check if model supports tools
-        if tools and hasattr(provider, "supports_tools"):
-            if not provider.supports_tools(
-                model or provider.config["default_model"] or ""
-            ):
-                tools = None
-
         return provider.chat_completion(
-            messages=full_messages, model=model, tools=tools, **kwargs
+            messages=full_messages, model=model, **kwargs
         )
     
     def chat_completion_stream(
@@ -81,7 +71,6 @@ class ProviderManager:
         messages: List[Dict[str, str]],
         provider_name: str = "openrouter",
         model: Optional[str] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
         **kwargs,
     ):
         """Create a streaming chat completion using specified provider."""
@@ -96,15 +85,8 @@ class ProviderManager:
                 0, {"role": "system", "content": self._default_system_message}
             )
 
-        # Check if model supports tools
-        if tools and hasattr(provider, "supports_tools"):
-            if not provider.supports_tools(
-                model or provider.config["default_model"] or ""
-            ):
-                tools = None
-
         return provider.chat_completion_stream(
-            messages=full_messages, model=model, tools=tools, **kwargs
+            messages=full_messages, model=model, **kwargs
         )
 
     def is_provider_available(self, provider_name: str) -> bool:
