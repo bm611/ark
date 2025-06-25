@@ -2,10 +2,11 @@ import reflex as rx
 from ark.components.nav import navbar
 from ark.components.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
-from ark.pages.chat import chat_nav, chat_messages
+from ark.pages.chat import chat_nav, chat_messages, chat_input
 from ark.state import State
-from ark.components.upload import upload_component
+import reflex_clerk_api as clerk
 import os
+from ark.pages.history import history_nav
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -16,31 +17,37 @@ def index() -> rx.Component:
         input_section(),
         class_name=rx.cond(
             State.is_dark_theme,
-            "min-h-screen bg-gray-900 text-white transition-colors duration-300",
+            "min-h-screen bg-gray-950 text-gray-50 transition-colors duration-300",
             "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )
 
 
-@rx.page(route="/chat", title="Ark - Chat")
+@rx.page(route="/chat/[conversation]", title="Ark - Chat", on_load=State.handle_chat_page_load)
 def chat() -> rx.Component:
     return rx.box(
         chat_nav(),
         chat_messages(),
-        input_section(),
+        chat_input(),
         class_name=rx.cond(
             State.is_dark_theme,
-            "h-screen flex flex-col bg-gray-900 text-white transition-colors duration-300",
+            "h-screen flex flex-col bg-gray-950 text-gray-50 transition-colors duration-300",
             "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300",
         ),
     )
 
 
-@rx.page(route="/demo", title="demo")
-def demo() -> rx.Component:
-    return rx.container(
-        upload_component(),
+@rx.page(route="/history", title="Ark - History")
+def history() -> rx.Component:
+    return rx.box(
+        history_nav(),
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "min-h-screen bg-gray-950 text-gray-50 transition-colors duration-300",
+            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
+        ),
     )
+
 
 
 @rx.page(route="/changelog", title="Changelog - Ark")
@@ -67,7 +74,7 @@ def changelog() -> rx.Component:
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            "min-h-screen bg-gray-900 text-white transition-colors duration-300",
+            "min-h-screen bg-gray-900 text-gray-50 transition-colors duration-300",
             "min-h-screen bg-white text-gray-900 transition-colors duration-300",
         ),
     )
@@ -95,3 +102,18 @@ app = rx.App(
         ),
     ],
 )
+
+# Register authentication change handler
+clerk.register_on_auth_change_handler(State.handle_auth_change)
+
+# Wrap the entire app with ClerkProvider
+clerk.wrap_app(
+    app,
+    publishable_key=os.environ["CLERK_PUBLISHABLE_KEY"],
+    secret_key=os.environ.get("CLERK_SECRET_KEY"),
+    register_user_state=True,
+)
+
+# Add sign-in and sign-up pages
+clerk.add_sign_in_page(app)
+clerk.add_sign_up_page(app)

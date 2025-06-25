@@ -146,7 +146,7 @@ def model_item(model_name: str, provider: str) -> rx.Component:
         ],
         class_name=rx.cond(
             State.is_dark_theme,
-            "p-3 hover:bg-gray-700 cursor-pointer transition-colors duration-150 border-b border-gray-600 last:border-b-0",
+            "p-3 hover:bg-gray-700 cursor-pointer transition-colors duration-150 border-b border-neutral-600 last:border-b-0",
             "p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 border-b border-gray-100 last:border-b-0",
         ),
     )
@@ -179,7 +179,7 @@ def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
                     "font-[dm] font-semibold text-sm text-white",
                     rx.cond(
                         State.is_dark_theme,
-                        "font-[dm] font-medium text-sm text-gray-300",
+                        "font-[dm] font-medium text-sm text-neutral-300",
                         "font-[dm] font-medium text-sm text-gray-700",
                     ),
                 ),
@@ -202,7 +202,7 @@ def provider_tab(provider: str, label: str, image_src: str) -> rx.Component:
             "flex-1 py-3 px-4 rounded-xl shadow-[0px_4px_0px_0px_rgba(147,51,234,0.6)] active:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.6)] active:translate-y-1 transition-all duration-200 border-2 border-purple-600 md:hover:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.6)] md:hover:translate-y-1",
             rx.cond(
                 State.is_dark_theme,
-                "flex-1 py-3 px-4 bg-gray-700 active:bg-gray-600 rounded-xl transition-all duration-200 border-2 border-gray-600 md:hover:bg-gray-600",
+                "flex-1 py-3 px-4 bg-gray-700 active:bg-gray-600 rounded-xl transition-all duration-200 border-2 border-neutral-600 md:hover:bg-gray-600",
                 "flex-1 py-3 px-4 bg-gray-50 active:bg-gray-100 rounded-xl transition-all duration-200 border-2 border-gray-200 md:hover:bg-gray-100",
             ),
         ),
@@ -250,7 +250,7 @@ def offline_models_content() -> rx.Component:
                     on_click=OfflineModelsState.close_drawer,
                     class_name=rx.cond(
                         State.is_dark_theme,
-                        "p-2 active:bg-gray-700 rounded-xl border-2 border-gray-600 shadow-[0px_3px_0px_0px_rgba(75,85,99,0.8)] active:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] active:translate-y-1 transition-all duration-200 md:hover:bg-gray-700 md:hover:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] md:hover:translate-y-1",
+                        "p-2 active:bg-gray-700 rounded-xl border-2 border-neutral-600 shadow-[0px_3px_0px_0px_rgba(38,38,38,0.8)] active:shadow-[0px_1px_0px_0px_rgba(38,38,38,0.8)] active:translate-y-1 transition-all duration-200 md:hover:bg-gray-700 md:hover:shadow-[0px_1px_0px_0px_rgba(38,38,38,0.8)] md:hover:translate-y-1",
                         "p-2 active:bg-gray-100 rounded-xl border-2 border-gray-300 shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] active:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-1 transition-all duration-200 md:hover:bg-gray-100 md:hover:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] md:hover:translate-y-1",
                     ),
                     variant="surface",
@@ -266,7 +266,7 @@ def offline_models_content() -> rx.Component:
                 gap="3",
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "mb-6 p-2 bg-gray-800 rounded-2xl border-2 border-gray-600 shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                    "mb-6 p-2 bg-neutral-800 rounded-2xl border-2 border-neutral-600 shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
                     "mb-6 p-2 bg-gray-50 rounded-2xl border-2 border-gray-200 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
                 ),
             ),
@@ -287,7 +287,7 @@ def offline_models_content() -> rx.Component:
                                 ),
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "bg-gray-800 rounded-2xl border-2 border-gray-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                    "bg-neutral-800 rounded-2xl border-2 border-neutral-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
                                     "bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
                                 ),
                             ),
@@ -346,7 +346,7 @@ def offline_models_content() -> rx.Component:
                                     variant="outline",
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "mt-2 font-[dm] bg-gray-700 active:bg-gray-600 border-gray-500 text-white rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(75,85,99,0.8)] active:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-600 md:hover:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] md:hover:translate-y-0.5",
+                                        "mt-2 font-[dm] bg-gray-700 active:bg-gray-600 border-gray-500 text-white rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(38,38,38,0.8)] active:shadow-[0px_1px_0px_0px_rgba(38,38,38,0.8)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-600 md:hover:shadow-[0px_1px_0px_0px_rgba(38,38,38,0.8)] md:hover:translate-y-0.5",
                                         "mt-2 font-[dm] bg-white active:bg-gray-50 border-gray-300 text-gray-700 rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.2)] active:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-50 md:hover:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] md:hover:translate-y-0.5",
                                     ),
                                 ),
@@ -356,7 +356,7 @@ def offline_models_content() -> rx.Component:
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-gray-800 rounded-2xl border-2 border-gray-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-neutral-800 rounded-2xl border-2 border-neutral-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
                                 "bg-white rounded-2xl border-2 border-gray-300 p-6 text-center shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
                             ),
                         ),
@@ -374,7 +374,7 @@ def offline_models_content() -> rx.Component:
                                 ),
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "bg-gray-800 rounded-2xl border-2 border-gray-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                    "bg-neutral-800 rounded-2xl border-2 border-neutral-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
                                     "bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
                                 ),
                             ),
@@ -404,7 +404,7 @@ def offline_models_content() -> rx.Component:
                                 ),
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "bg-gray-800 rounded-2xl border-2 border-gray-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                    "bg-neutral-800 rounded-2xl border-2 border-neutral-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
                                     "bg-white rounded-2xl border-2 border-gray-300 p-6 text-center shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
                                 ),
                             ),
@@ -437,7 +437,7 @@ def offline_models_content() -> rx.Component:
                                     variant="outline",
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "mt-2 font-[dm] bg-gray-700 active:bg-gray-600 border-gray-500 text-white rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(75,85,99,0.8)] active:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-600 md:hover:shadow-[0px_1px_0px_0px_rgba(75,85,99,0.8)] md:hover:translate-y-0.5",
+                                        "mt-2 font-[dm] bg-gray-700 active:bg-gray-600 border-gray-500 text-white rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(38,38,38,0.8)] active:shadow-[0px_1px_0px_0px_rgba(38,38,38,0.8)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-600 md:hover:shadow-[0px_1px_0px_0px_rgba(38,38,38,0.8)] md:hover:translate-y-0.5",
                                         "mt-2 font-[dm] bg-white active:bg-gray-50 border-gray-300 text-gray-700 rounded-xl border-2 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.2)] active:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 transition-all duration-200 md:hover:bg-gray-50 md:hover:shadow-[0px_1px_0px_0px_rgba(0,0,0,0.2)] md:hover:translate-y-0.5",
                                     ),
                                 ),
@@ -447,7 +447,7 @@ def offline_models_content() -> rx.Component:
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-gray-800 rounded-2xl border-2 border-gray-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-neutral-800 rounded-2xl border-2 border-neutral-600 p-6 text-center shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
                                 "bg-white rounded-2xl border-2 border-gray-300 p-6 text-center shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
                             ),
                         ),
@@ -467,7 +467,7 @@ def offline_models_content() -> rx.Component:
                 ),
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "mt-6 pt-4 border-t border-gray-600",
+                    "mt-6 pt-4 border-t border-neutral-600",
                     "mt-6 pt-4 border-t border-gray-100",
                 ),
             ),

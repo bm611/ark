@@ -39,7 +39,7 @@ def action_button(
                 class_name=rx.cond(
                     is_active,
                     "text-white",
-                    rx.cond(State.is_dark_theme, "text-gray-300", "text-gray-600"),
+                    rx.cond(State.is_dark_theme, "text-[#A2C4FF]", "text-gray-600"),
                 ),
             ),
             rx.cond(
@@ -51,7 +51,7 @@ def action_button(
                         "font-[dm] text-xs md:text-sm font-semibold text-white",
                         rx.cond(
                             State.is_dark_theme,
-                            "font-[dm] text-xs md:text-sm font-semibold text-gray-300",
+                            "font-[dm] text-xs md:text-sm font-semibold text-[#A2C4FF]",
                             "font-[dm] text-xs md:text-sm font-semibold text-gray-600",
                         ),
                     ),
@@ -68,7 +68,11 @@ def action_button(
         class_name=rx.cond(
             is_active,
             f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_8px_0px_0px_{shadow_color}] active:shadow-[0px_4px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_4px_0px_0px_{shadow_color}] hover:md:translate-y-1",
-            f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_{shadow_color}] hover:md:translate-y-1",
+            rx.cond(
+                State.is_dark_theme,
+                "text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_rgba(0,255,247,0.8)] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_rgba(0,255,247,0.8)] hover:md:translate-y-1 hover:shadow-[0_0_20px_rgba(0,255,247,0.4)]",
+                f"text-left px-2 py-1 md:p-4 rounded-2xl shadow-[0px_4px_0px_0px_rgba(107,114,128,0.4)] active:shadow-[0px_8px_0px_0px_{shadow_color}] active:translate-y-1 transition-all duration-200 ml-2 hover:md:shadow-[0px_8px_0px_0px_{shadow_color}] hover:md:translate-y-1",
+            ),
         ),
         style=rx.cond(
             is_active,
@@ -79,8 +83,8 @@ def action_button(
             rx.cond(
                 State.is_dark_theme,
                 {
-                    "background": "#374151",
-                    "border": "1px solid #6b7280",
+                    "background": "linear-gradient(135deg, #1E2A3A 0%, #273B53 100%)",
+                    "border": "1px solid #273B53",
                 },
                 {
                     "background": "white",
@@ -185,7 +189,7 @@ def gradient_card(
                             title,
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent text-left",
+                                "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-slate-50 to-slate-300 bg-clip-text text-transparent text-left",
                                 "text-lg md:text-3xl font-black mt-1 mb-1 md:mb-4 tracking-wide bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-left",
                             ),
                             as_="h2",
@@ -194,7 +198,7 @@ def gradient_card(
                             description,
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-gray-300 font-medium text-left",
+                                "font-[dm] text-sm md:text-lg text-slate-300 font-medium text-left",
                                 "font-[dm] text-sm md:text-lg text-gray-700 font-medium text-left",
                             ),
                         ),
@@ -206,7 +210,7 @@ def gradient_card(
                 ),
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "bg-gray-800/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
+                    "bg-slate-800/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
                     "bg-white/90 backdrop-blur-md rounded-xl md:rounded-3xl p-2 md:p-8 h-full md:h-80 flex flex-col relative overflow-hidden",
                 ),
             ),

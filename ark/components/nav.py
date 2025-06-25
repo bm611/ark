@@ -1,5 +1,6 @@
 import reflex as rx
 from ark.state import State
+import reflex_clerk_api as clerk
 
 
 def navbar() -> rx.Component:
@@ -10,7 +11,7 @@ def navbar() -> rx.Component:
                     rx.icon("ship"),
                     rx.text(
                         "Ark",
-                        class_name="text-xl md:text-2xl lg:text-xl xl:text-3xl font-bold mt-1 text-gray-50",
+                        class_name="text-xl md:text-2xl lg:text-xl xl:text-3xl font-bold mt-1 text-neutral-50",
                     ),
                     class_name=(
                         "px-4 py-4 rounded-xl transition-all duration-200 "
@@ -28,7 +29,7 @@ def navbar() -> rx.Component:
                             "border": "2px solid rgba(59,130,246,0.8)",
                             "backdropFilter": "blur(12px) saturate(180%)",
                             "WebkitBackdropFilter": "blur(12px) saturate(180%)",
-                            "backgroundColor": "rgba(255,255,255,0.10)",
+                            "backgroundColor": "rgba(15,23,42,0.80)",
                         },
                         {
                             "background": "linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%)",
@@ -45,6 +46,28 @@ def navbar() -> rx.Component:
             rx.hstack(
                 rx.button(
                     rx.icon(
+                        "history",
+                        class_name="block md:hidden",
+                        size=18,
+                    ),
+                    rx.text("History", class_name="hidden md:block"),
+                    class_name=(
+                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                        "shadow-[0px_4px_0px_0px_rgb(251,191,36,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(251,191,36,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(251,191,36,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                    ),
+                    style={
+                        "background": "linear-gradient(135deg, rgba(251,191,36,0.85) 0%, rgba(245,158,11,0.85) 50%, rgba(202,138,4,0.85) 100%)",
+                        "border": "1px solid rgba(202,138,4,0.7)",
+                    },
+                    on_click=rx.redirect("/history"),
+                ),
+                rx.button(
+                    rx.icon(
                         "scroll-text",
                         class_name="block md:hidden",
                         size=18,
@@ -52,7 +75,9 @@ def navbar() -> rx.Component:
                     rx.text("Changelog", class_name="hidden md:block"),
                     class_name=(
                         "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 "
+                        "shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(147,51,234,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 "
                         "md:px-3 md:py-4 md:rounded-xl md:text-lg "
                         "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
                         "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
@@ -72,7 +97,9 @@ def navbar() -> rx.Component:
                     rx.text("Github", class_name="hidden md:block"),
                     class_name=(
                         "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 "
+                        "shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(59,130,246,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 "
                         "md:px-3 md:py-4 md:rounded-xl md:text-lg "
                         "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
                         "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
@@ -85,6 +112,63 @@ def navbar() -> rx.Component:
                         "https://github.com/bm611/ark", is_external=True
                     ),
                 ),
+                # Authentication buttons
+                clerk.signed_out(
+                    rx.hstack(
+                        clerk.sign_in_button(
+                            rx.button(
+                                rx.icon(
+                                    "log-in",
+                                    class_name="block md:hidden",
+                                    size=18,
+                                ),
+                                rx.text("Sign In", class_name="hidden md:block"),
+                                class_name=(
+                                    "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                                    "shadow-[0px_4px_0px_0px_rgb(34,197,94,0.6)] "
+                                    "hover:shadow-[0px_6px_0px_0px_rgb(34,197,94,0.8)] "
+                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(34,197,94,0.6)] active:translate-y-1 "
+                                    "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                                    "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                                    "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                                ),
+                                style={
+                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.7) 0%, rgba(22,163,74,0.7) 50%, rgba(21,128,61,0.7) 100%)",
+                                    "border": "1px solid rgba(21,128,61,0.7)",
+                                },
+                            )
+                        ),
+                        class_name="flex gap-3",
+                    )
+                ),
+                clerk.signed_in(
+                    rx.hstack(
+                        clerk.sign_out_button(
+                            rx.button(
+                                rx.icon(
+                                    "log-out",
+                                    class_name="block md:hidden",
+                                    size=18,
+                                ),
+                                rx.text("Sign Out", class_name="hidden md:block"),
+                                class_name=(
+                                    "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                                    "shadow-[0px_4px_0px_0px_rgb(239,68,68,0.6)] "
+                                    "hover:shadow-[0px_6px_0px_0px_rgb(239,68,68,0.8)] "
+                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(239,68,68,0.6)] active:translate-y-1 "
+                                    "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                                    "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                                    "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                                ),
+                                style={
+                                    "background": "linear-gradient(135deg, rgba(239,68,68,0.7) 0%, rgba(220,38,38,0.7) 50%, rgba(185,28,28,0.7) 100%)",
+                                    "border": "1px solid rgba(185,28,28,0.7)",
+                                },
+                            )
+                        ),
+                        class_name="flex gap-3",
+                    )
+                ),
                 rx.button(
                     rx.cond(
                         State.is_dark_theme,
@@ -93,7 +177,9 @@ def navbar() -> rx.Component:
                     ),
                     class_name=(
                         "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center gap-2 "
-                        "shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 "
+                        "shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(75,85,99,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 "
                         "md:px-3 md:py-4 md:rounded-xl md:text-lg "
                         "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
                         "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
@@ -101,8 +187,8 @@ def navbar() -> rx.Component:
                     style=rx.cond(
                         State.is_dark_theme,
                         {
-                            "background": "linear-gradient(135deg, rgba(75,85,99,0.7) 0%, rgba(55,65,81,0.7) 50%, rgba(31,41,55,0.7) 100%)",
-                            "border": "1px solid rgba(31,41,55,0.7)",
+                            "background": "linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 50%, rgba(15,23,42,0.8) 100%)",
+                            "border": "1px solid rgba(71,85,105,0.7)",
                         },
                         {
                             "background": "linear-gradient(135deg, rgba(107,114,128,0.7) 0%, rgba(75,85,99,0.7) 50%, rgba(55,65,81,0.7) 100%)",

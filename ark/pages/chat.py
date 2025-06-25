@@ -1,9 +1,8 @@
 import reflex as rx
 from typing import Dict, Any
 from ark.state import State
-from ark.components.custom.weather import weather_card
 from ark.components.ui.buttons import expandable_section_button
-from ark.components.ui.layout import navigation_header, loading_skeleton
+from ark.components.ui.layout import navigation_header
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -42,7 +41,7 @@ def markdown_component_map() -> Dict[str, Any]:
             text,
             class_name=rx.cond(
                 State.is_dark_theme,
-                "font-mono text-sm bg-gray-700 text-gray-200 px-1.5 py-0.5 rounded-md border border-gray-600",
+                "font-mono text-sm bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-600",
                 "font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
             ),
             style={
@@ -69,7 +68,7 @@ def markdown_component_map() -> Dict[str, Any]:
                     size="1",
                     class_name="text-gray-300 hover:text-white hover:bg-gray-600 px-2 py-1 rounded transition-colors duration-200",
                 ),
-                class_name="flex justify-between items-center px-4 py-3 bg-gray-700 rounded-t-lg border-b border-gray-600",
+                class_name="flex justify-between items-center px-4 py-3 bg-slate-700 rounded-t-lg border-b border-slate-600",
             ),
             # Code block section
             rx.code_block(
@@ -95,7 +94,7 @@ def markdown_component_map() -> Dict[str, Any]:
                 },
             ),
             margin_y="1em",
-            class_name="bg-gray-800 rounded-lg shadow-lg border border-gray-600 overflow-hidden",
+            class_name="bg-slate-800 rounded-lg shadow-lg border border-slate-600 overflow-hidden",
         ),
         "a": lambda text, **props: rx.link(
             text, **props, color="orange", _hover={"color": "red"}
@@ -148,20 +147,59 @@ def response_message(message: dict, index: int) -> rx.Component:
     return rx.box(
         rx.cond(
             message["role"] == "user",
-            rx.text(
-                message.get("display_text", message["content"]),
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-white",
-                    "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
+            rx.vstack(
+                rx.text(
+                    message.get("display_text", message["content"]),
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "ml-2 text-xl md:text-4xl font-bold tracking-wide text-slate-50",
+                        "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
+                    ),
+                    style={
+                        "display": "-webkit-box",
+                        "-webkit-line-clamp": "2",
+                        "-webkit-box-orient": "vertical",
+                        "overflow": "hidden",
+                        "text-overflow": "ellipsis",
+                    },
                 ),
-                style={
-                    "display": "-webkit-box",
-                    "-webkit-line-clamp": "2",
-                    "-webkit-box-orient": "vertical",
-                    "overflow": "hidden",
-                    "text-overflow": "ellipsis",
-                },
+                # Image preview section for user messages
+                rx.cond(
+                    State.current_message_image,
+                    rx.box(
+                        rx.image(
+                            src=State.current_message_image,
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
+                                "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
+                            ),
+                            style={
+                                "max-width": "300px",
+                                "max-height": "300px",
+                                "object-fit": "contain",
+                            },
+                        ),
+                        class_name="ml-2 mt-4",
+                    ),
+                ),
+                # Generating response indicator for user messages
+                rx.cond(
+                    State.is_streaming,
+                    rx.box(
+                        rx.text(
+                            "Generating Response...",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "text-lg font-semibold text-slate-300 bg-gradient-to-r from-slate-300 via-slate-50 to-slate-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                                "text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                            ),
+                        ),
+                        class_name="w-full justify-left px-4 py-4",
+                    ),
+                ),
+                spacing="0",
+                align_items="start",
             ),
             rx.vstack(
                 # Buttons section in horizontal stack
@@ -178,45 +216,6 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 border_color="#1e40af",
                                 shadow_color="rgba(59,130,246,0.8)",
                                 on_click=State.toggle_citations(index),
-                            ),
-                        ),
-                    ),
-                    # Tool use section
-                    rx.cond(
-                        message.get("tool_name"),
-                        rx.box(
-                            rx.button(
-                                rx.hstack(
-                                    rx.icon(
-                                        "wrench",
-                                        size=16,
-                                        class_name="text-white",
-                                    ),
-                                    rx.text(
-                                        "Tools",
-                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
-                                    ),
-                                    rx.cond(
-                                        State.tool_expanded.get(index, False),
-                                        rx.icon(
-                                            "chevron-down",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                        rx.icon(
-                                            "chevron-right",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                    ),
-                                    class_name="items-center gap-1",
-                                ),
-                                on_click=State.toggle_tool(index),
-                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(34,197,94,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(34,197,94,0.8)] hover:translate-y-1 transition-all duration-200",
-                                style={
-                                    "background": "linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
-                                    "border": "2px solid #166534",
-                                },
                             ),
                         ),
                     ),
@@ -273,7 +272,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                                     href=citation,
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "font-[dm] text-sm md:text-lg text-white mb-1",
+                                        "font-[dm] text-sm md:text-lg text-slate-50 mb-1",
                                         "font-[dm] text-sm md:text-lg text-black mb-1",
                                     ),
                                 ),
@@ -282,36 +281,11 @@ def response_message(message: dict, index: int) -> rx.Component:
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
                         max_width="100%",
-                        overflow_x="auto",
-                        style={
-                            "word-wrap": "break-word",
-                            "overflow-wrap": "break-word",
-                        },
-                    ),
-                ),
-                rx.cond(
-                    State.tool_expanded.get(index, False),
-                    rx.box(
-                        rx.text(
-                            f"Tool Name: {message.get('tool_name', '')}",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg font-semibold text-white",
-                                "font-[dm] text-sm md:text-lg font-semibold text-black",
-                            ),
-                        ),
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                        ),
-                        # width="100%",
-                        # max_width="100%",
                         overflow_x="auto",
                         style={
                             "word-wrap": "break-word",
@@ -327,13 +301,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             component_map=markdown_component_map(),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-white",
+                                "font-[dm] text-sm md:text-lg text-slate-50",
                                 "font-[dm] text-sm md:text-lg text-black",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
@@ -354,13 +328,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                             component_map=markdown_component_map(),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-white",
+                                "font-[dm] text-sm md:text-lg text-slate-50",
                                 "font-[dm] text-sm md:text-lg text-gray-900",
                             ),
                         ),
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
                             "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
                         ),
                         width="100%",
@@ -372,14 +346,6 @@ def response_message(message: dict, index: int) -> rx.Component:
                         },
                     ),
                 ),
-                # Weather component - display when weather data is available
-                rx.cond(
-                    message.get("weather_data"),
-                    rx.box(
-                        weather_card(),
-                        class_name="mb-4 w-full md:max-w-xl",
-                    ),
-                ),
                 # Performance stats with hero component design style
                 rx.cond(
                     message.get("generation_time"),
@@ -389,13 +355,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-slate-50",
                                     "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
                                 "bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
@@ -404,13 +370,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 f"{message.get('total_tokens', 'N/A'):.2f} TOKENS",
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-slate-50",
                                     "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
                                 "bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
@@ -419,13 +385,13 @@ def response_message(message: dict, index: int) -> rx.Component:
                                 f"{message.get('generation_time', 'N/A'):.2f} SEC",
                                 class_name=rx.cond(
                                     State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-white",
+                                    "font-[dm] text-xs font-bold text-slate-50",
                                     "font-[dm] text-xs font-bold text-black",
                                 ),
                             ),
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[5px_5px_0px_0px_rgba(75,85,99,0.8)]",
+                                "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
                                 "bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
                             ),
                         ),
@@ -438,15 +404,60 @@ def response_message(message: dict, index: int) -> rx.Component:
     )
 
 
+def chat_input():
+    return rx.box(
+        rx.box(
+            rx.box(
+                rx.input(
+                    value=State.prompt,
+                    placeholder="Ask Follow Up...",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "w-full text-white text-base md:text-lg rounded-xl h-12 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] border border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 pl-3 md:pl-4 pr-12 md:pr-14 outline-none focus:outline-none",
+                        "w-full text-gray-900 text-base md:text-lg rounded-xl h-12 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] border border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 pl-3 md:pl-4 pr-12 md:pr-14 outline-none focus:outline-none",
+                    ),
+                    style={
+                        "background": rx.cond(State.is_dark_theme, "#1f2937", "white"),
+                        "color": rx.cond(State.is_dark_theme, "white", "#111827"),
+                        "outline": "none",
+                        "& input::placeholder": {
+                            "color": rx.cond(State.is_dark_theme, "#a3a3a3", "#6b7280"),
+                        },
+                    },
+                    on_change=State.set_prompt,
+                ),
+                rx.button(
+                    rx.icon(
+                        "arrow-right",
+                        size=24,
+                        color=rx.cond(State.is_dark_theme, "white", "gray"),
+                    ),
+                    class_name="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-transparent rounded-none h-8 w-8 p-0 m-0 flex items-center justify-center",
+                    style={"boxShadow": "none", "background": "none"},
+                    on_click=[
+                        State.handle_generation,
+                        State.send_message_stream,
+                    ],
+                    loading=State.is_streaming,
+                    disabled=State.is_streaming,
+                ),
+                class_name="relative w-full max-w-2xl mx-auto",
+            ),
+            class_name="p-4",
+        ),
+        class_name=rx.cond(
+            State.is_dark_theme,
+            "fixed bottom-0 left-0 right-0 backdrop-blur-lg",
+            "fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg",
+        ),
+    )
+
+
 def chat_messages():
     return rx.box(
         rx.foreach(
             State.messages,
             lambda message, index: response_message(message, index),
-        ),
-        rx.cond(
-            State.is_gen,
-            loading_skeleton(),
         ),
         class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
     )

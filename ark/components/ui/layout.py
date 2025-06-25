@@ -21,7 +21,7 @@ def expandable_content_box(
         content,
         class_name=rx.cond(
             State.is_dark_theme,
-            f"bg-gray-800 border-2 border-gray-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)] mb-4",
+            f"bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
             f"bg-white border-2 border-{border_color} rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
         ),
         width="100%",
@@ -50,13 +50,13 @@ def provider_badge(
             provider_name.upper(),
             class_name=rx.cond(
                 State.is_dark_theme,
-                "font-[dm] text-xs md:text-sm font-bold text-white",
+                "font-[dm] text-xs md:text-sm font-bold text-slate-50",
                 "font-[dm] text-xs md:text-sm font-bold text-black",
             ),
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            f"hidden md:flex bg-gray-700 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)]",
+            f"hidden md:flex bg-slate-700 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)]",
             f"hidden md:flex {color_class} rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
         ),
     )
@@ -75,13 +75,13 @@ def model_badge(model_name: str, color_class: str = "bg-pink-300") -> rx.Compone
             model_name.upper(),
             class_name=rx.cond(
                 State.is_dark_theme,
-                "font-[dm] text-xs md:text-sm font-bold text-white",
+                "font-[dm] text-xs md:text-sm font-bold text-slate-50",
                 "font-[dm] text-xs md:text-sm font-bold text-black",
             ),
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            f"bg-gray-700 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-gray-600 shadow-[3px_3px_0px_0px_rgba(75,85,99,0.8)] md:shadow-[8px_8px_0px_0px_rgba(75,85,99,0.8)]",
+            f"bg-slate-700 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)]",
             f"{color_class} rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
         ),
     )
@@ -96,7 +96,7 @@ def loading_skeleton() -> rx.Component:
                 "Generating Response...",
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "text-lg font-semibold text-gray-300 bg-gradient-to-r from-gray-300 via-white to-gray-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                    "text-lg font-semibold text-slate-300 bg-gradient-to-r from-slate-300 via-slate-50 to-slate-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
                     "text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
                 ),
             ),
@@ -106,7 +106,7 @@ def loading_skeleton() -> rx.Component:
             rx.skeleton(
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "h-4 w-32 rounded-full bg-gray-700",
+                    "h-4 w-32 rounded-full bg-slate-700",
                     "h-4 w-32 rounded-full bg-gray-200",
                 ),
                 loading=True,
@@ -117,7 +117,7 @@ def loading_skeleton() -> rx.Component:
             rx.skeleton(
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "h-4 w-full rounded-lg bg-gray-700",
+                    "h-4 w-full rounded-lg bg-slate-700",
                     "h-4 w-full rounded-lg bg-gray-200",
                 ),
                 loading=True,
@@ -128,7 +128,7 @@ def loading_skeleton() -> rx.Component:
             rx.skeleton(
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "h-4 w-3/4 rounded-lg bg-gray-700",
+                    "h-4 w-3/4 rounded-lg bg-slate-700",
                     "h-4 w-3/4 rounded-lg bg-gray-200",
                 ),
                 loading=True,
@@ -139,7 +139,7 @@ def loading_skeleton() -> rx.Component:
             rx.skeleton(
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "h-4 w-1/2 rounded-lg bg-gray-700",
+                    "h-4 w-1/2 rounded-lg bg-slate-700",
                     "h-4 w-1/2 rounded-lg bg-gray-200",
                 ),
                 loading=True,
@@ -190,7 +190,7 @@ def navigation_header(
                         "New Chat",
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "hidden md:block font-[dm] text-white tracking-wide text-lg font-bold",
+                            "hidden md:block font-[dm] text-slate-50 tracking-wide text-lg font-bold",
                             "hidden md:block font-[dm] text-black tracking-wide text-lg font-bold",
                         ),
                     ),
@@ -202,8 +202,8 @@ def navigation_header(
                 style=rx.cond(
                     State.is_dark_theme,
                     {
-                        "background": "linear-gradient(135deg, #4b5563 0%, #374151 50%, #1f2937 100%)",
-                        "border": "2px solid #6b7280",
+                        "background": "linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%)",
+                        "border": "2px solid #64748b",
                     },
                     {
                         "background": "linear-gradient(135deg, #e2e8f0 0%, #d1d5db 50%, #bcc3ce 100%)",

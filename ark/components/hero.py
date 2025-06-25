@@ -1,11 +1,12 @@
 import reflex as rx
 from ark.state import State
-from ark.components.ui.buttons import action_button, gradient_card
+from ark.components.ui.buttons import action_button
 from ark.components.offline_models import (
     OfflineModelsState,
     offline_models_overlay,
     offline_models_content,
 )
+import reflex_clerk_api as clerk
 
 
 def input_section():
@@ -33,7 +34,7 @@ def input_section():
                                             filename,
                                             class_name=rx.cond(
                                                 State.is_dark_theme,
-                                                "text-sm text-gray-200 font-[dm] font-medium",
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
                                                 "text-sm text-gray-700 font-[dm] font-medium",
                                             ),
                                         ),
@@ -42,7 +43,7 @@ def input_section():
                                             variant="ghost",
                                             class_name=rx.cond(
                                                 State.is_dark_theme,
-                                                "ml-2 p-1 rounded-full hover:bg-gray-600/30 text-gray-400 hover:text-gray-200 border-0 bg-transparent",
+                                                "ml-2 p-1 rounded-full hover:bg-neutral-600/30 text-neutral-400 hover:text-neutral-200 border-0 bg-transparent",
                                                 "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
                                             ),
                                             on_click=State.clear_images,
@@ -52,7 +53,7 @@ def input_section():
                                     ),
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "bg-gray-800/80 border border-gray-600/50 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
                                         "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
                                     ),
                                 ),
@@ -63,111 +64,125 @@ def input_section():
                         class_name="mb-1 w-full max-w-4xl mx-auto",
                     ),
                 ),
-                rx.hstack(
-                    rx.input(
+                rx.box(
+                    rx.text_area(
                         value=State.prompt,
                         class_name=rx.cond(
                             State.is_dark_theme,
-                            "w-full mx-auto text-white text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 px-4 md:px-6",
-                            "w-full mx-auto text-gray-900 text-lg md:text-2xl rounded-2xl h-16 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.2)] border-2 border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 px-4 md:px-6",
+                            "w-full mx-auto text-white text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(#0a0a0a,#0a0a0a),linear-gradient(90deg,#f97316,#c026d3)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_30px_rgba(249,115,22,0.7),0_0_60px_rgba(192,38,211,0.4),0_8px_40px_rgba(0,0,0,0.5)]",
+                            "w-full mx-auto text-gray-900 text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(white,white),linear-gradient(90deg,#fb923c,#a21caf)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_40px_rgba(251,146,60,0.7),0_0_80px_rgba(162,28,175,0.4)]",
                         ),
                         placeholder="Ask Anything...",
                         style={
                             "background": rx.cond(
-                                State.is_dark_theme, "#1f2937", "white"
+                                State.is_dark_theme, "#0a0a0a", "white"
                             ),
                             "color": rx.cond(State.is_dark_theme, "white", "#111827"),
-                            "& input::placeholder": {
+                            "outline": "none",
+                            "& textarea::placeholder": {
                                 "color": rx.cond(
-                                    State.is_dark_theme, "#9ca3af", "#6b7280"
+                                    State.is_dark_theme, "#a3a3a3", "#6b7280"
                                 ),
                             },
                         },
                         on_change=State.set_prompt,
+                        size="3",
                     ),
-                    rx.button(
+                    rx.box(
                         rx.hstack(
-                            rx.icon("arrow-up", size=28, color="white"),
-                            class_name="flex items-center justify-center",
+                            rx.cond(
+                                State.current_url == "/",
+                                rx.hstack(
+                                    rx.upload(
+                                        action_button(
+                                            label="",
+                                            icon="paperclip",
+                                            active_gradient="linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1e40af 100%)",
+                                            active_border="#1e40af",
+                                            shadow_color="rgba(59,130,246,0.8)",
+                                        ),
+                                        style={},
+                                        class_name="",
+                                        border=None,
+                                        padding=None,
+                                        accept={
+                                            "image/png": [".png"],
+                                            "image/jpeg": [".jpg", ".jpeg"],
+                                        },
+                                        on_drop=State.handle_upload(
+                                            rx.upload_files(upload_id="upload")
+                                        ),
+                                        id="upload",
+                                    ),
+                                    action_button(
+                                        label="Search",
+                                        icon="globe",
+                                        is_active=State.selected_action == "Search",
+                                        active_gradient="linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
+                                        active_border="#166534",
+                                        shadow_color="rgba(34,197,94,0.8)",
+                                        on_click=State.handle_search_click,
+                                    ),
+                                    action_button(
+                                        label="Offline",
+                                        icon="cloud-off",
+                                        is_active=rx.cond(
+                                            State.selected_action == "Offline",
+                                            OfflineModelsState.selected_model != "",
+                                            False,
+                                        ),
+                                        active_gradient="linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
+                                        active_border="#5b21b6",
+                                        shadow_color="rgba(147,51,234,0.8)",
+                                        on_click=[
+                                            State.select_action("Offline"),
+                                            OfflineModelsState.open_drawer,
+                                        ],
+                                    ),
+                                    class_name="gap-0 mb-2",
+                                ),
+                            ),
+                            rx.button(
+                                rx.hstack(
+                                    rx.icon(
+                                        "arrow-up",
+                                        size=20,
+                                        color="white",
+                                        class_name="sm:hidden w-5 h-5",
+                                    ),
+                                    rx.text(
+                                        "Send",
+                                        class_name="hidden sm:block text-sm font-medium text-white ml-1",
+                                    ),
+                                    class_name="flex items-center justify-center",
+                                ),
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "ml-auto text-white rounded-full h-8 sm:h-10 w-10 sm:w-auto sm:px-4 shadow-[0px_4px_0px_0px_rgba(107,114,128,0.6)] hover:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.7)] active:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.8)] transition-all duration-150 flex items-center justify-center mb-1",
+                                    "ml-auto text-white rounded-full h-8 sm:h-10 w-10 sm:w-auto sm:px-4 shadow-[0px_4px_0px_0px_rgba(107,114,128,0.6)] hover:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.7)] active:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.8)] transition-all duration-150 flex items-center justify-center mb-1",
+                                ),
+                                style={
+                                    "background": rx.cond(
+                                        State.is_dark_theme,
+                                        "linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%)",
+                                        "linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%)",
+                                    ),
+                                    "border": "2px solid #374151",
+                                    "boxShadow": "0px 4px 0px 0px rgba(107,114,128,0.6)",
+                                },
+                                on_click=[
+                                    State.handle_generation,
+                                    State.generate_chat_id_and_redirect,
+                                ],
+                                loading=State.is_gen,
+                                disabled=State.is_gen,
+                            ),
+                            align="center",
+                            class_name="w-full",
                         ),
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "mx-auto text-white rounded-2xl h-16 px-4 md:px-8 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.3)] active:shadow-[0px_2px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-1 transition-all duration-200 md:hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.4)] md:hover:brightness-110",
-                            "mx-auto text-white rounded-2xl h-16 px-4 md:px-8 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.3)] active:shadow-[0px_2px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-1 transition-all duration-200 md:hover:shadow-[0px_6px_0px_0px_rgba(0,0,0,0.4)] md:hover:brightness-110",
-                        ),
-                        style=rx.cond(
-                            State.is_dark_theme,
-                            {
-                                "background": "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%)",
-                                "border": "1px solid #1e40af",
-                            },
-                            {
-                                "background": "linear-gradient(to right, #374151, #111827)",
-                                "border": "1px solid #4b5563",
-                            },
-                        ),
-                        on_click=[
-                            rx.redirect("/chat"),
-                            State.handle_generation,
-                            State.send_message,
-                        ],
-                        loading=State.is_gen,
-                        disabled=State.is_gen,
+                        class_name="absolute bottom-2 left-2 right-2 px-2",
                     ),
-                    class_name="w-full flex gap-2 items-center justify-center max-w-4xl mx-auto",
-                ),
-                rx.cond(
-                    State.current_url == "/",
-                    rx.hstack(
-                        rx.upload(
-                            action_button(
-                                label="",
-                                icon="paperclip",
-                                active_gradient="linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1e40af 100%)",
-                                active_border="#1e40af",
-                                shadow_color="rgba(59,130,246,0.8)",
-                            ),
-                            # Remove default styling by setting style and class_name to empty
-                            style={},
-                            class_name="",
-                            border=None,
-                            padding=None,
-                            accept={
-                                "image/png": [".png"],
-                                "image/jpeg": [".jpg", ".jpeg"],
-                            },
-                            on_drop=State.handle_upload(
-                                rx.upload_files(upload_id="upload")
-                            ),
-                            id="upload",
-                        ),
-                        action_button(
-                            label="Search",
-                            icon="globe",
-                            is_active=State.selected_action == "Search",
-                            active_gradient="linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)",
-                            active_border="#166534",
-                            shadow_color="rgba(34,197,94,0.8)",
-                            on_click=State.handle_search_click,
-                        ),
-                        action_button(
-                            label="Offline",
-                            icon="cloud-off",
-                            is_active=rx.cond(
-                                State.selected_action == "Offline",
-                                OfflineModelsState.selected_model != "",
-                                False,
-                            ),
-                            active_gradient="linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
-                            active_border="#5b21b6",
-                            shadow_color="rgba(147,51,234,0.8)",
-                            on_click=[
-                                State.select_action("Offline"),
-                                OfflineModelsState.open_drawer,
-                            ],
-                        ),
-                        class_name="gap-0",
-                    ),
+                    class_name="relative w-full max-w-4xl mx-auto",
                 ),
                 class_name="w-full mx-auto max-w-4xl",
             ),
@@ -182,14 +197,31 @@ def hero():
             rx.flex(
                 rx.box(
                     rx.box(
-                        rx.heading(
-                            "Welcome to Ark!",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-fade-in-up px-8 md:px-0 leading-tight",
-                                "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
-                            ),
-                            as_="h1",
+                        clerk.signed_in(
+                            rx.heading(
+                                rx.cond(
+                                    State.logged_user_name == "",
+                                    "Welcome back!",
+                                    "Welcome back, " + State.logged_user_name + "!",
+                                ),
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                ),
+                                as_="h1",
+                            )
+                        ),
+                        clerk.signed_out(
+                            rx.heading(
+                                "Welcome to Ark!",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
+                                ),
+                                as_="h1",
+                            )
                         ),
                         rx.heading(
                             "Your AI Chat Companion",
@@ -204,7 +236,7 @@ def hero():
                             "Chat, search, and learn—smarter, faster, anywhere.",
                             class_name=rx.cond(
                                 State.is_dark_theme,
-                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-300 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
+                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-neutral-300 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
                                 "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-700 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
                             ),
                         ),
@@ -214,7 +246,7 @@ def hero():
                                     "Try these examples:",
                                     class_name=rx.cond(
                                         State.is_dark_theme,
-                                        "text-sm sm:text-base font-semibold text-gray-300 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
+                                        "text-sm sm:text-base font-semibold text-neutral-300 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
                                         "text-sm sm:text-base font-semibold text-gray-600 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
                                     ),
                                 ),
@@ -242,16 +274,15 @@ def hero():
                                         ),
                                         class_name=rx.cond(
                                             State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
                                             "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-blue-50/50 border border-gray-200/60 hover:border-blue-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
                                         ),
                                         on_click=[
                                             State.set_prompt(
                                                 "Give me some Python programming tips with code examples."
                                             ),
-                                            rx.redirect("/chat"),
                                             State.handle_generation,
-                                            State.send_message,
+                                            State.generate_chat_id_and_redirect,
                                         ],
                                     ),
                                     rx.button(
@@ -277,7 +308,7 @@ def hero():
                                         ),
                                         class_name=rx.cond(
                                             State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
                                             "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-green-50/50 border border-gray-200/60 hover:border-green-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
                                         ),
                                         on_click=[
@@ -285,9 +316,8 @@ def hero():
                                                 "What's the latest news in US, World, Technology & Science?"
                                             ),
                                             State.handle_search_click,
-                                            rx.redirect("/chat"),
                                             State.handle_generation,
-                                            State.send_message,
+                                            State.generate_chat_id_and_redirect,
                                         ],
                                     ),
                                     rx.button(
@@ -313,16 +343,15 @@ def hero():
                                         ),
                                         class_name=rx.cond(
                                             State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-gray-800/80 to-gray-900/60 hover:from-gray-700/90 hover:to-gray-800/70 border border-gray-600/40 hover:border-gray-500/60 text-gray-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
+                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
                                             "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-purple-50/50 border border-gray-200/60 hover:border-purple-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
                                         ),
                                         on_click=[
                                             State.set_prompt(
                                                 "Explain quantum computing"
                                             ),
-                                            rx.redirect("/chat"),
                                             State.handle_generation,
-                                            State.send_message,
+                                            State.generate_chat_id_and_redirect,
                                         ],
                                     ),
                                     wrap="wrap",
