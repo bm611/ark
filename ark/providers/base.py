@@ -4,7 +4,7 @@ Base provider interface and common functionality.
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from openai import OpenAI
-from ark.models import ProviderConfig
+from ark.models.provider import ProviderConfig
 
 
 class BaseProvider(ABC):

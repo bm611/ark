@@ -2,7 +2,7 @@
 Provider manager for centralized AI provider handling.
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict
 from .base import ProviderRegistry, BaseProvider
 from .openrouter import OpenRouterProvider
 from .ollama import OllamaProvider
@@ -62,10 +62,8 @@ class ProviderManager:
                 0, {"role": "system", "content": self._default_system_message}
             )
 
-        return provider.chat_completion(
-            messages=full_messages, model=model, **kwargs
-        )
-    
+        return provider.chat_completion(messages=full_messages, model=model, **kwargs)
+
     def chat_completion_stream(
         self,
         messages: List[Dict[str, str]],

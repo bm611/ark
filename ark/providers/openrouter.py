@@ -4,7 +4,7 @@ OpenRouter provider implementation.
 
 import os
 from typing import List
-from ark.models import ProviderConfig
+from ark.models.provider import ProviderConfig
 from .base import BaseProvider
 
 

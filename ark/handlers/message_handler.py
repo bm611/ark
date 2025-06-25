@@ -5,7 +5,7 @@ import time
 import json
 import re
 from typing import List, Dict, Any, Optional, Tuple
-from ark.models import ChatMessage
+from ark.models.chat import ChatMessage
 from ark.providers.manager import provider_manager
 
 

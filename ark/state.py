@@ -1,12 +1,12 @@
 import reflex as rx
 from typing import List, Optional
-from ark.models import ChatMessage
+from ark.models.chat import ChatMessage
 from ark.handlers.message_handler import message_handler
 import reflex_clerk_api as clerk
 import base64
 import os
 import uuid
-from ark.db.utils import init_user_if_not_exists
+from ark.database.utils import init_user_if_not_exists
 
 
 # Model Configuration Constants
@@ -45,7 +45,7 @@ class State(rx.State):
     current_message_image: str = ""
 
     async def generate_chat_id_and_redirect(self):
-        from ark.db.utils import create_chat
+        from ark.database.utils import create_chat
 
         self.chat_id = str(uuid.uuid4())
 
@@ -111,7 +111,7 @@ class State(rx.State):
 
     async def reset_chat(self):
         """Reset chat and save current conversation"""
-        from ark.db.utils import save_all_messages
+        from ark.database.utils import save_all_messages
 
         # Save current conversation if it exists and has messages
         if self.chat_id and self.messages:
@@ -218,7 +218,7 @@ class State(rx.State):
 
     async def _save_current_messages(self):
         """Save current messages to database"""
-        from ark.db.utils import (
+        from ark.database.utils import (
             save_message_from_dict,
             update_chat_title,
             get_message_count,
@@ -364,7 +364,7 @@ class State(rx.State):
     @rx.event
     async def load_user_chats(self):
         """Load user's chats from database"""
-        from ark.db.utils import get_user_chats
+        from ark.database.utils import get_user_chats
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -377,7 +377,7 @@ class State(rx.State):
     @rx.event
     async def load_chat_history(self, chat_id: str):
         """Load chat history from database and set provider/model"""
-        from ark.db.utils import get_chat_messages, chat_exists, get_chat
+        from ark.database.utils import get_chat_messages, chat_exists, get_chat
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -450,7 +450,7 @@ class State(rx.State):
     @rx.event
     async def delete_chat(self, chat_id: str):
         """Delete a chat and all its messages"""
-        from ark.db.utils import delete_chat
+        from ark.database.utils import delete_chat
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -477,7 +477,7 @@ class State(rx.State):
     @rx.event
     async def handle_auth_change(self):
         """Handle authentication state changes (login/logout)."""
-        from ark.db.utils import init_user_if_not_exists
+        from ark.database.utils import init_user_if_not_exists
 
         clerk_state = await self.get_state(clerk.ClerkState)
         clerk_user_state = await self.get_state(clerk.ClerkUser)
