@@ -14,20 +14,21 @@ def input_section():
         rx.box(
             rx.vstack(
                 rx.cond(
-                    State.img,
+                    (State.img.length() > 0) | (State.pdf_files.length() > 0),
                     rx.box(
                         rx.hstack(
+                            # Image files
                             rx.foreach(
                                 State.img,
                                 lambda filename: rx.box(
                                     rx.hstack(
                                         rx.icon(
-                                            "file",
+                                            "image",
                                             size=18,
                                             color=rx.cond(
                                                 State.is_dark_theme,
-                                                "#a3a3a3",
-                                                "#525252",
+                                                "#60a5fa",
+                                                "#3b82f6",
                                             ),
                                         ),
                                         rx.text(
@@ -47,6 +48,48 @@ def input_section():
                                                 "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
                                             ),
                                             on_click=State.clear_images,
+                                        ),
+                                        align="center",
+                                        spacing="2",
+                                    ),
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                    ),
+                                ),
+                            ),
+                            # PDF files
+                            rx.foreach(
+                                State.pdf_files,
+                                lambda filename: rx.box(
+                                    rx.hstack(
+                                        rx.icon(
+                                            "file-text",
+                                            size=18,
+                                            color=rx.cond(
+                                                State.is_dark_theme,
+                                                "#ef4444",
+                                                "#dc2626",
+                                            ),
+                                        ),
+                                        rx.text(
+                                            filename,
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
+                                                "text-sm text-gray-700 font-[dm] font-medium",
+                                            ),
+                                        ),
+                                        rx.button(
+                                            rx.icon("x", size=14),
+                                            variant="ghost",
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "ml-2 p-1 rounded-full hover:bg-neutral-600/30 text-neutral-400 hover:text-neutral-200 border-0 bg-transparent",
+                                                "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
+                                            ),
+                                            on_click=State.clear_pdfs,
                                         ),
                                         align="center",
                                         spacing="2",
@@ -108,6 +151,7 @@ def input_section():
                                         accept={
                                             "image/png": [".png"],
                                             "image/jpeg": [".jpg", ".jpeg"],
+                                            "application/pdf": [".pdf"],
                                         },
                                         on_drop=State.handle_upload(
                                             rx.upload_files(upload_id="upload")

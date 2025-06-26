@@ -183,6 +183,48 @@ def response_message(message: dict, index: int) -> rx.Component:
                         class_name="ml-2 mt-4",
                     ),
                 ),
+                # PDF file preview section for user messages
+                rx.cond(
+                    (State.pdf_files.length() > 0) & (index == 0),
+                    rx.box(
+                        rx.hstack(
+                            rx.foreach(
+                                State.pdf_files,
+                                lambda filename: rx.box(
+                                    rx.hstack(
+                                        rx.icon(
+                                            "file-text",
+                                            size=18,
+                                            color=rx.cond(
+                                                State.is_dark_theme,
+                                                "#ef4444",
+                                                "#dc2626",
+                                            ),
+                                        ),
+                                        rx.text(
+                                            filename,
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
+                                                "text-sm text-gray-700 font-[dm] font-medium",
+                                            ),
+                                        ),
+                                        align="center",
+                                        spacing="2",
+                                    ),
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                    ),
+                                ),
+                            ),
+                            wrap="wrap",
+                            spacing="3",
+                        ),
+                        class_name="ml-2 mt-4",
+                    ),
+                ),
                 # Generating response indicator for user messages
                 rx.cond(
                     State.is_streaming,

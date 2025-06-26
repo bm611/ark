@@ -23,6 +23,7 @@ class State(rx.State):
     is_streaming: bool = False
     selected_action: str = ""
     img: list[str] = []
+    pdf_files: list[str] = []
     logged_user_name: str = ""
     chat_id: str = ""
     user_chats: List[dict] = []
@@ -108,6 +109,20 @@ class State(rx.State):
                     {"type": "image_url", "image_url": {"url": base64_images[0]}}
                 )
 
+        # Add base64 PDFs if any are uploaded
+        if self.pdf_files:
+            base64_pdfs = self.base64_pdfs
+            for pdf_data in base64_pdfs:
+                content.append(
+                    {
+                        "type": "file",
+                        "file": {
+                            "filename": pdf_data["filename"],
+                            "file_data": pdf_data["data"]
+                        }
+                    }
+                )
+
         # Create user message
         user_message = {"role": "user", "content": content, "display_text": self.prompt}
         self.messages.append(user_message)
@@ -125,6 +140,7 @@ class State(rx.State):
 
         # Clear state
         self.img = []
+        self.pdf_files = []
         self.messages = []
         self.is_gen = False
         self.selected_provider = ModelConfig.DEFAULT_PROVIDER
@@ -360,6 +376,39 @@ class State(rx.State):
             mime = "image/jpeg"
         return f"data:{mime};base64,{encoded}"
 
+    @staticmethod
+    def encode_pdf_to_base64(pdf_path: str) -> str:
+        """Encode a PDF file to a base64 data URL.
+
+        Args:
+            pdf_path: The path to the PDF file.
+
+        Returns:
+            The base64 data URL of the PDF.
+        """
+        with open(pdf_path, "rb") as pdf_file:
+            encoded = base64.b64encode(pdf_file.read()).decode("utf-8")
+        return f"data:application/pdf;base64,{encoded}"
+
+    @rx.var
+    def base64_pdfs(self) -> list[dict]:
+        """Return a list of base64 data URLs for all uploaded PDFs with filenames."""
+        pdf_list = []
+        upload_dir = rx.get_upload_dir()
+        for filename in self.pdf_files:
+            pdf_path = upload_dir / filename
+            try:
+                base64_data = self.encode_pdf_to_base64(str(pdf_path))
+                pdf_list.append({
+                    "filename": filename,
+                    "data": base64_data
+                })
+                os.remove(pdf_path)
+            except Exception:
+                # If file not found or error, skip
+                continue
+        return pdf_list
+
     @rx.event
     async def handle_upload(self, files: list[rx.UploadFile]):
         """Handle the upload of file(s).
@@ -375,13 +424,28 @@ class State(rx.State):
             with outfile.open("wb") as file_object:
                 file_object.write(upload_data)
 
-            # Update the img var.
-            self.img.append(file.name)
+            # Update the appropriate list based on file type
+            if file.name.lower().endswith('.pdf'):
+                self.pdf_files.append(file.name)
+            else:
+                # Assume it's an image for backward compatibility
+                self.img.append(file.name)
 
     @rx.event
     def clear_images(self):
         """Clear the uploaded images list."""
         self.img = []
+
+    @rx.event
+    def clear_pdfs(self):
+        """Clear the uploaded PDFs list."""
+        self.pdf_files = []
+
+    @rx.event
+    def clear_all_files(self):
+        """Clear both images and PDFs."""
+        self.img = []
+        self.pdf_files = []
 
     @rx.event
     async def load_user_chats(self):
