@@ -65,14 +65,16 @@ def chat_history_item(chat):
                     chat["title"],
                     class_name=rx.cond(
                         State.is_dark_theme,
-                        "text-neutral-200 font-medium text-sm md:text-xl leading-tight",
-                        "text-gray-900 font-medium text-sm md:text-xl leading-tight",
+                        # Add line-clamp-2 for mobile, md:line-clamp-1 for desktop
+                        "text-neutral-200 font-semibold text-lg md:text-xl leading-tight line-clamp-2 md:line-clamp-1",
+                        "text-gray-900 font-semibold text-lg md:text-xl leading-tight line-clamp-2 md:line-clamp-1",
                     ),
                     style={
                         "display": "-webkit-box",
-                        "webkitLineClamp": "1",
-                        "webkitBoxOrient": "vertical",
+                        "WebkitLineClamp": "1",
+                        "WebkitBoxOrient": "vertical",
                         "overflow": "hidden",
+                        "textOverflow": "ellipsis",
                     },
                 ),
                 rx.text(
@@ -94,7 +96,7 @@ def chat_history_item(chat):
             rx.button(
                 rx.icon(
                     "trash-2",
-                    size=16,
+                    size=24,
                 ),
                 variant="ghost",
                 class_name=rx.cond(

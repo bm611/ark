@@ -3,124 +3,145 @@ from ark.state import State
 import reflex_clerk_api as clerk
 
 
-def mobile_menu_overlay() -> rx.Component:
-    """Creates the backdrop overlay for the mobile menu"""
-    return rx.box(
-        width="100%",
-        height="100%",
-        position="fixed",
-        top="0",
-        left="0",
-        background_color=rx.cond(
-            State.is_dark_theme, "rgba(0, 0, 0, 0.7)", "rgba(0, 0, 0, 0.5)"
-        ),
-        z_index="999",
-        display=rx.cond(State.is_mobile_menu_open, "block", "none"),
-        on_click=State.close_mobile_menu,
-        class_name="backdrop-blur-sm",
-    )
-
-
 def mobile_menu_item(icon: str, text: str, on_click_action) -> rx.Component:
     """Individual mobile menu item component"""
     return rx.box(
         rx.flex(
             rx.icon(
                 icon,
-                size=20,
-                class_name=rx.cond(State.is_dark_theme, "text-white", "text-gray-700"),
+                size=36,
+                class_name=rx.cond(State.is_dark_theme, "text-white", "text-gray-900"),
             ),
             rx.text(
                 text,
                 class_name=rx.cond(
                     State.is_dark_theme,
-                    "font-[dm] font-medium text-white",
-                    "font-[dm] font-medium text-gray-900",
+                    "font-bold text-white text-4xl",
+                    "font-bold text-gray-900 text-4xl",
                 ),
             ),
-            align="center",
-            class_name="w-full gap-3",
+            class_name="w-full gap-6 justify-start items-center",
         ),
         on_click=on_click_action,
         class_name=rx.cond(
             State.is_dark_theme,
-            "p-4 hover:bg-gray-700 cursor-pointer transition-colors duration-200 border-b border-neutral-600 last:border-b-0",
-            "p-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200 border-b border-gray-100 last:border-b-0",
+            "py-3 hover:bg-gray-700/30 cursor-pointer transition-colors duration-200",
+            "py-3 hover:bg-gray-100/50 cursor-pointer transition-colors duration-200",
         ),
     )
 
 
 def mobile_menu_dropdown() -> rx.Component:
-    """Mobile dropdown menu with proper positioning below navbar"""
+    """Fullscreen mobile menu overlay"""
     return rx.cond(
         State.is_mobile_menu_open,
         rx.box(
-            mobile_menu_overlay(),
-            # Dropdown content positioned below navbar
-            rx.box(
-                # Menu items container
+            # Fullscreen overlay content
+            rx.flex(
+                mobile_menu_item(
+                    "history",
+                    "History",
+                    [State.close_mobile_menu, rx.redirect("/history")],
+                ),
+                mobile_menu_item(
+                    "scroll-text",
+                    "Changelog",
+                    [State.close_mobile_menu, rx.redirect("/changelog")],
+                ),
+                mobile_menu_item(
+                    "github",
+                    "Github",
+                    [
+                        State.close_mobile_menu,
+                        rx.redirect("https://github.com/bm611/ark", is_external=True),
+                    ],
+                ),
                 rx.box(
-                    mobile_menu_item(
-                        "history",
-                        "History",
-                        [State.close_mobile_menu, rx.redirect("/history")],
-                    ),
-                    mobile_menu_item(
-                        "scroll-text",
-                        "Changelog",
-                        [State.close_mobile_menu, rx.redirect("/changelog")],
-                    ),
-                    mobile_menu_item(
-                        "github",
-                        "Github",
-                        [
-                            State.close_mobile_menu,
-                            rx.redirect(
-                                "https://github.com/bm611/ark", is_external=True
+                    rx.flex(
+                        rx.cond(
+                            State.is_dark_theme,
+                            rx.icon("sun", size=36, class_name="text-white"),
+                            rx.icon("moon", size=36, class_name="text-gray-900"),
+                        ),
+                        rx.text(
+                            "Theme",
+                            class_name=rx.cond(
+                                State.is_dark_theme,
+                                "font-bold text-white text-4xl",
+                                "font-bold text-gray-900 text-4xl",
                             ),
-                        ],
+                        ),
+                        class_name="w-full gap-6 justify-start items-center",
                     ),
-                    # Auth section
-                    clerk.signed_out(
-                        clerk.sign_in_button(
-                            mobile_menu_item(
-                                "log-in", "Sign In", State.close_mobile_menu
-                            )
-                        )
-                    ),
-                    clerk.signed_in(
-                        clerk.sign_out_button(
-                            mobile_menu_item(
-                                "log-out", "Sign Out", State.close_mobile_menu
-                            )
-                        )
-                    ),
-                    mobile_menu_item(
-                        rx.cond(State.is_dark_theme, "sun", "moon"),
-                        "Toggle Theme",
-                        State.toggle_theme_and_close_menu,
-                    ),
+                    on_click=State.toggle_theme_and_close_menu,
                     class_name=rx.cond(
                         State.is_dark_theme,
-                        "bg-neutral-800 rounded-2xl border-2 border-neutral-600 overflow-hidden shadow-[0px_4px_0px_0px_rgba(38,38,38,0.8)]",
-                        "bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-[0px_4px_0px_0px_rgba(0,0,0,0.1)]",
+                        "py-3 hover:bg-gray-700/30 cursor-pointer transition-colors duration-200",
+                        "py-3 hover:bg-gray-100/50 cursor-pointer transition-colors duration-200",
                     ),
                 ),
-                position="absolute",
-                top="100%",
-                left="16px",
-                right="16px",
-                margin_top="8px",
-                z_index="1000",
-                border_radius="16px",
-                box_shadow=rx.cond(
-                    State.is_dark_theme,
-                    "0 4px 20px rgba(0, 0, 0, 0.3)",
-                    "0 4px 20px rgba(0, 0, 0, 0.1)",
+                clerk.signed_out(
+                    rx.hstack(
+                        clerk.sign_in_button(
+                            rx.button(
+                                rx.text(
+                                    "Sign In", class_name="text-white font-semibold"
+                                ),
+                                class_name=(
+                                    "mt-10 px-6 py-8 rounded-3xl text-white text-3xl transition-all font-[dm] font-semibold flex items-center justify-center "
+                                    "shadow-[0px_4px_0px_0px_rgb(34,197,94,0.6)] "
+                                    "hover:shadow-[0px_6px_0px_0px_rgb(34,197,94,0.8)] "
+                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(34,197,94,0.6)] active:translate-y-1 "
+                                ),
+                                style={
+                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.7) 0%, rgba(22,163,74,0.7) 50%, rgba(21,128,61,0.7) 100%)",
+                                    "border": "1px solid rgba(21,128,61,0.7)",
+                                },
+                            )
+                        ),
+                        class_name="flex gap-3",
+                        on_click=State.close_mobile_menu,
+                    )
                 ),
-                class_name="md:hidden",
+                clerk.signed_in(
+                    rx.hstack(
+                        clerk.sign_out_button(
+                            rx.button(
+                                rx.text(
+                                    "Sign Out", class_name="text-white font-semibold"
+                                ),
+                                class_name=(
+                                    "mt-10 px-6 py-8 rounded-3xl text-white text-3xl transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                                    "shadow-[0px_4px_0px_0px_rgb(239,68,68,0.6)] "
+                                    "hover:shadow-[0px_6px_0px_0px_rgb(239,68,68,0.8)] "
+                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(239,68,68,0.6)] active:translate-y-1 "
+                                ),
+                                style={
+                                    "background": "linear-gradient(135deg, rgba(239,68,68,0.7) 0%, rgba(220,38,38,0.7) 50%, rgba(185,28,28,0.7) 100%)",
+                                    "border": "1px solid rgba(185,28,28,0.7)",
+                                },
+                            )
+                        ),
+                        class_name="",
+                        on_click=State.close_mobile_menu,
+                    )
+                ),
+                direction="column",
+                align="start",
+                justify="start",
+                class_name="h-full w-full pt-8 px-8",
             ),
-            position="relative",
+            position="fixed",
+            top="90px",
+            left="0",
+            width="100vw",
+            height="calc(100vh - 90px)",
+            z_index="998",
+            class_name=rx.cond(
+                State.is_dark_theme,
+                "md:hidden backdrop-blur-sm bg-gray-950/95",
+                "md:hidden backdrop-blur-sm bg-white/95",
+            ),
         ),
     )
 
@@ -167,56 +188,58 @@ def navbar() -> rx.Component:
                 ),
                 class_name="flex justify-center items-center cursor-pointer",
             ),
-            # Mobile hamburger menu
-            rx.box(
-                rx.button(
-                    rx.cond(
-                        State.is_mobile_menu_open,
-                        rx.box(
+            rx.hstack(
+                # Hamburger menu
+                rx.box(
+                    rx.button(
+                        rx.cond(
+                            State.is_mobile_menu_open,
                             rx.box(
-                                class_name="w-6 h-0.5 bg-white transform rotate-45 translate-y-1.5 transition-all duration-300"
+                                rx.box(
+                                    class_name="w-6 h-0.5 bg-white transform rotate-45 translate-y-1.5 transition-all duration-300"
+                                ),
+                                rx.box(
+                                    class_name="w-6 h-0.5 bg-white opacity-0 transition-all duration-300"
+                                ),
+                                rx.box(
+                                    class_name="w-6 h-0.5 bg-white transform -rotate-45 -translate-y-1.5 transition-all duration-300"
+                                ),
+                                class_name="flex flex-col justify-center items-center space-y-1",
                             ),
                             rx.box(
-                                class_name="w-6 h-0.5 bg-white opacity-0 transition-all duration-300"
+                                rx.box(
+                                    class_name="w-6 h-0.5 bg-white transition-all duration-300"
+                                ),
+                                rx.box(
+                                    class_name="w-6 h-0.5 bg-white transition-all duration-300"
+                                ),
+                                rx.box(
+                                    class_name="w-6 h-0.5 bg-white transition-all duration-300"
+                                ),
+                                class_name="flex flex-col justify-center items-center space-y-1",
                             ),
-                            rx.box(
-                                class_name="w-6 h-0.5 bg-white transform -rotate-45 -translate-y-1.5 transition-all duration-300"
-                            ),
-                            class_name="flex flex-col justify-center items-center space-y-1",
                         ),
-                        rx.box(
-                            rx.box(
-                                class_name="w-6 h-0.5 bg-white transition-all duration-300"
-                            ),
-                            rx.box(
-                                class_name="w-6 h-0.5 bg-white transition-all duration-300"
-                            ),
-                            rx.box(
-                                class_name="w-6 h-0.5 bg-white transition-all duration-300"
-                            ),
-                            class_name="flex flex-col justify-center items-center space-y-1",
+                        class_name=(
+                            "md:hidden p-3 rounded-xl transition-all duration-200 "
+                            "shadow-[0px_4px_0px_0px_rgba(75,85,99,0.6)] "
+                            "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
+                            "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(75,85,99,0.6)] active:translate-y-1"
                         ),
+                        style=rx.cond(
+                            State.is_dark_theme,
+                            {
+                                "background": "linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 50%, rgba(15,23,42,0.8) 100%)",
+                                "border": "1px solid rgba(71,85,105,0.7)",
+                            },
+                            {
+                                "background": "linear-gradient(135deg, rgba(107,114,128,0.7) 0%, rgba(75,85,99,0.7) 50%, rgba(55,65,81,0.7) 100%)",
+                                "border": "1px solid rgba(55,65,81,0.7)",
+                            },
+                        ),
+                        on_click=State.toggle_mobile_menu,
                     ),
-                    class_name=(
-                        "md:hidden p-3 rounded-xl transition-all duration-200 "
-                        "shadow-[0px_4px_0px_0px_rgba(75,85,99,0.6)] "
-                        "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
-                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(75,85,99,0.6)] active:translate-y-1"
-                    ),
-                    style=rx.cond(
-                        State.is_dark_theme,
-                        {
-                            "background": "linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 50%, rgba(15,23,42,0.8) 100%)",
-                            "border": "1px solid rgba(71,85,105,0.7)",
-                        },
-                        {
-                            "background": "linear-gradient(135deg, rgba(107,114,128,0.7) 0%, rgba(75,85,99,0.7) 50%, rgba(55,65,81,0.7) 100%)",
-                            "border": "1px solid rgba(55,65,81,0.7)",
-                        },
-                    ),
-                    on_click=State.toggle_mobile_menu,
                 ),
-                class_name="relative md:hidden",
+                class_name="flex gap-2 md:hidden",
             ),
             # Desktop navigation (hidden on mobile)
             rx.hstack(
