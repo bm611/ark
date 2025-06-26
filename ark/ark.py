@@ -1,6 +1,6 @@
 import reflex as rx
-from ark.components.nav import navbar
-from ark.components.hero import hero, input_section
+from ark.components.navigation.nav import navbar
+from ark.components.chat.hero import hero, input_section
 from ark.pages.changelog import changelog_entry, changelog_header, load_changelog_data
 from ark.pages.chat import chat_nav, chat_messages, chat_input
 from ark.state import State

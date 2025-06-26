@@ -27,22 +27,31 @@ def search_bar():
 
 
 def new_chat_button():
-    """New chat button component"""
+    """New chat button component with improved style and hover effects"""
     return (
         rx.button(
-            rx.icon(
-                "plus",
-                class_name="block md:hidden",
-                size=20,
+            rx.hstack(
+                rx.icon(
+                    "plus",
+                    class_name="block md:hidden",
+                    size=20,
+                ),
+                rx.text("New Chat", class_name="hidden md:block md:text-xl font-bold"),
+                spacing="2",
             ),
-            rx.text("New Chat", class_name="hidden md:block md:text-xl font-bold"),
             on_click=rx.redirect("/"),
             variant="outline",
             class_name=rx.cond(
                 State.is_dark_theme,
-                "mr-2 px-4 md:px-6 py-4 md:py-6 bg-neutral-800 hover:bg-neutral-700 border-neutral-600 hover:border-neutral-500 text-neutral-200 hover:text-neutral-100 rounded-xl transition-all duration-200 backdrop-blur-sm",
-                "mr-2 px-4 md:px-6 py-4 md:py-6 bg-black hover:bg-gray-900 border-gray-900 hover:border-black text-white hover:text-gray-100 rounded-xl transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
+                # Improved dark theme: subtle gradient, shadow, scale and glow on hover
+                "mr-2 px-4 md:px-6 py-4 md:py-6 bg-gradient-to-r from-neutral-800 via-neutral-900 to-neutral-800 border border-neutral-600 text-neutral-200 rounded-xl transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-lg hover:scale-105 hover:bg-neutral-700 hover:border-neutral-500 hover:text-neutral-100 hover:ring-2 hover:ring-neutral-500/40 focus:outline-none focus:ring-2 focus:ring-neutral-500/60 active:scale-100",
+                # Improved light theme: gradient, shadow, scale and glow on hover
+                "mr-2 px-4 md:px-6 py-4 md:py-6 bg-gradient-to-r from-black via-gray-900 to-black border border-gray-900 text-white rounded-xl transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-lg hover:scale-105 hover:bg-gray-900 hover:border-black hover:text-gray-100 hover:ring-2 hover:ring-gray-400/40 focus:outline-none focus:ring-2 focus:ring-gray-400/60 active:scale-100",
             ),
+            style={
+                "cursor": "pointer",
+                "boxShadow": "0 2px 8px 0 rgba(0,0,0,0.08)",
+            },
         ),
     )
 
@@ -56,14 +65,16 @@ def chat_history_item(chat):
                     chat["title"],
                     class_name=rx.cond(
                         State.is_dark_theme,
-                        "text-neutral-200 font-medium text-sm md:text-md leading-tight",
-                        "text-gray-900 font-medium text-sm md:text-md leading-tight",
+                        # Add line-clamp-2 for mobile, md:line-clamp-1 for desktop
+                        "text-neutral-200 font-semibold text-lg md:text-xl leading-tight line-clamp-2 md:line-clamp-1",
+                        "text-gray-900 font-semibold text-lg md:text-xl leading-tight line-clamp-2 md:line-clamp-1",
                     ),
                     style={
                         "display": "-webkit-box",
-                        "webkitLineClamp": "1",
-                        "webkitBoxOrient": "vertical",
+                        "WebkitLineClamp": "1",
+                        "WebkitBoxOrient": "vertical",
                         "overflow": "hidden",
+                        "textOverflow": "ellipsis",
                     },
                 ),
                 rx.text(
@@ -78,14 +89,14 @@ def chat_history_item(chat):
                 align="start",
                 class_name="w-full cursor-pointer",
                 on_click=[
-                    State.load_chat_history(chat["id"]),
                     rx.redirect(f"/chat/{chat['id']}"),
+                    State.load_chat_history(chat["id"]),
                 ],
             ),
             rx.button(
                 rx.icon(
                     "trash-2",
-                    size=16,
+                    size=24,
                 ),
                 variant="ghost",
                 class_name=rx.cond(
@@ -101,8 +112,8 @@ def chat_history_item(chat):
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            "w-full bg-neutral-800/30 hover:bg-neutral-800/50 border border-neutral-700/50 hover:border-neutral-600/70 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm",
-            "w-full bg-white/60 hover:bg-white/80 border border-gray-200/60 hover:border-gray-300/80 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
+            "w-full bg-neutral-800/30 hover:bg-neutral-700/60 border border-neutral-700/50 hover:border-neutral-600/70 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm",
+            "w-full bg-white/60 hover:bg-gray-100 border border-gray-200/60 hover:border-gray-300/80 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
         ),
     )
 

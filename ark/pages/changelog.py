@@ -128,7 +128,7 @@ def load_changelog_data():
     try:
         # Get the path to the changelog.json file
         data_file = os.path.join(
-            os.path.dirname(__file__), "..", "data", "changelog.json"
+            os.path.dirname(__file__), "..", "static", "changelog.json"
         )
 
         with open(data_file, "r") as f:

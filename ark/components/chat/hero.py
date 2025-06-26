@@ -1,7 +1,7 @@
 import reflex as rx
 from ark.state import State
-from ark.components.ui.buttons import action_button
-from ark.components.offline_models import (
+from ark.components.common.buttons import action_button
+from ark.components.modals.offline_models import (
     OfflineModelsState,
     offline_models_overlay,
     offline_models_content,

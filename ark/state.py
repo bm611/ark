@@ -1,12 +1,12 @@
 import reflex as rx
 from typing import List, Optional
-from ark.models import ChatMessage
+from ark.models.chat import ChatMessage
 from ark.handlers.message_handler import message_handler
 import reflex_clerk_api as clerk
 import base64
 import os
 import uuid
-from ark.db.utils import init_user_if_not_exists
+from ark.database.utils import init_user_if_not_exists
 
 
 # Model Configuration Constants
@@ -41,13 +41,17 @@ class State(rx.State):
     # Theme state
     is_dark_theme: bool = False
 
+    # Mobile menu state
+    is_mobile_menu_open: bool = False
+
     # Current message image
     current_message_image: str = ""
 
     async def generate_chat_id_and_redirect(self):
-        from ark.db.utils import create_chat
+        from ark.database.utils import create_chat
 
         self.chat_id = str(uuid.uuid4())
+        self.is_mobile_menu_open = False
 
         # Get user ID from Clerk
         clerk_state = await self.get_state(clerk.ClerkState)
@@ -111,7 +115,7 @@ class State(rx.State):
 
     async def reset_chat(self):
         """Reset chat and save current conversation"""
-        from ark.db.utils import save_all_messages
+        from ark.database.utils import save_all_messages
 
         # Save current conversation if it exists and has messages
         if self.chat_id and self.messages:
@@ -130,6 +134,7 @@ class State(rx.State):
         self.citations_expanded = {}
         self.chat_id = ""
         self.current_message_image = ""
+        self.is_mobile_menu_open = False
 
     def toggle_thinking(self, message_index: int):
         """Toggle the thinking section for a specific message"""
@@ -218,7 +223,7 @@ class State(rx.State):
 
     async def _save_current_messages(self):
         """Save current messages to database"""
-        from ark.db.utils import (
+        from ark.database.utils import (
             save_message_from_dict,
             update_chat_title,
             get_message_count,
@@ -304,6 +309,23 @@ class State(rx.State):
         """Toggle between light and dark theme"""
         self.is_dark_theme = not self.is_dark_theme
 
+    def toggle_mobile_menu(self):
+        """Toggle mobile menu open/close state"""
+        self.is_mobile_menu_open = not self.is_mobile_menu_open
+
+    def close_mobile_menu(self):
+        """Close mobile menu"""
+        self.is_mobile_menu_open = False
+
+    def toggle_theme_and_close_menu(self):
+        """Toggle theme and close mobile menu"""
+        self.toggle_theme()
+        self.close_mobile_menu()
+    
+    def handle_auth_action(self):
+        """Handle auth actions and close mobile menu"""
+        self.close_mobile_menu()
+
     @rx.var
     def base64_imgs(self) -> list[str]:
         """Return a list of base64 data URLs for all uploaded images."""
@@ -364,7 +386,7 @@ class State(rx.State):
     @rx.event
     async def load_user_chats(self):
         """Load user's chats from database"""
-        from ark.db.utils import get_user_chats
+        from ark.database.utils import get_user_chats
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -377,7 +399,7 @@ class State(rx.State):
     @rx.event
     async def load_chat_history(self, chat_id: str):
         """Load chat history from database and set provider/model"""
-        from ark.db.utils import get_chat_messages, chat_exists, get_chat
+        from ark.database.utils import get_chat_messages, chat_exists, get_chat
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -445,12 +467,13 @@ class State(rx.State):
                 self.messages.append(chat_message)
 
             self.chat_id = chat_id
+            self.is_mobile_menu_open = False
             print(f"Loaded {len(self.messages)} messages for chat {chat_id}")
 
     @rx.event
     async def delete_chat(self, chat_id: str):
         """Delete a chat and all its messages"""
-        from ark.db.utils import delete_chat
+        from ark.database.utils import delete_chat
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -477,7 +500,7 @@ class State(rx.State):
     @rx.event
     async def handle_auth_change(self):
         """Handle authentication state changes (login/logout)."""
-        from ark.db.utils import init_user_if_not_exists
+        from ark.database.utils import init_user_if_not_exists
 
         clerk_state = await self.get_state(clerk.ClerkState)
         clerk_user_state = await self.get_state(clerk.ClerkUser)

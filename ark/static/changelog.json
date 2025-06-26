@@ -1,9 +1,28 @@
 {
 	"entries": [
 		{
+			"version": "0.6.1",
+			"date": "Jun 25 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "added",
+					"description": "Delete button for chat history"
+				},
+				{
+					"type": "added",
+					"description": "Dropdown navigation in mobile view"
+				},
+				{
+					"type": "improved",
+					"description": "Project structure reorganization"
+				}
+			]
+		},
+		{
 			"version": "0.6.0",
 			"date": "Jun 23 2025",
-			"is_latest": true,
+			"is_latest": false,
 			"changes": [
 				{
 					"type": "added",

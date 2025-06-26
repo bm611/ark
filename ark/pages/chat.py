@@ -1,8 +1,8 @@
 import reflex as rx
 from typing import Dict, Any
 from ark.state import State
-from ark.components.ui.buttons import expandable_section_button
-from ark.components.ui.layout import navigation_header
+from ark.components.common.buttons import expandable_section_button
+from ark.components.common.layout import navigation_header
 
 
 def markdown_component_map() -> Dict[str, Any]:
@@ -165,7 +165,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                 ),
                 # Image preview section for user messages
                 rx.cond(
-                    State.current_message_image,
+                    State.current_message_image & (index == 0),
                     rx.box(
                         rx.image(
                             src=State.current_message_image,
