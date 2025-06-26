@@ -165,7 +165,7 @@ def response_message(message: dict, index: int) -> rx.Component:
                 ),
                 # Image preview section for user messages
                 rx.cond(
-                    State.current_message_image,
+                    State.current_message_image & (index == 0),
                     rx.box(
                         rx.image(
                             src=State.current_message_image,
