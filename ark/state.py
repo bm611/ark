@@ -41,6 +41,9 @@ class State(rx.State):
     # Theme state
     is_dark_theme: bool = False
 
+    # Mobile menu state
+    is_mobile_menu_open: bool = False
+
     # Current message image
     current_message_image: str = ""
 
@@ -48,6 +51,7 @@ class State(rx.State):
         from ark.database.utils import create_chat
 
         self.chat_id = str(uuid.uuid4())
+        self.is_mobile_menu_open = False
 
         # Get user ID from Clerk
         clerk_state = await self.get_state(clerk.ClerkState)
@@ -130,6 +134,7 @@ class State(rx.State):
         self.citations_expanded = {}
         self.chat_id = ""
         self.current_message_image = ""
+        self.is_mobile_menu_open = False
 
     def toggle_thinking(self, message_index: int):
         """Toggle the thinking section for a specific message"""
@@ -304,6 +309,23 @@ class State(rx.State):
         """Toggle between light and dark theme"""
         self.is_dark_theme = not self.is_dark_theme
 
+    def toggle_mobile_menu(self):
+        """Toggle mobile menu open/close state"""
+        self.is_mobile_menu_open = not self.is_mobile_menu_open
+
+    def close_mobile_menu(self):
+        """Close mobile menu"""
+        self.is_mobile_menu_open = False
+
+    def toggle_theme_and_close_menu(self):
+        """Toggle theme and close mobile menu"""
+        self.toggle_theme()
+        self.close_mobile_menu()
+    
+    def handle_auth_action(self):
+        """Handle auth actions and close mobile menu"""
+        self.close_mobile_menu()
+
     @rx.var
     def base64_imgs(self) -> list[str]:
         """Return a list of base64 data URLs for all uploaded images."""
@@ -445,6 +467,7 @@ class State(rx.State):
                 self.messages.append(chat_message)
 
             self.chat_id = chat_id
+            self.is_mobile_menu_open = False
             print(f"Loaded {len(self.messages)} messages for chat {chat_id}")
 
     @rx.event
