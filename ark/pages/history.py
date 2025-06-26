@@ -65,8 +65,8 @@ def chat_history_item(chat):
                     chat["title"],
                     class_name=rx.cond(
                         State.is_dark_theme,
-                        "text-neutral-200 font-medium text-sm md:text-md leading-tight",
-                        "text-gray-900 font-medium text-sm md:text-md leading-tight",
+                        "text-neutral-200 font-medium text-sm md:text-xl leading-tight",
+                        "text-gray-900 font-medium text-sm md:text-xl leading-tight",
                     ),
                     style={
                         "display": "-webkit-box",
@@ -87,8 +87,8 @@ def chat_history_item(chat):
                 align="start",
                 class_name="w-full cursor-pointer",
                 on_click=[
-                    State.load_chat_history(chat["id"]),
                     rx.redirect(f"/chat/{chat['id']}"),
+                    State.load_chat_history(chat["id"]),
                 ],
             ),
             rx.button(
@@ -110,8 +110,8 @@ def chat_history_item(chat):
         ),
         class_name=rx.cond(
             State.is_dark_theme,
-            "w-full bg-neutral-800/30 hover:bg-neutral-800/50 border border-neutral-700/50 hover:border-neutral-600/70 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm",
-            "w-full bg-white/60 hover:bg-white/80 border border-gray-200/60 hover:border-gray-300/80 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
+            "w-full bg-neutral-800/30 hover:bg-neutral-700/60 border border-neutral-700/50 hover:border-neutral-600/70 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm",
+            "w-full bg-white/60 hover:bg-gray-100 border border-gray-200/60 hover:border-gray-300/80 rounded-xl p-4 transition-all duration-200 backdrop-blur-sm shadow-sm hover:shadow-md",
         ),
     )
 

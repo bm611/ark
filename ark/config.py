@@ -1,8 +1,8 @@
 """
 Configuration constants and settings for the Ark application.
 """
+
 import os
-from typing import List, Dict, Any
 
 
 # Environment Variables
@@ -31,17 +31,17 @@ class ProviderConfig:
             "perplexity/sonar",
             "anthropic/claude-3.5-sonnet",
             "openai/gpt-4",
-        ]
+        ],
     }
-    
+
     OLLAMA = {
         "base_url": "http://localhost:11434/v1",
         "api_key": "ollama",
         "default_model": None,
     }
-    
+
     LMSTUDIO = {
-        "base_url": "http://localhost:1234/v1", 
+        "base_url": "http://localhost:1234/v1",
         "api_key": "lmstudio",
         "default_model": None,
     }
@@ -55,7 +55,7 @@ class DatabaseConfig:
     DEFAULT_INITIAL_MODEL = "google/gemini-2.5-flash"
 
 
-# Application Configuration  
+# Application Configuration
 class AppConfig:
     FRONTEND_PORT = 3000
     BACKEND_PORT = 8000
