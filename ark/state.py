@@ -94,7 +94,7 @@ class State(rx.State):
         self.prompt = value
 
     def set_provider_and_model(self, provider: str, model: str = ""):
-        """Set the selected provider and model from offline models selection"""
+        """Set the selected provider and model"""
         self.selected_provider = provider
         self.selected_model = model
         print(f"Provider set to: {provider}, Model: {model or 'default'}")
@@ -366,7 +366,7 @@ class State(rx.State):
         if self.selected_action == "Search":
             if self.selected_provider == ModelConfig.DEFAULT_PROVIDER:
                 return ModelConfig.SEARCH_MODEL
-            # For offline providers, use their selected model
+            # Use selected model for other providers
             return self.selected_model if self.selected_model else None
         else:
             # Regular chat - use selected model

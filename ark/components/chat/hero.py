@@ -1,11 +1,6 @@
 import reflex as rx
 from ark.state import State
 from ark.components.common.buttons import action_button
-from ark.components.modals.offline_models import (
-    OfflineModelsState,
-    offline_models_overlay,
-    offline_models_content,
-)
 import reflex_clerk_api as clerk
 
 
@@ -210,22 +205,6 @@ def input_section():
                                         active_border="#166534",
                                         shadow_color="rgba(34,197,94,0.8)",
                                         on_click=State.handle_search_click,
-                                    ),
-                                    action_button(
-                                        label="Offline",
-                                        icon="cloud-off",
-                                        is_active=rx.cond(
-                                            State.selected_action == "Offline",
-                                            OfflineModelsState.selected_model != "",
-                                            False,
-                                        ),
-                                        active_gradient="linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
-                                        active_border="#5b21b6",
-                                        shadow_color="rgba(147,51,234,0.8)",
-                                        on_click=[
-                                            State.select_action("Offline"),
-                                            OfflineModelsState.open_drawer,
-                                        ],
                                     ),
                                     class_name="gap-0 mb-2",
                                 ),
@@ -459,8 +438,6 @@ def hero():
                 align="center",
                 justify="center",
             ),
-            offline_models_overlay(),
-            offline_models_content(),
             rx.html(
                 """
                 <style>

@@ -34,17 +34,6 @@ class ProviderConfig:
         ],
     }
 
-    OLLAMA = {
-        "base_url": "http://localhost:11434/v1",
-        "api_key": "ollama",
-        "default_model": None,
-    }
-
-    LMSTUDIO = {
-        "base_url": "http://localhost:1234/v1",
-        "api_key": "lmstudio",
-        "default_model": None,
-    }
 
 
 # Database Configuration

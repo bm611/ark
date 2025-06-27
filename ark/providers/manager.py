@@ -5,8 +5,6 @@ Provider manager for centralized AI provider handling.
 from typing import Optional, List, Dict
 from .base import ProviderRegistry, BaseProvider
 from .openrouter import OpenRouterProvider
-from .ollama import OllamaProvider
-from .lmstudio import LMStudioProvider
 from .prompt import system_message_prompt
 
 
@@ -21,8 +19,6 @@ class ProviderManager:
     def _initialize_providers(self):
         """Initialize and register all providers."""
         self.registry.register("openrouter", OpenRouterProvider())
-        self.registry.register("ollama", OllamaProvider())
-        self.registry.register("lmstudio", LMStudioProvider())
 
     def get_provider(self, name: str) -> Optional[BaseProvider]:
         """Get a provider by name."""
