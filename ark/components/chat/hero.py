@@ -14,10 +14,54 @@ def input_section():
         rx.box(
             rx.vstack(
                 rx.cond(
-                    (State.img.length() > 0) | (State.pdf_files.length() > 0),
+                    (State.img.length() > 0) | (State.pdf_files.length() > 0) | (State.uploaded_files.length() > 0),
                     rx.box(
                         rx.hstack(
-                            # Image files
+                            # R2 uploaded files (preferred)
+                            rx.foreach(
+                                State.uploaded_files,
+                                lambda file_ref: rx.box(
+                                    rx.hstack(
+                                        rx.icon(
+                                            rx.cond(
+                                                file_ref["type"] == "image",
+                                                "image",
+                                                "file-text"
+                                            ),
+                                            size=18,
+                                            color=rx.cond(
+                                                file_ref["type"] == "image",
+                                                rx.cond(
+                                                    State.is_dark_theme,
+                                                    "#60a5fa",
+                                                    "#3b82f6",
+                                                ),
+                                                rx.cond(
+                                                    State.is_dark_theme,
+                                                    "#ef4444",
+                                                    "#dc2626",
+                                                ),
+                                            ),
+                                        ),
+                                        rx.text(
+                                            file_ref.get("original_filename", "Unknown file"),
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
+                                                "text-sm text-gray-700 font-[dm] font-medium",
+                                            ),
+                                        ),
+                                        align="center",
+                                        spacing="2",
+                                    ),
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                    ),
+                                ),
+                            ),
+                            # Legacy image files (fallback)
                             rx.foreach(
                                 State.img,
                                 lambda filename: rx.box(
@@ -59,7 +103,7 @@ def input_section():
                                     ),
                                 ),
                             ),
-                            # PDF files
+                            # Legacy PDF files (fallback)
                             rx.foreach(
                                 State.pdf_files,
                                 lambda filename: rx.box(

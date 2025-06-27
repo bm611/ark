@@ -70,9 +70,32 @@ async def test_connection():
     )
     print("Messages Table Created")
     
+    # Create files table for R2 storage references
+    await conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS files (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            file_key VARCHAR(500) NOT NULL UNIQUE, -- R2 object key
+            original_filename VARCHAR(255) NOT NULL,
+            content_type VARCHAR(100) NOT NULL,
+            file_size BIGINT NOT NULL,
+            user_id VARCHAR(255) NOT NULL,
+            chat_id UUID, -- Optional: link to specific chat
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE
+        )
+        """
+    )
+    print("Files Table Created")
+    
     # Create indexes for performance
     await conn.execute("CREATE INDEX IF NOT EXISTS idx_chats_on_user_id ON chats (user_id)")
     await conn.execute("CREATE INDEX IF NOT EXISTS idx_messages_on_chat_id_and_order ON messages (chat_id, message_order)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_files_on_user_id ON files (user_id)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_files_on_chat_id ON files (chat_id)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_files_on_file_key ON files (file_key)")
     print("Indexes Created")
     
     await conn.close()

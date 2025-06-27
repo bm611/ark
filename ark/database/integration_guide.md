@@ -24,7 +24,7 @@ In your `state.py` `handle_auth_change` method:
 @rx.event
 async def handle_auth_change(self):
     """Handle authentication state changes (login/logout)."""
-    from ark.db.utils import init_user_if_not_exists
+    from ark.database.utils import init_user_if_not_exists
     
     clerk_state = await self.get_state(clerk.ClerkState)
     clerk_user_state = await self.get_state(clerk.ClerkUser)
@@ -49,7 +49,7 @@ In your `generate_chat_id_and_redirect` method:
 
 ```python
 async def generate_chat_id_and_redirect(self):
-    from ark.db.utils import create_chat
+    from ark.database.utils import create_chat
     
     self.chat_id = str(uuid.uuid4())
     
@@ -75,7 +75,7 @@ In your `send_message` method, after the message is processed:
 ```python
 def send_message(self):
     """Send message using the new message handler."""
-    from ark.db.utils import save_message_auto_order, update_chat_title
+    from ark.database.utils import save_message_auto_order, update_chat_title
     
     # ... existing code ...
     
@@ -92,7 +92,7 @@ def send_message(self):
 
 async def _save_current_messages(self):
     """Save current messages to database"""
-    from ark.db.utils import save_message_auto_order, update_chat_title, get_message_count
+    from ark.database.utils import save_message_auto_order, update_chat_title, get_message_count
     
     clerk_state = await self.get_state(clerk.ClerkState)
     if not clerk_state.is_signed_in or not self.chat_id:
@@ -120,7 +120,7 @@ Add this method to load existing chats:
 @rx.event
 async def load_chat_history(self, chat_id: str):
     """Load chat history from database"""
-    from ark.db.utils import get_chat_messages, chat_exists
+    from ark.database.utils import get_chat_messages, chat_exists
     
     clerk_state = await self.get_state(clerk.ClerkState)
     if not clerk_state.is_signed_in:
@@ -172,7 +172,7 @@ In your `reset_chat` method, save the current conversation before clearing:
 ```python
 async def reset_chat(self):
     """Reset chat and save current conversation"""
-    from ark.db.utils import save_all_messages
+    from ark.database.utils import save_all_messages
     
     # Save current conversation if it exists and has messages
     if self.chat_id and self.messages:
@@ -205,7 +205,7 @@ Add this method to get a user's chat history:
 @rx.event
 async def get_user_chat_list(self):
     """Get list of user's chats for sidebar/navigation"""
-    from ark.db.utils import get_user_chats
+    from ark.database.utils import get_user_chats
     
     clerk_state = await self.get_state(clerk.ClerkState)
     if not clerk_state.is_signed_in:
