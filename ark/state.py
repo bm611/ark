@@ -1,12 +1,12 @@
 import reflex as rx
-from typing import List, Optional
-from ark.models.chat import ChatMessage
+from typing import List
+from ark.models.chat import ChatMessage, FileReference
 from ark.handlers.message_handler import message_handler
 import reflex_clerk_api as clerk
 import base64
 import os
 import uuid
-from ark.database.utils import init_user_if_not_exists
+import asyncpg
 
 
 # Model Configuration Constants
@@ -23,6 +23,8 @@ class State(rx.State):
     is_streaming: bool = False
     selected_action: str = ""
     img: list[str] = []
+    pdf_files: list[str] = []
+    uploaded_files: List[FileReference] = []  # R2 uploaded files
     logged_user_name: str = ""
     chat_id: str = ""
     user_chats: List[dict] = []
@@ -36,7 +38,6 @@ class State(rx.State):
     # Provider and model selection
     selected_provider: str = ModelConfig.DEFAULT_PROVIDER
     selected_model: str = ModelConfig.CHAT_MODEL
-
 
     # Theme state
     is_dark_theme: bool = False
@@ -66,16 +67,20 @@ class State(rx.State):
             )
 
         return rx.redirect(f"/chat/{self.chat_id}")
-    
+
     async def handle_chat_page_load(self):
         """Handle loading a chat page - either load existing chat or process new message."""
         # Get the conversation ID from the URL
         conversation_id = self.router.page.params.get("conversation", "")
-        
+
         if conversation_id and conversation_id != self.chat_id:
             # This is an existing chat, load its history
             await self.load_chat_history(conversation_id)
-        elif self.messages and self.messages[-1].get("role") == "user" and not self.is_streaming:
+        elif (
+            self.messages
+            and self.messages[-1].get("role") == "user"
+            and not self.is_streaming
+        ):
             # This is a new chat with a user message waiting to be processed
             async for _ in self.send_message_stream():
                 yield
@@ -83,12 +88,13 @@ class State(rx.State):
     @rx.var
     def current_url(self) -> str:
         return self.router.page.path
+    
 
     def set_prompt(self, value: str):
         self.prompt = value
 
     def set_provider_and_model(self, provider: str, model: str = ""):
-        """Set the selected provider and model from offline models selection"""
+        """Set the selected provider and model"""
         self.selected_provider = provider
         self.selected_model = model
         print(f"Provider set to: {provider}, Model: {model or 'default'}")
@@ -99,17 +105,93 @@ class State(rx.State):
         # Create content array starting with text
         content = [{"type": "text", "text": self.prompt}]
 
-        # Add base64 images if any are uploaded
+        # Process R2 uploaded files first (preferred method)
+        for file_ref in self.uploaded_files:
+            if file_ref.get("type") == "image" and file_ref.get("presigned_url"):
+                # Use presigned URL for images (OpenRouter can fetch external images)
+                self.current_message_image = file_ref["presigned_url"]
+                content.append(
+                    {"type": "image_url", "image_url": {"url": file_ref["presigned_url"]}}
+                )
+            elif file_ref.get("type") == "pdf" and file_ref.get("file_key"):
+                # Download and encode PDFs for AI processing
+                try:
+                    from ark.services.r2_storage import download_and_encode_pdf, generate_presigned_url
+                    # Generate fresh presigned URL for PDF download
+                    presigned_url = generate_presigned_url(file_ref["file_key"])
+                    if presigned_url:
+                        pdf_base64 = download_and_encode_pdf(presigned_url, file_ref.get("original_filename", "document.pdf"))
+                        if pdf_base64:
+                            content.append(
+                                {
+                                    "type": "file",
+                                    "file": {
+                                        "filename": file_ref.get("original_filename", "document.pdf"),
+                                        "file_data": pdf_base64,
+                                    },
+                                }
+                            )
+                except Exception as e:
+                    print(f"Error processing R2 PDF {file_ref.get('original_filename')}: {e}")
+
+        # Fallback to legacy base64 processing (for offline users or R2 failures)
         if self.img:
             base64_images = self.base64_imgs
             if base64_images:
-                self.current_message_image = base64_images[0]
+                if not self.current_message_image:  # Only if no R2 image was set
+                    self.current_message_image = base64_images[0]
                 content.append(
                     {"type": "image_url", "image_url": {"url": base64_images[0]}}
                 )
 
-        # Create user message
-        user_message = {"role": "user", "content": content, "display_text": self.prompt}
+        if self.pdf_files:
+            base64_pdfs = self.base64_pdfs
+            for pdf_data in base64_pdfs:
+                content.append(
+                    {
+                        "type": "file",
+                        "file": {
+                            "filename": pdf_data["filename"],
+                            "file_data": pdf_data["data"],
+                        },
+                    }
+                )
+
+        # Create user message with file references
+        files_metadata = []
+        
+        # Add R2 uploaded files to metadata (preferred)
+        files_metadata.extend(self.uploaded_files)
+        
+        # Add legacy base64 files metadata (fallback)
+        base64_images = self.base64_imgs
+        for i, filename in enumerate(self.img):
+            base64_url = base64_images[i] if i < len(base64_images) else None
+            if base64_url:  # Only add if we have valid base64 data
+                files_metadata.append({
+                    "filename": filename,
+                    "content_type": f"image/{filename.split('.')[-1].lower()}",
+                    "type": "image",
+                    "base64_url": base64_url  # Add base64 data for display
+                })
+            
+        # Add PDF files metadata with base64 data
+        base64_pdfs = self.base64_pdfs
+        for pdf_data in base64_pdfs:
+            if pdf_data.get("data"):  # Only add if we have valid base64 data
+                files_metadata.append({
+                    "filename": pdf_data["filename"],
+                    "content_type": "application/pdf", 
+                    "type": "pdf",
+                    "base64_url": pdf_data["data"]  # Add base64 data for display
+                })
+            
+        user_message = {
+            "role": "user", 
+            "content": content, 
+            "display_text": self.prompt,
+            "files": files_metadata
+        }
         self.messages.append(user_message)
         self.prompt = ""
 
@@ -125,6 +207,8 @@ class State(rx.State):
 
         # Clear state
         self.img = []
+        self.pdf_files = []
+        self.uploaded_files = []
         self.messages = []
         self.is_gen = False
         self.selected_provider = ModelConfig.DEFAULT_PROVIDER
@@ -154,8 +238,6 @@ class State(rx.State):
         else:
             self.citations_expanded[message_index] = True
 
-
-    
     async def send_message_stream(self):
         """Send message with streaming response."""
         if self.messages and self.messages[-1].get("role") == "assistant":
@@ -180,22 +262,25 @@ class State(rx.State):
 
         try:
             # Process the message with streaming
-            async for partial_message, is_complete in (
-                message_handler.process_message_stream(
-                    messages=self.messages[:-1],  # Exclude the empty assistant message we just added
-                    provider=self.selected_provider,
-                    model=model,
-                    action=self.selected_action,
-                )
+            async for (
+                partial_message,
+                is_complete,
+            ) in message_handler.process_message_stream(
+                messages=self.messages[
+                    :-1
+                ],  # Exclude the empty assistant message we just added
+                provider=self.selected_provider,
+                model=model,
+                action=self.selected_action,
             ):
                 # Update the last message (assistant message) with streaming content
                 self.messages[-1] = partial_message
                 # Force Reflex to detect the state change
                 self.messages = self.messages
-                
+
                 # Yield to update UI
                 yield
-                
+
                 # If this is the final complete message, break
                 if is_complete:
                     break
@@ -219,6 +304,7 @@ class State(rx.State):
             if self.chat_id:
                 # Save all messages that aren't saved yet
                 import asyncio
+
                 asyncio.create_task(self._save_current_messages())
 
     async def _save_current_messages(self):
@@ -247,7 +333,10 @@ class State(rx.State):
             if db_count < len(self.messages):
                 # Save any new messages with manual order tracking
                 for i in range(db_count, len(self.messages)):
-                    message = self.messages[i]
+                    message = self.messages[i].copy()  # Make a copy to avoid modifying original
+                    # Add user_id for R2 upload if this is a user message with files
+                    if message.get("role") == "user" and message.get("files"):
+                        message["user_id"] = clerk_state.user_id
                     message_order = i  # Use the index as the order
                     try:
                         await save_message_from_dict(
@@ -277,7 +366,7 @@ class State(rx.State):
         if self.selected_action == "Search":
             if self.selected_provider == ModelConfig.DEFAULT_PROVIDER:
                 return ModelConfig.SEARCH_MODEL
-            # For offline providers, use their selected model
+            # Use selected model for other providers
             return self.selected_model if self.selected_model else None
         else:
             # Regular chat - use selected model
@@ -321,7 +410,7 @@ class State(rx.State):
         """Toggle theme and close mobile menu"""
         self.toggle_theme()
         self.close_mobile_menu()
-    
+
     def handle_auth_action(self):
         """Handle auth actions and close mobile menu"""
         self.close_mobile_menu()
@@ -360,28 +449,124 @@ class State(rx.State):
             mime = "image/jpeg"
         return f"data:{mime};base64,{encoded}"
 
+    @staticmethod
+    def encode_pdf_to_base64(pdf_path: str) -> str:
+        """Encode a PDF file to a base64 data URL.
+
+        Args:
+            pdf_path: The path to the PDF file.
+
+        Returns:
+            The base64 data URL of the PDF.
+        """
+        with open(pdf_path, "rb") as pdf_file:
+            encoded = base64.b64encode(pdf_file.read()).decode("utf-8")
+        return f"data:application/pdf;base64,{encoded}"
+
+    @rx.var
+    def base64_pdfs(self) -> list[dict]:
+        """Return a list of base64 data URLs for all uploaded PDFs with filenames."""
+        pdf_list = []
+        upload_dir = rx.get_upload_dir()
+        for filename in self.pdf_files:
+            pdf_path = upload_dir / filename
+            try:
+                base64_data = self.encode_pdf_to_base64(str(pdf_path))
+                pdf_list.append({"filename": filename, "data": base64_data})
+                os.remove(pdf_path)
+            except Exception:
+                # If file not found or error, skip
+                continue
+        return pdf_list
+
     @rx.event
     async def handle_upload(self, files: list[rx.UploadFile]):
-        """Handle the upload of file(s).
+        """Handle file upload - prioritize R2 upload, fallback to base64 for universal processing.
 
         Args:
             files: The uploaded files.
         """
+        from ark.services.r2_storage import upload_file, generate_presigned_url
+        
+        clerk_state = await self.get_state(clerk.ClerkState)
+        
         for file in files:
-            upload_data = await file.read()
-            outfile = rx.get_upload_dir() / file.name
-
-            # Save the file.
-            with outfile.open("wb") as file_object:
-                file_object.write(upload_data)
-
-            # Update the img var.
-            self.img.append(file.name)
+            try:
+                upload_data = await file.read()
+                
+                # Save to local storage (needed for fallback and R2 upload)
+                outfile = rx.get_upload_dir() / file.name
+                with outfile.open("wb") as file_object:
+                    file_object.write(upload_data)
+                
+                # Try R2 upload if user is signed in
+                r2_success = False
+                if clerk_state.is_signed_in:
+                    try:
+                        r2_metadata = upload_file(
+                            file_path=file.name,
+                            file_content=upload_data,
+                            content_type=file.content_type or "application/octet-stream",
+                            user_id=clerk_state.user_id
+                        )
+                        
+                        if r2_metadata:
+                            # Generate presigned URL
+                            presigned_url = generate_presigned_url(r2_metadata['file_key'])
+                            
+                            # Create FileReference for R2 file
+                            file_ref: FileReference = {
+                                'file_key': r2_metadata['file_key'],
+                                'original_filename': file.name,
+                                'content_type': file.content_type or "application/octet-stream",
+                                'file_size': len(upload_data),
+                                'type': "pdf" if file.name.lower().endswith(".pdf") else "image",
+                                'presigned_url': presigned_url
+                            }
+                            self.uploaded_files.append(file_ref)
+                            r2_success = True
+                            print(f"Successfully uploaded {file.name} to R2")
+                            
+                            # Clean up local file after successful R2 upload
+                            try:
+                                os.remove(outfile)
+                                print(f"Cleaned up local file: {file.name}")
+                            except Exception as cleanup_e:
+                                print(f"Could not remove local file {file.name}: {cleanup_e}")
+                            
+                    except Exception as e:
+                        print(f"R2 upload failed for {file.name}: {e}")
+                
+                # Fallback to legacy base64 system if R2 failed or user not signed in
+                if not r2_success:
+                    if file.name.lower().endswith(".pdf"):
+                        self.pdf_files.append(file.name)
+                    else:
+                        self.img.append(file.name)
+                        
+            except Exception as e:
+                print(f"Error processing file {file.name}: {e}")
 
     @rx.event
     def clear_images(self):
         """Clear the uploaded images list."""
         self.img = []
+        # Also clear image files from uploaded_files
+        self.uploaded_files = [f for f in self.uploaded_files if f.get("type") != "image"]
+
+    @rx.event
+    def clear_pdfs(self):
+        """Clear the uploaded PDFs list."""
+        self.pdf_files = []
+        # Also clear PDF files from uploaded_files
+        self.uploaded_files = [f for f in self.uploaded_files if f.get("type") != "pdf"]
+
+    @rx.event
+    def clear_all_files(self):
+        """Clear all uploaded files."""
+        self.img = []
+        self.pdf_files = []
+        self.uploaded_files = []
 
     @rx.event
     async def load_user_chats(self):
@@ -399,7 +584,9 @@ class State(rx.State):
     @rx.event
     async def load_chat_history(self, chat_id: str):
         """Load chat history from database and set provider/model"""
-        from ark.database.utils import get_chat_messages, chat_exists, get_chat
+        from ark.database.utils import get_chat_messages, chat_exists, get_chat, get_connection
+        from ark.database.file_utils import get_chat_files
+        from ark.services.r2_storage import generate_presigned_url
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
@@ -420,12 +607,68 @@ class State(rx.State):
                     f"Loaded chat {chat_id} with provider: {self.selected_provider}, model: {self.selected_model}"
                 )
 
+            # Load chat files from R2
+            file_references = []
+            conn = await get_connection()
+            try:
+                chat_files = await get_chat_files(conn, chat_id)
+                print(f"Found {len(chat_files)} files in database for chat {chat_id}")
+                
+                # Convert to FileReference and generate presigned URLs
+                for file_data in chat_files:
+                    try:
+                        presigned_url = generate_presigned_url(file_data['file_key'])
+                        if presigned_url:  # Only add files with valid presigned URLs
+                            # Determine file type from content_type
+                            file_type = "pdf" if file_data['content_type'] == "application/pdf" else "image"
+                            
+                            file_ref: FileReference = {
+                                'file_id': str(file_data['id']),
+                                'file_key': file_data['file_key'],
+                                'original_filename': file_data['original_filename'],
+                                'content_type': file_data['content_type'],
+                                'file_size': file_data['file_size'],
+                                'type': file_type,
+                                'presigned_url': presigned_url
+                            }
+                            file_references.append(file_ref)
+                            print(f"✓ Loaded file: {file_data['original_filename']} ({file_type}) with URL: {presigned_url[:50]}...")
+                        else:
+                            print(f"✗ Failed to generate presigned URL for file: {file_data['original_filename']}")
+                    except Exception as e:
+                        print(f"✗ Error processing file {file_data.get('original_filename', 'unknown')}: {e}")
+                        continue
+                        
+            except Exception as e:
+                print(f"Error loading chat files: {e}")
+            finally:
+                await conn.close()
+                
+            print(f"Successfully loaded {len(file_references)} files with valid URLs")
+
             # Load messages
             db_messages = await get_chat_messages(chat_id)
 
             # Convert database messages to your ChatMessage format
             self.messages = []
-            for msg in db_messages:
+            
+            # Find which message should get the files (look for multimodal content)
+            message_with_files_index = None
+            for i, msg in enumerate(db_messages):
+                if (msg["role"] == "user" and 
+                    isinstance(msg["content"], list) and 
+                    any(item.get("type") in ["image_url", "file"] for item in msg["content"] if isinstance(item, dict))):
+                    message_with_files_index = i
+                    break
+            
+            # If no multimodal content found, use first user message
+            if message_with_files_index is None:
+                for i, msg in enumerate(db_messages):
+                    if msg["role"] == "user":
+                        message_with_files_index = i
+                        break
+            
+            for i, msg in enumerate(db_messages):
                 # Handle content based on role and structure
                 if isinstance(msg["content"], list):
                     if msg["role"] == "assistant":
@@ -437,12 +680,22 @@ class State(rx.State):
                                 break
                         content = content_text
                     else:
-                        # For user messages, extract image URL if present and store in state
+                        # For user messages, update image/file URLs with fresh presigned URLs
                         content = msg["content"]
+                        
+                        # Create a mapping of files by type for better matching
+                        image_files = [f for f in file_references if f.get('type') == 'image']
+                        pdf_files = [f for f in file_references if f.get('type') == 'pdf']
+                        
                         for item in msg["content"]:
-                            if isinstance(item, dict) and item.get("type") == "image_url":
-                                self.current_message_image = item.get("image_url", {}).get("url", "")
-                                break
+                            if isinstance(item, dict):
+                                if item.get("type") == "image_url" and image_files:
+                                    # Use the first available image file
+                                    item["image_url"]["url"] = image_files[0]['presigned_url']
+                                    print(f"Updated image URL with fresh presigned URL: {image_files[0]['presigned_url'][:50]}...")
+                                elif item.get("type") == "file" and pdf_files:
+                                    # Update PDF file data if needed (though it's usually base64)
+                                    print(f"Found PDF file reference: {pdf_files[0]['original_filename']}")
                 else:
                     content = msg["content"]
 
@@ -451,6 +704,13 @@ class State(rx.State):
                     "content": content,
                     "display_text": msg["display_text"],
                 }
+
+                # Add file references to the appropriate message
+                if msg["role"] == "user" and file_references and i == message_with_files_index:
+                    chat_message["files"] = file_references
+                    print(f"Added {len(file_references)} files to user message {i}")
+                    for file_ref in file_references:
+                        print(f"  - {file_ref.get('original_filename')}: {file_ref.get('presigned_url')[:50]}..." if file_ref.get('presigned_url') else f"  - {file_ref.get('original_filename')}: NO URL")
 
                 # Add optional fields if they exist
                 if msg.get("thinking"):
@@ -472,29 +732,46 @@ class State(rx.State):
 
     @rx.event
     async def delete_chat(self, chat_id: str):
-        """Delete a chat and all its messages"""
-        from ark.database.utils import delete_chat
+        """Delete a chat and all its messages and files"""
+        from ark.database.utils import delete_chat, get_connection
+        from ark.services.r2_storage import delete_chat_files
 
         clerk_state = await self.get_state(clerk.ClerkState)
         if not clerk_state.is_signed_in:
             return
 
-        # Delete the chat (this will also delete messages due to foreign key cascade)
-        success = await delete_chat(chat_id, clerk_state.user_id)
-        
-        if success:
-            # Refresh the chat list from database to ensure UI is updated
-            await self.load_user_chats()
+        try:
+            # Get file keys for cleanup before deleting chat
+            conn = await get_connection()
+            try:
+                from ark.database.file_utils import get_chat_file_keys
+                file_keys = await get_chat_file_keys(conn, chat_id)
+            finally:
+                await conn.close()
+
+            # Delete files from R2 storage
+            if file_keys:
+                delete_chat_files(file_keys)
+
+            # Delete the chat (this will also delete messages and file metadata due to foreign key cascade)
+            success = await delete_chat(chat_id, clerk_state.user_id)
+
+            if success:
+                # Refresh the chat list from database to ensure UI is updated
+                await self.load_user_chats()
+
+                # If the deleted chat is the current chat, reset the current chat
+                if self.chat_id == chat_id:
+                    self.chat_id = ""
+                    self.messages = []
             
-            # If the deleted chat is the current chat, reset the current chat
-            if self.chat_id == chat_id:
-                self.chat_id = ""
-                self.messages = []
-                
-            # Show success toast
-            return rx.toast.success("Chat deleted successfully")
-        else:
-            # Show error toast
+                # Show success toast
+                return rx.toast.success("Chat deleted successfully")
+            else:
+                # Show error toast
+                return rx.toast.error("Failed to delete chat")
+        except Exception as e:
+            print(f"Error deleting chat: {e}")
             return rx.toast.error("Failed to delete chat")
 
     @rx.event

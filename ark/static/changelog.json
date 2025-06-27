@@ -1,6 +1,17 @@
 {
 	"entries": [
 		{
+			"version": "0.7.0",
+			"date": "Jun 25 2025",
+			"is_latest": true,
+			"changes": [
+				{
+					"type": "added",
+					"description": "PDF support"
+				}
+			]
+		},
+		{
 			"version": "0.6.1",
 			"date": "Jun 25 2025",
 			"is_latest": true,

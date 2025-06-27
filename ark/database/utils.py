@@ -4,6 +4,8 @@ import os
 from typing import Optional, List, Dict, Any, Union
 import json
 from datetime import datetime, timezone
+import base64
+import reflex as rx
 
 
 load_dotenv()
@@ -430,7 +432,7 @@ async def save_message_from_dict(chat_id: str, message_order: int, message_dict:
     Returns:
         bool: True if successful, False otherwise
     """
-    return await save_message(
+    success = await save_message(
         chat_id=chat_id,
         message_order=message_order,
         role=message_dict.get("role", ""),
@@ -442,6 +444,131 @@ async def save_message_from_dict(chat_id: str, message_order: int, message_dict:
         total_tokens=message_dict.get("total_tokens", 0),
         tokens_per_second=message_dict.get("tokens_per_second", 0.0)
     )
+    
+    # If message has files and this is a user message, handle R2 metadata saving
+    if success and message_dict.get("files") and message_dict.get("role") == "user":
+        try:
+            user_id = message_dict.get("user_id")
+            if user_id:
+                # Separate R2 files (already uploaded) from legacy files (need upload)
+                r2_files = [f for f in message_dict.get("files", []) if f.get("file_key")]
+                legacy_files = [f for f in message_dict.get("files", []) if not f.get("file_key") and f.get("filename")]
+                
+                # Save metadata for R2 files that are already uploaded
+                if r2_files:
+                    await _save_r2_file_metadata(chat_id, r2_files, user_id)
+                
+                # Upload legacy files to R2 (fallback case)
+                if legacy_files:
+                    await _upload_files_to_r2_and_save(chat_id, legacy_files, user_id)
+                    
+        except Exception as e:
+            print(f"Error handling file metadata: {e}")
+            # Don't fail the entire operation for file upload errors
+    
+    return success
+
+
+async def _save_r2_file_metadata(chat_id: str, r2_files: List[Dict[str, Any]], user_id: str):
+    """
+    Save metadata for R2 files that are already uploaded
+    
+    Args:
+        chat_id: The chat ID to associate files with
+        r2_files: List of R2 FileReference dicts with file_key, original_filename, etc.
+        user_id: The user ID for file organization
+    """
+    from ark.database.file_utils import store_file_metadata
+    
+    conn = await get_connection()
+    try:
+        for file_ref in r2_files:
+            if file_ref.get("file_key"):
+                # Convert FileReference to metadata format for database
+                r2_metadata = {
+                    'file_key': file_ref['file_key'],
+                    'original_filename': file_ref.get('original_filename', 'unknown'),
+                    'content_type': file_ref.get('content_type', 'application/octet-stream'),
+                    'file_size': file_ref.get('file_size', 0),
+                    'user_id': user_id
+                }
+                
+                file_id = await store_file_metadata(conn, r2_metadata, chat_id)
+                if file_id:
+                    print(f"Saved R2 file metadata: {file_ref.get('original_filename')}")
+                else:
+                    print(f"Failed to save metadata for R2 file: {file_ref.get('original_filename')}")
+    finally:
+        await conn.close()
+
+
+async def _upload_files_to_r2_and_save(chat_id: str, files_metadata: List[Dict[str, Any]], user_id: str):
+    """
+    Upload files from local storage to R2 and save metadata to database
+    
+    Args:
+        chat_id: The chat ID to associate files with
+        files_metadata: List of file metadata dicts with filename, content_type, type
+        user_id: The user ID for file organization
+    """
+    from ark.services.r2_storage import upload_file, generate_presigned_url
+    from ark.database.file_utils import store_file_metadata
+    
+    conn = await get_connection()
+    try:
+        upload_dir = rx.get_upload_dir()
+        
+        for file_meta in files_metadata:
+            filename = file_meta.get("filename")
+            content_type = file_meta.get("content_type", "application/octet-stream")
+            
+            # Skip if filename is None or empty
+            if not filename:
+                print(f"Invalid filename in file metadata, skipping R2 upload: {file_meta}")
+                continue
+            
+            # Read file from local storage
+            file_path = upload_dir / filename
+            if not file_path.exists():
+                print(f"File {filename} not found in local storage, skipping R2 upload")
+                continue
+                
+            try:
+                with open(file_path, "rb") as f:
+                    file_content = f.read()
+                
+                # Upload to R2
+                r2_metadata = upload_file(
+                    file_path=filename,
+                    file_content=file_content,
+                    content_type=content_type,
+                    user_id=user_id
+                )
+                
+                if r2_metadata:
+                    # Store metadata in database
+                    r2_metadata['user_id'] = user_id
+                    file_id = await store_file_metadata(conn, r2_metadata, chat_id)
+                    
+                    if file_id:
+                        print(f"Successfully uploaded {filename} to R2 and saved metadata")
+                    else:
+                        print(f"Failed to save metadata for {filename}")
+                else:
+                    print(f"Failed to upload {filename} to R2")
+                    
+                # Clean up local file after successful R2 upload
+                if r2_metadata:
+                    try:
+                        os.remove(file_path)
+                    except Exception as e:
+                        print(f"Could not remove local file {filename}: {e}")
+                        
+            except Exception as e:
+                print(f"Error processing file {filename}: {e}")
+                
+    finally:
+        await conn.close()
 
 
 async def get_chat_messages(chat_id: str) -> List[Dict[str, Any]]:

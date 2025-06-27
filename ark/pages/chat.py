@@ -163,22 +163,134 @@ def response_message(message: dict, index: int) -> rx.Component:
                         "text-overflow": "ellipsis",
                     },
                 ),
-                # Image preview section for user messages
+                # File preview section for user messages - R2 and fallback
                 rx.cond(
-                    State.current_message_image & (index == 0),
+                    (message.get("files") & (message.get("files", []).length() > 0)) | 
+                    ((State.current_message_image & (index == 0)) | 
+                     ((State.pdf_files.length() > 0) & (index == 0))),
                     rx.box(
-                        rx.image(
-                            src=State.current_message_image,
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
-                                "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
+                        rx.vstack(
+                            # R2 files display (priority)
+                            rx.cond(
+                                message.get("files") & (message.get("files", []).length() > 0),
+                                rx.hstack(
+                                    rx.foreach(
+                                        message.get("files", []),
+                                        lambda file_ref: rx.cond(
+                                            file_ref["content_type"].startswith("image/"),
+                                            # Image display
+                                            rx.image(
+                                                src=file_ref.get("presigned_url") | file_ref.get("base64_url"),
+                                                class_name=rx.cond(
+                                                    State.is_dark_theme,
+                                                    "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
+                                                    "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
+                                                ),
+                                                style={
+                                                    "max-width": "300px",
+                                                    "max-height": "300px",
+                                                    "object-fit": "contain",
+                                                },
+                                            ),
+                                            # File display (PDF, etc.)
+                                            rx.box(
+                                                rx.hstack(
+                                                    rx.icon(
+                                                        "file-text",
+                                                        size=18,
+                                                        color=rx.cond(
+                                                            State.is_dark_theme,
+                                                            "#ef4444",
+                                                            "#dc2626",
+                                                        ),
+                                                    ),
+                                                    rx.text(
+                                                        file_ref.get("original_filename") | file_ref.get("filename"),
+                                                        class_name=rx.cond(
+                                                            State.is_dark_theme,
+                                                            "text-sm text-neutral-200 font-[dm] font-medium",
+                                                            "text-sm text-gray-700 font-[dm] font-medium",
+                                                        ),
+                                                    ),
+                                                    align="center",
+                                                    spacing="2",
+                                                ),
+                                                class_name=rx.cond(
+                                                    State.is_dark_theme,
+                                                    "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                                    "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                    wrap="wrap",
+                                    spacing="3",
+                                ),
                             ),
-                            style={
-                                "max-width": "300px",
-                                "max-height": "300px",
-                                "object-fit": "contain",
-                            },
+                            # Fallback to legacy display for backward compatibility
+                            rx.cond(
+                                ~(message.get("files") & (message.get("files", []).length() > 0)),
+                                rx.vstack(
+                                    # Legacy image display
+                                    rx.cond(
+                                        State.current_message_image & (index == 0),
+                                        rx.image(
+                                            src=State.current_message_image,
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
+                                                "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
+                                            ),
+                                            style={
+                                                "max-width": "300px",
+                                                "max-height": "300px",
+                                                "object-fit": "contain",
+                                            },
+                                        ),
+                                    ),
+                                    # Legacy PDF display
+                                    rx.cond(
+                                        (State.pdf_files.length() > 0) & (index == 0),
+                                        rx.hstack(
+                                            rx.foreach(
+                                                State.pdf_files,
+                                                lambda filename: rx.box(
+                                                    rx.hstack(
+                                                        rx.icon(
+                                                            "file-text",
+                                                            size=18,
+                                                            color=rx.cond(
+                                                                State.is_dark_theme,
+                                                                "#ef4444",
+                                                                "#dc2626",
+                                                            ),
+                                                        ),
+                                                        rx.text(
+                                                            filename,
+                                                            class_name=rx.cond(
+                                                                State.is_dark_theme,
+                                                                "text-sm text-neutral-200 font-[dm] font-medium",
+                                                                "text-sm text-gray-700 font-[dm] font-medium",
+                                                            ),
+                                                        ),
+                                                        align="center",
+                                                        spacing="2",
+                                                    ),
+                                                    class_name=rx.cond(
+                                                        State.is_dark_theme,
+                                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                                    ),
+                                                ),
+                                            ),
+                                            wrap="wrap",
+                                            spacing="3",
+                                        ),
+                                    ),
+                                    spacing="2",
+                                ),
+                            ),
+                            spacing="2",
                         ),
                         class_name="ml-2 mt-4",
                     ),

@@ -1,11 +1,6 @@
 import reflex as rx
 from ark.state import State
 from ark.components.common.buttons import action_button
-from ark.components.modals.offline_models import (
-    OfflineModelsState,
-    offline_models_overlay,
-    offline_models_content,
-)
 import reflex_clerk_api as clerk
 
 
@@ -14,20 +9,65 @@ def input_section():
         rx.box(
             rx.vstack(
                 rx.cond(
-                    State.img,
+                    (State.img.length() > 0) | (State.pdf_files.length() > 0) | (State.uploaded_files.length() > 0),
                     rx.box(
                         rx.hstack(
+                            # R2 uploaded files (preferred)
+                            rx.foreach(
+                                State.uploaded_files,
+                                lambda file_ref: rx.box(
+                                    rx.hstack(
+                                        rx.icon(
+                                            rx.cond(
+                                                file_ref["type"] == "image",
+                                                "image",
+                                                "file-text"
+                                            ),
+                                            size=18,
+                                            color=rx.cond(
+                                                file_ref["type"] == "image",
+                                                rx.cond(
+                                                    State.is_dark_theme,
+                                                    "#60a5fa",
+                                                    "#3b82f6",
+                                                ),
+                                                rx.cond(
+                                                    State.is_dark_theme,
+                                                    "#ef4444",
+                                                    "#dc2626",
+                                                ),
+                                            ),
+                                        ),
+                                        rx.text(
+                                            file_ref.get("original_filename", "Unknown file"),
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
+                                                "text-sm text-gray-700 font-[dm] font-medium",
+                                            ),
+                                        ),
+                                        align="center",
+                                        spacing="2",
+                                    ),
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                    ),
+                                ),
+                            ),
+                            # Legacy image files (fallback)
                             rx.foreach(
                                 State.img,
                                 lambda filename: rx.box(
                                     rx.hstack(
                                         rx.icon(
-                                            "file",
+                                            "image",
                                             size=18,
                                             color=rx.cond(
                                                 State.is_dark_theme,
-                                                "#a3a3a3",
-                                                "#525252",
+                                                "#60a5fa",
+                                                "#3b82f6",
                                             ),
                                         ),
                                         rx.text(
@@ -47,6 +87,48 @@ def input_section():
                                                 "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
                                             ),
                                             on_click=State.clear_images,
+                                        ),
+                                        align="center",
+                                        spacing="2",
+                                    ),
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
+                                    ),
+                                ),
+                            ),
+                            # Legacy PDF files (fallback)
+                            rx.foreach(
+                                State.pdf_files,
+                                lambda filename: rx.box(
+                                    rx.hstack(
+                                        rx.icon(
+                                            "file-text",
+                                            size=18,
+                                            color=rx.cond(
+                                                State.is_dark_theme,
+                                                "#ef4444",
+                                                "#dc2626",
+                                            ),
+                                        ),
+                                        rx.text(
+                                            filename,
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "text-sm text-neutral-200 font-[dm] font-medium",
+                                                "text-sm text-gray-700 font-[dm] font-medium",
+                                            ),
+                                        ),
+                                        rx.button(
+                                            rx.icon("x", size=14),
+                                            variant="ghost",
+                                            class_name=rx.cond(
+                                                State.is_dark_theme,
+                                                "ml-2 p-1 rounded-full hover:bg-neutral-600/30 text-neutral-400 hover:text-neutral-200 border-0 bg-transparent",
+                                                "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
+                                            ),
+                                            on_click=State.clear_pdfs,
                                         ),
                                         align="center",
                                         spacing="2",
@@ -108,6 +190,7 @@ def input_section():
                                         accept={
                                             "image/png": [".png"],
                                             "image/jpeg": [".jpg", ".jpeg"],
+                                            "application/pdf": [".pdf"],
                                         },
                                         on_drop=State.handle_upload(
                                             rx.upload_files(upload_id="upload")
@@ -122,22 +205,6 @@ def input_section():
                                         active_border="#166534",
                                         shadow_color="rgba(34,197,94,0.8)",
                                         on_click=State.handle_search_click,
-                                    ),
-                                    action_button(
-                                        label="Offline",
-                                        icon="cloud-off",
-                                        is_active=rx.cond(
-                                            State.selected_action == "Offline",
-                                            OfflineModelsState.selected_model != "",
-                                            False,
-                                        ),
-                                        active_gradient="linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
-                                        active_border="#5b21b6",
-                                        shadow_color="rgba(147,51,234,0.8)",
-                                        on_click=[
-                                            State.select_action("Offline"),
-                                            OfflineModelsState.open_drawer,
-                                        ],
                                     ),
                                     class_name="gap-0 mb-2",
                                 ),
@@ -371,8 +438,6 @@ def hero():
                 align="center",
                 justify="center",
             ),
-            offline_models_overlay(),
-            offline_models_content(),
             rx.html(
                 """
                 <style>
