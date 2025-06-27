@@ -1,12 +1,11 @@
 import reflex as rx
-from typing import List, Optional
+from typing import List
 from ark.models.chat import ChatMessage
 from ark.handlers.message_handler import message_handler
 import reflex_clerk_api as clerk
 import base64
 import os
 import uuid
-from ark.database.utils import init_user_if_not_exists
 
 
 # Model Configuration Constants
@@ -38,7 +37,6 @@ class State(rx.State):
     selected_provider: str = ModelConfig.DEFAULT_PROVIDER
     selected_model: str = ModelConfig.CHAT_MODEL
 
-
     # Theme state
     is_dark_theme: bool = False
 
@@ -67,16 +65,20 @@ class State(rx.State):
             )
 
         return rx.redirect(f"/chat/{self.chat_id}")
-    
+
     async def handle_chat_page_load(self):
         """Handle loading a chat page - either load existing chat or process new message."""
         # Get the conversation ID from the URL
         conversation_id = self.router.page.params.get("conversation", "")
-        
+
         if conversation_id and conversation_id != self.chat_id:
             # This is an existing chat, load its history
             await self.load_chat_history(conversation_id)
-        elif self.messages and self.messages[-1].get("role") == "user" and not self.is_streaming:
+        elif (
+            self.messages
+            and self.messages[-1].get("role") == "user"
+            and not self.is_streaming
+        ):
             # This is a new chat with a user message waiting to be processed
             async for _ in self.send_message_stream():
                 yield
@@ -118,8 +120,8 @@ class State(rx.State):
                         "type": "file",
                         "file": {
                             "filename": pdf_data["filename"],
-                            "file_data": pdf_data["data"]
-                        }
+                            "file_data": pdf_data["data"],
+                        },
                     }
                 )
 
@@ -170,8 +172,6 @@ class State(rx.State):
         else:
             self.citations_expanded[message_index] = True
 
-
-    
     async def send_message_stream(self):
         """Send message with streaming response."""
         if self.messages and self.messages[-1].get("role") == "assistant":
@@ -196,22 +196,25 @@ class State(rx.State):
 
         try:
             # Process the message with streaming
-            async for partial_message, is_complete in (
-                message_handler.process_message_stream(
-                    messages=self.messages[:-1],  # Exclude the empty assistant message we just added
-                    provider=self.selected_provider,
-                    model=model,
-                    action=self.selected_action,
-                )
+            async for (
+                partial_message,
+                is_complete,
+            ) in message_handler.process_message_stream(
+                messages=self.messages[
+                    :-1
+                ],  # Exclude the empty assistant message we just added
+                provider=self.selected_provider,
+                model=model,
+                action=self.selected_action,
             ):
                 # Update the last message (assistant message) with streaming content
                 self.messages[-1] = partial_message
                 # Force Reflex to detect the state change
                 self.messages = self.messages
-                
+
                 # Yield to update UI
                 yield
-                
+
                 # If this is the final complete message, break
                 if is_complete:
                     break
@@ -235,6 +238,7 @@ class State(rx.State):
             if self.chat_id:
                 # Save all messages that aren't saved yet
                 import asyncio
+
                 asyncio.create_task(self._save_current_messages())
 
     async def _save_current_messages(self):
@@ -337,7 +341,7 @@ class State(rx.State):
         """Toggle theme and close mobile menu"""
         self.toggle_theme()
         self.close_mobile_menu()
-    
+
     def handle_auth_action(self):
         """Handle auth actions and close mobile menu"""
         self.close_mobile_menu()
@@ -399,10 +403,7 @@ class State(rx.State):
             pdf_path = upload_dir / filename
             try:
                 base64_data = self.encode_pdf_to_base64(str(pdf_path))
-                pdf_list.append({
-                    "filename": filename,
-                    "data": base64_data
-                })
+                pdf_list.append({"filename": filename, "data": base64_data})
                 os.remove(pdf_path)
             except Exception:
                 # If file not found or error, skip
@@ -425,7 +426,7 @@ class State(rx.State):
                 file_object.write(upload_data)
 
             # Update the appropriate list based on file type
-            if file.name.lower().endswith('.pdf'):
+            if file.name.lower().endswith(".pdf"):
                 self.pdf_files.append(file.name)
             else:
                 # Assume it's an image for backward compatibility
@@ -504,8 +505,13 @@ class State(rx.State):
                         # For user messages, extract image URL if present and store in state
                         content = msg["content"]
                         for item in msg["content"]:
-                            if isinstance(item, dict) and item.get("type") == "image_url":
-                                self.current_message_image = item.get("image_url", {}).get("url", "")
+                            if (
+                                isinstance(item, dict)
+                                and item.get("type") == "image_url"
+                            ):
+                                self.current_message_image = item.get(
+                                    "image_url", {}
+                                ).get("url", "")
                                 break
                 else:
                     content = msg["content"]
@@ -545,16 +551,16 @@ class State(rx.State):
 
         # Delete the chat (this will also delete messages due to foreign key cascade)
         success = await delete_chat(chat_id, clerk_state.user_id)
-        
+
         if success:
             # Refresh the chat list from database to ensure UI is updated
             await self.load_user_chats()
-            
+
             # If the deleted chat is the current chat, reset the current chat
             if self.chat_id == chat_id:
                 self.chat_id = ""
                 self.messages = []
-                
+
             # Show success toast
             return rx.toast.success("Chat deleted successfully")
         else:

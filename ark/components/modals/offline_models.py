@@ -142,7 +142,6 @@ def model_item(model_name: str, provider: str) -> rx.Component:
         ),
         on_click=[
             lambda: OfflineModelsState.select_model(model_name),
-            rx.toast(model_name),
         ],
         class_name=rx.cond(
             State.is_dark_theme,
