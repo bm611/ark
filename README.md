@@ -38,7 +38,7 @@ A modern, feature-rich AI chat application built with Python and Reflex that pro
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:bm611/ark.git
    cd ark
    ```
 
