@@ -49,6 +49,11 @@ def mobile_menu_dropdown() -> rx.Component:
                     [State.close_mobile_menu, rx.redirect("/changelog")],
                 ),
                 mobile_menu_item(
+                    "circle-help",
+                    "How it Works",
+                    [State.close_mobile_menu, rx.redirect("/how-it-works")],
+                ),
+                mobile_menu_item(
                     "github",
                     "Github",
                     [
@@ -99,7 +104,7 @@ def mobile_menu_dropdown() -> rx.Component:
                                 },
                             )
                         ),
-                        class_name="flex gap-3",
+                        class_name="flex gap-1 md:gap-1 lg:gap-2 xl:gap-3",
                         on_click=State.close_mobile_menu,
                     )
                 ),
@@ -151,6 +156,7 @@ def navbar() -> rx.Component:
         # Mobile dropdown menu
         mobile_menu_dropdown(),
         rx.hstack(
+            # Left section - Logo
             rx.hstack(
                 rx.button(
                     rx.icon("ship"),
@@ -186,7 +192,7 @@ def navbar() -> rx.Component:
                     ),
                     on_click=rx.redirect("/"),
                 ),
-                class_name="flex justify-center items-center cursor-pointer",
+                class_name="flex justify-start items-center cursor-pointer",
             ),
             rx.hstack(
                 # Hamburger menu
@@ -239,66 +245,208 @@ def navbar() -> rx.Component:
                         on_click=State.toggle_mobile_menu,
                     ),
                 ),
-                class_name="flex gap-2 md:hidden",
+                class_name="flex gap-2 md:hidden ml-auto",
             ),
-            # Desktop navigation (hidden on mobile)
+            # Desktop navigation (hidden on mobile) - Three section layout
             rx.hstack(
-                rx.button(
-                    rx.text("History", class_name="text-white font-semibold"),
-                    class_name=(
-                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(251,191,36,0.6)] "
-                        "hover:shadow-[0px_6px_0px_0px_rgb(251,191,36,0.8)] "
-                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(251,191,36,0.6)] active:translate-y-1 "
-                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
-                    ),
-                    style={
-                        "background": "linear-gradient(135deg, rgba(251,191,36,0.85) 0%, rgba(245,158,11,0.85) 50%, rgba(202,138,4,0.85) 100%)",
-                        "border": "1px solid rgba(202,138,4,0.7)",
-                    },
-                    on_click=rx.redirect("/history"),
-                ),
-                rx.button(
-                    rx.text("Changelog", class_name="text-white font-semibold"),
-                    class_name=(
-                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(147,51,234,0.6)] "
-                        "hover:shadow-[0px_6px_0px_0px_rgb(147,51,234,0.8)] "
-                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(147,51,234,0.6)] active:translate-y-1 "
-                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
-                    ),
-                    style={
-                        "background": "linear-gradient(135deg, rgba(168,85,247,0.7) 0%, rgba(147,51,234,0.7) 50%, rgba(124,58,237,0.7) 100%)",
-                        "border": "1px solid rgba(124,58,237,0.7)",
-                    },
-                    on_click=rx.redirect("/changelog"),
-                ),
-                rx.button(
-                    rx.text("Github", class_name="text-white font-semibold"),
-                    class_name=(
-                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                        "shadow-[0px_4px_0px_0px_rgb(59,130,246,0.6)] "
-                        "hover:shadow-[0px_6px_0px_0px_rgb(59,130,246,0.8)] "
-                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(59,130,246,0.6)] active:translate-y-1 "
-                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
-                    ),
-                    style={
-                        "background": "linear-gradient(135deg, rgba(96,165,250,0.7) 0%, rgba(59,130,246,0.7) 50%, rgba(37,99,235,0.7) 100%)",
-                        "border": "1px solid rgba(37,99,235,0.7)",
-                    },
-                    on_click=rx.redirect(
-                        "https://github.com/bm611/ark", is_external=True
-                    ),
-                ),
-                # Authentication buttons
-                clerk.signed_out(
+                # Center navigation buttons in rounded container
+                rx.box(
                     rx.hstack(
+                        rx.button(
+                            rx.icon(
+                                "history",
+                                size=16,
+                                class_name=rx.cond(
+                                    State.is_dark_theme, "text-white", "text-gray-900"
+                                )
+                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                            ),
+                            rx.text(
+                                "History",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                ),
+                            ),
+                            variant="ghost",
+                            class_name=(
+                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
+                                "hover:border-2 hover:border-amber-400 rounded-2xl"
+                            ),
+                            _hover=rx.cond(
+                                State.is_dark_theme,
+                                {
+                                    "background": "linear-gradient(135deg, rgba(251,191,36,0.3) 0%, rgba(245,158,11,0.3) 50%, rgba(202,138,4,0.3) 100%)",
+                                },
+                                {
+                                    "background": "linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(245,158,11,0.2) 50%, rgba(202,138,4,0.2) 100%)",
+                                },
+                            ),
+                            on_click=rx.redirect("/history"),
+                        ),
+                        rx.button(
+                            rx.icon(
+                                "scroll-text",
+                                size=16,
+                                class_name=rx.cond(
+                                    State.is_dark_theme, "text-white", "text-gray-900"
+                                )
+                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                            ),
+                            rx.text(
+                                "Changelog",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                ),
+                            ),
+                            variant="ghost",
+                            class_name=(
+                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
+                                "hover:border-2 hover:border-purple-500 rounded-2xl"
+                            ),
+                            _hover=rx.cond(
+                                State.is_dark_theme,
+                                {
+                                    "background": "linear-gradient(135deg, rgba(168,85,247,0.3) 0%, rgba(147,51,234,0.3) 50%, rgba(124,58,237,0.3) 100%)",
+                                },
+                                {
+                                    "background": "linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(147,51,234,0.2) 50%, rgba(124,58,237,0.2) 100%)",
+                                },
+                            ),
+                            on_click=rx.redirect("/changelog"),
+                        ),
+                        rx.button(
+                            rx.icon(
+                                "circle-help",
+                                size=16,
+                                class_name=rx.cond(
+                                    State.is_dark_theme, "text-white", "text-gray-900"
+                                )
+                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                            ),
+                            rx.text(
+                                "How it Works",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                ),
+                            ),
+                            variant="ghost",
+                            class_name=(
+                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
+                                "hover:border-2 hover:border-green-500 rounded-2xl"
+                            ),
+                            _hover=rx.cond(
+                                State.is_dark_theme,
+                                {
+                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.3) 0%, rgba(22,163,74,0.3) 50%, rgba(21,128,61,0.3) 100%)",
+                                },
+                                {
+                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(22,163,74,0.2) 50%, rgba(21,128,61,0.2) 100%)",
+                                },
+                            ),
+                            on_click=rx.redirect("/how-it-works"),
+                        ),
+                        rx.button(
+                            rx.icon(
+                                "github",
+                                size=16,
+                                class_name=rx.cond(
+                                    State.is_dark_theme, "text-white", "text-gray-900"
+                                )
+                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                            ),
+                            rx.text(
+                                "Github",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                ),
+                            ),
+                            variant="ghost",
+                            class_name=(
+                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
+                                "hover:border-2 hover:border-blue-500 rounded-2xl"
+                            ),
+                            _hover=rx.cond(
+                                State.is_dark_theme,
+                                {
+                                    "background": "linear-gradient(135deg, rgba(96,165,250,0.3) 0%, rgba(59,130,246,0.3) 50%, rgba(37,99,235,0.3) 100%)",
+                                },
+                                {
+                                    "background": "linear-gradient(135deg, rgba(96,165,250,0.2) 0%, rgba(59,130,246,0.2) 50%, rgba(37,99,235,0.2) 100%)",
+                                },
+                            ),
+                            on_click=rx.redirect(
+                                "https://github.com/bm611/ark", is_external=True
+                            ),
+                        ),
+                        rx.button(
+                            rx.cond(
+                                State.is_dark_theme,
+                                rx.icon(
+                                    "sun",
+                                    size=16,
+                                    class_name="text-white invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                                ),
+                                rx.icon(
+                                    "moon",
+                                    size=16,
+                                    class_name="text-gray-900 invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                                ),
+                            ),
+                            rx.text(
+                                "Theme",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                                ),
+                            ),
+                            variant="ghost",
+                            class_name=(
+                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
+                                "hover:border-2 hover:border-gray-500 rounded-2xl"
+                            ),
+                            _hover=rx.cond(
+                                State.is_dark_theme,
+                                {
+                                    "background": "linear-gradient(135deg, rgba(107,114,128,0.3) 0%, rgba(75,85,99,0.3) 50%, rgba(55,65,81,0.3) 100%)",
+                                },
+                                {
+                                    "background": "linear-gradient(135deg, rgba(107,114,128,0.2) 0%, rgba(75,85,99,0.2) 50%, rgba(55,65,81,0.2) 100%)",
+                                },
+                            ),
+                            on_click=State.toggle_theme,
+                        ),
+                        class_name="flex gap-1 md:gap-1 lg:gap-2 xl:gap-3",
+                    ),
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        (
+                            "hidden md:flex absolute left-1/2 transform -translate-x-1/2 "
+                            "px-3 py-2 md:px-3 md:py-2 lg:px-4 lg:py-2 xl:px-8 xl:py-4 rounded-3xl backdrop-blur-sm "
+                            "shadow-[0px_4px_0px_0px_rgba(75,85,99,0.6)] "
+                            "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
+                            "bg-white/10 border border-white/20"
+                        ),
+                        (
+                            "hidden md:flex absolute left-1/2 transform -translate-x-1/2 "
+                            "px-3 py-2 md:px-3 md:py-4 lg:px-4 lg:py-3 xl:px-8 xl:py-4 rounded-3xl backdrop-blur-sm "
+                            "shadow-[0px_4px_0px_0px_rgba(75,85,99,0.6)] "
+                            "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
+                            "bg-black/5 border border-gray-300"
+                        ),
+                    ),
+                ),
+                # Right section - Authentication buttons only
+                rx.hstack(
+                    clerk.signed_out(
                         clerk.sign_in_button(
                             rx.button(
                                 rx.text(
@@ -319,11 +467,8 @@ def navbar() -> rx.Component:
                                 },
                             )
                         ),
-                        class_name="flex gap-3",
-                    )
-                ),
-                clerk.signed_in(
-                    rx.hstack(
+                    ),
+                    clerk.signed_in(
                         clerk.sign_out_button(
                             rx.button(
                                 rx.text(
@@ -344,38 +489,9 @@ def navbar() -> rx.Component:
                                 },
                             )
                         ),
-                        class_name="flex gap-3",
-                    )
+                    ),
+                    class_name="hidden md:flex ml-auto",
                 ),
-                rx.button(
-                    rx.cond(
-                        State.is_dark_theme,
-                        rx.icon("sun", size=18, class_name="text-white"),
-                        rx.icon("moon", size=18, class_name="text-white"),
-                    ),
-                    class_name=(
-                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center gap-2 "
-                        "shadow-[0px_4px_0px_0px_rgb(75,85,99,0.6)] "
-                        "hover:shadow-[0px_6px_0px_0px_rgb(75,85,99,0.8)] "
-                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(75,85,99,0.6)] active:translate-y-1 "
-                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
-                    ),
-                    style=rx.cond(
-                        State.is_dark_theme,
-                        {
-                            "background": "linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 50%, rgba(15,23,42,0.8) 100%)",
-                            "border": "1px solid rgba(71,85,105,0.7)",
-                        },
-                        {
-                            "background": "linear-gradient(135deg, rgba(107,114,128,0.7) 0%, rgba(75,85,99,0.7) 50%, rgba(55,65,81,0.7) 100%)",
-                            "border": "1px solid rgba(55,65,81,0.7)",
-                        },
-                    ),
-                    on_click=State.toggle_theme,
-                ),
-                class_name="hidden md:flex gap-3",
             ),
             class_name="flex justify-between items-center",
         ),

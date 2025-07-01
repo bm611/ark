@@ -7,6 +7,7 @@ import re
 from typing import List, Dict, Any, Optional, Tuple
 from ark.models.chat import ChatMessage
 from ark.providers.manager import provider_manager
+from ark.config import ModelConfig
 
 
 class MessageHandler:
@@ -30,12 +31,20 @@ class MessageHandler:
         """
         start_time = time.time()
         
-        # Make the API call
-        response = self.provider_manager.chat_completion(
-            messages=messages,
-            provider_name=provider,
-            model=model
-        )
+        # Make the API call with fallback support for thinking
+        if action == "Think" and provider == "openrouter":
+            response = self.provider_manager.chat_completion_with_fallback(
+                messages=messages,
+                provider_name=provider,
+                model=model,
+                fallback_model=ModelConfig.THINK_MODEL_FALLBACK
+            )
+        else:
+            response = self.provider_manager.chat_completion(
+                messages=messages,
+                provider_name=provider,
+                model=model
+            )
         
         # Calculate timing metrics
         end_time = time.time()
@@ -93,12 +102,20 @@ class MessageHandler:
             return
         start_time = time.time()
         
-        # Make the streaming API call
-        stream = self.provider_manager.chat_completion_stream(
-            messages=messages,
-            provider_name=provider,
-            model=model
-        )
+        # Make the streaming API call with fallback support for thinking
+        if action == "Think" and provider == "openrouter":
+            stream = self.provider_manager.chat_completion_stream_with_fallback(
+                messages=messages,
+                provider_name=provider,
+                model=model,
+                fallback_model=ModelConfig.THINK_MODEL_FALLBACK
+            )
+        else:
+            stream = self.provider_manager.chat_completion_stream(
+                messages=messages,
+                provider_name=provider,
+                model=model
+            )
         
         # Initialize accumulation variables
         accumulated_content = ""

@@ -88,6 +88,70 @@ class ProviderManager:
         provider = self.get_provider(provider_name)
         return provider.is_connected() if provider else False
 
+    def chat_completion_with_fallback(
+        self,
+        messages: List[Dict[str, str]],
+        provider_name: str = "openrouter",
+        model: Optional[str] = None,
+        fallback_model: Optional[str] = None,
+        **kwargs,
+    ):
+        """Create a chat completion with fallback model support."""
+        provider = self.get_provider(provider_name)
+        if not provider:
+            raise ValueError(f"Provider '{provider_name}' not found")
+
+        # Prepend system message if not already present
+        full_messages = messages.copy()
+        if not full_messages or full_messages[0]["role"] != "system":
+            full_messages.insert(
+                0, {"role": "system", "content": self._default_system_message}
+            )
+
+        # Check if provider supports fallback and fallback model is provided
+        if hasattr(provider, 'chat_completion_with_fallback') and fallback_model:
+            return provider.chat_completion_with_fallback(
+                messages=full_messages, 
+                model=model, 
+                fallback_model=fallback_model,
+                **kwargs
+            )
+        else:
+            # Fall back to regular completion if no fallback support
+            return provider.chat_completion(messages=full_messages, model=model, **kwargs)
+
+    def chat_completion_stream_with_fallback(
+        self,
+        messages: List[Dict[str, str]],
+        provider_name: str = "openrouter",
+        model: Optional[str] = None,
+        fallback_model: Optional[str] = None,
+        **kwargs,
+    ):
+        """Create a streaming chat completion with fallback model support."""
+        provider = self.get_provider(provider_name)
+        if not provider:
+            raise ValueError(f"Provider '{provider_name}' not found")
+
+        # Prepend system message if not already present
+        full_messages = messages.copy()
+        if not full_messages or full_messages[0]["role"] != "system":
+            full_messages.insert(
+                0, {"role": "system", "content": self._default_system_message}
+            )
+
+        # Check if provider supports fallback and fallback model is provided
+        if hasattr(provider, 'chat_completion_stream_with_fallback') and fallback_model:
+            return provider.chat_completion_stream_with_fallback(
+                messages=full_messages, 
+                model=model, 
+                fallback_model=fallback_model,
+                **kwargs
+            )
+        else:
+            # Fall back to regular streaming completion if no fallback support
+            return provider.chat_completion_stream(messages=full_messages, model=model, **kwargs)
+
 
 # Global provider manager instance
 provider_manager = ProviderManager()
