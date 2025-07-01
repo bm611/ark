@@ -7,6 +7,7 @@ from ark.state import State
 import reflex_clerk_api as clerk
 import os
 from ark.pages.history import history_nav
+from ark.pages.how_it_works import how_it_works_page
 
 
 @rx.page(route="/", title="Ark - Chat | Search | Learn")
@@ -48,6 +49,11 @@ def history() -> rx.Component:
         ),
     )
 
+
+
+@rx.page(route="/how-it-works", title="How it Works - Ark")
+def how_it_works() -> rx.Component:
+    return how_it_works_page()
 
 
 @rx.page(route="/changelog", title="Changelog - Ark")

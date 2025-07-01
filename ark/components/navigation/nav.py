@@ -49,6 +49,11 @@ def mobile_menu_dropdown() -> rx.Component:
                     [State.close_mobile_menu, rx.redirect("/changelog")],
                 ),
                 mobile_menu_item(
+                    "circle-help",
+                    "How it Works",
+                    [State.close_mobile_menu, rx.redirect("/how-it-works")],
+                ),
+                mobile_menu_item(
                     "github",
                     "Github",
                     [
@@ -276,6 +281,23 @@ def navbar() -> rx.Component:
                         "border": "1px solid rgba(124,58,237,0.7)",
                     },
                     on_click=rx.redirect("/changelog"),
+                ),
+                rx.button(
+                    rx.text("How it Works", class_name="text-white font-semibold"),
+                    class_name=(
+                        "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
+                        "shadow-[0px_4px_0px_0px_rgb(34,197,94,0.6)] "
+                        "hover:shadow-[0px_6px_0px_0px_rgb(34,197,94,0.8)] "
+                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(34,197,94,0.6)] active:translate-y-1 "
+                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
+                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
+                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                    ),
+                    style={
+                        "background": "linear-gradient(135deg, rgba(34,197,94,0.7) 0%, rgba(22,163,74,0.7) 50%, rgba(21,128,61,0.7) 100%)",
+                        "border": "1px solid rgba(21,128,61,0.7)",
+                    },
+                    on_click=rx.redirect("/how-it-works"),
                 ),
                 rx.button(
                     rx.text("Github", class_name="text-white font-semibold"),
