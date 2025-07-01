@@ -19,13 +19,15 @@ class ModelConfig:
     DEFAULT_PROVIDER = "openrouter"
     CHAT_MODEL = "google/gemini-2.5-flash"
     SEARCH_MODEL = "perplexity/sonar-pro"
+    THINK_MODEL = "google/gemini-2.5-pro"
+    THINK_MODEL_FALLBACK = "qwen/qwen3-32b"
 
 
 # Provider Configurations
 class ProviderConfig:
     OPENROUTER = {
         "base_url": "https://openrouter.ai/api/v1",
-        "default_model": "google/gemini-2.0-flash-001",
+        "default_model": "google/gemini-2.5-flash",
         "available_models": [
             "google/gemini-2.0-flash-001",
             "perplexity/sonar",
@@ -33,7 +35,6 @@ class ProviderConfig:
             "openai/gpt-4",
         ],
     }
-
 
 
 # Database Configuration

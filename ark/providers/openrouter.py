@@ -37,3 +37,42 @@ class OpenRouterProvider(BaseProvider):
         """Check if a model supports tool calling."""
         # Perplexity models don't support tools
         return not ("perplexity" in model.lower() or "sonar" in model.lower())
+
+    def chat_completion_with_fallback(
+        self, 
+        messages: List, 
+        model: str,
+        fallback_model: str,
+        **kwargs
+    ):
+        """Create a chat completion with fallback model support using OpenRouter's extra_body."""
+        completion_kwargs = {
+            "model": model,
+            "messages": messages,
+            "extra_body": {
+                "models": [fallback_model],
+            },
+            **kwargs
+        }
+        
+        return self.client.chat.completions.create(**completion_kwargs)
+    
+    def chat_completion_stream_with_fallback(
+        self, 
+        messages: List, 
+        model: str,
+        fallback_model: str,
+        **kwargs
+    ):
+        """Create a streaming chat completion with fallback model support using OpenRouter's extra_body."""
+        completion_kwargs = {
+            "model": model,
+            "messages": messages,
+            "stream": True,
+            "extra_body": {
+                "models": [fallback_model],
+            },
+            **kwargs
+        }
+        
+        return self.client.chat.completions.create(**completion_kwargs)
