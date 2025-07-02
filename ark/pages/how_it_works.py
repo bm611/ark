@@ -799,7 +799,7 @@ def how_it_works_page() -> rx.Component:
             ),
             # Interactive Demo Section
             interactive_demo_section(),
-            class_name="max-w-7xl mx-auto px-2 md:px-4 pb-8 md:pb-16",
+            class_name="max-w-7xl mx-auto px-4 md:px-4 pb-8 md:pb-16",
         ),
         class_name=rx.cond(
             State.is_dark_theme,

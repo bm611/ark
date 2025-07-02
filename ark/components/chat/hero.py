@@ -9,7 +9,9 @@ def input_section():
         rx.box(
             rx.vstack(
                 rx.cond(
-                    (State.img.length() > 0) | (State.pdf_files.length() > 0) | (State.uploaded_files.length() > 0),
+                    (State.img.length() > 0)
+                    | (State.pdf_files.length() > 0)
+                    | (State.uploaded_files.length() > 0),
                     rx.box(
                         rx.hstack(
                             # R2 uploaded files (preferred)
@@ -21,7 +23,7 @@ def input_section():
                                             rx.cond(
                                                 file_ref["type"] == "image",
                                                 "image",
-                                                "file-text"
+                                                "file-text",
                                             ),
                                             size=18,
                                             color=rx.cond(
@@ -39,7 +41,9 @@ def input_section():
                                             ),
                                         ),
                                         rx.text(
-                                            file_ref.get("original_filename", "Unknown file"),
+                                            file_ref.get(
+                                                "original_filename", "Unknown file"
+                                            ),
                                             class_name=rx.cond(
                                                 State.is_dark_theme,
                                                 "text-sm text-neutral-200 font-[dm] font-medium",
@@ -167,7 +171,7 @@ def input_section():
                                 ),
                             },
                         },
-                        on_change=State.set_prompt,
+                        on_change=State.set_prompt.debounce(500),
                         size="3",
                     ),
                     rx.box(
