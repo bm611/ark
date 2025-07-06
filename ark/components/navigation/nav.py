@@ -249,198 +249,239 @@ def navbar() -> rx.Component:
             ),
             # Desktop navigation (hidden on mobile) - Three section layout
             rx.hstack(
-                # Center navigation buttons in rounded container
+                # Center navigation with modern tab-style design
                 rx.box(
                     rx.hstack(
-                        rx.button(
-                            rx.icon(
-                                "history",
-                                size=16,
-                                class_name=rx.cond(
-                                    State.is_dark_theme, "text-white", "text-gray-900"
-                                )
-                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
-                            ),
-                            rx.text(
-                                "History",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
+                        # History Tab
+                        rx.box(
+                            rx.flex(
+                                rx.icon(
+                                    "history",
+                                    size=14,
+                                    class_name=rx.cond(
+                                        State.is_dark_theme, 
+                                        "text-amber-400/80", 
+                                        "text-amber-600/80"
+                                    ) + " md:size-4 lg:size-4 xl:size-5",
                                 ),
+                                rx.text(
+                                    "History",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                    ),
+                                ),
+                                align="center",
+                                justify="center",
+                                gap="1",
+                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
                             ),
-                            variant="ghost",
                             class_name=(
-                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
-                                "hover:border-2 hover:border-amber-400 rounded-2xl"
-                            ),
-                            _hover=rx.cond(
-                                State.is_dark_theme,
-                                {
-                                    "background": "linear-gradient(135deg, rgba(251,191,36,0.3) 0%, rgba(245,158,11,0.3) 50%, rgba(202,138,4,0.3) 100%)",
-                                },
-                                {
-                                    "background": "linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(245,158,11,0.2) 50%, rgba(202,138,4,0.2) 100%)",
-                                },
+                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
+                                "cursor-pointer transition-all duration-300 ease-in-out "
+                                "hover:bg-amber-500/20 hover:scale-105 active:scale-95 "
+                                "rounded-xl border-2 border-transparent hover:border-amber-400/50 "
+                                "backdrop-blur-sm"
                             ),
                             on_click=rx.redirect("/history"),
                         ),
-                        rx.button(
-                            rx.icon(
-                                "scroll-text",
-                                size=16,
-                                class_name=rx.cond(
-                                    State.is_dark_theme, "text-white", "text-gray-900"
-                                )
-                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
-                            ),
-                            rx.text(
-                                "Changelog",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                ),
-                            ),
-                            variant="ghost",
-                            class_name=(
-                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
-                                "hover:border-2 hover:border-purple-500 rounded-2xl"
-                            ),
-                            _hover=rx.cond(
+                        # Vertical Separator
+                        rx.box(
+                            class_name=rx.cond(
                                 State.is_dark_theme,
-                                {
-                                    "background": "linear-gradient(135deg, rgba(168,85,247,0.3) 0%, rgba(147,51,234,0.3) 50%, rgba(124,58,237,0.3) 100%)",
-                                },
-                                {
-                                    "background": "linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(147,51,234,0.2) 50%, rgba(124,58,237,0.2) 100%)",
-                                },
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
+                            )
+                        ),
+                        # Changelog Tab
+                        rx.box(
+                            rx.flex(
+                                rx.icon(
+                                    "scroll-text",
+                                    size=14,
+                                    class_name=rx.cond(
+                                        State.is_dark_theme, 
+                                        "text-purple-400/80", 
+                                        "text-purple-600/80"
+                                    ) + " md:size-4 lg:size-4 xl:size-5",
+                                ),
+                                rx.text(
+                                    "Changelog",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                    ),
+                                ),
+                                align="center",
+                                justify="center",
+                                gap="1",
+                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                            ),
+                            class_name=(
+                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
+                                "cursor-pointer transition-all duration-300 ease-in-out "
+                                "hover:bg-purple-500/20 hover:scale-105 active:scale-95 "
+                                "rounded-xl border-2 border-transparent hover:border-purple-400/50 "
+                                "backdrop-blur-sm"
                             ),
                             on_click=rx.redirect("/changelog"),
                         ),
-                        rx.button(
-                            rx.icon(
-                                "circle-help",
-                                size=16,
-                                class_name=rx.cond(
-                                    State.is_dark_theme, "text-white", "text-gray-900"
-                                )
-                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
-                            ),
-                            rx.text(
-                                "How it Works",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                ),
-                            ),
-                            variant="ghost",
-                            class_name=(
-                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
-                                "hover:border-2 hover:border-green-500 rounded-2xl"
-                            ),
-                            _hover=rx.cond(
+                        # Vertical Separator
+                        rx.box(
+                            class_name=rx.cond(
                                 State.is_dark_theme,
-                                {
-                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.3) 0%, rgba(22,163,74,0.3) 50%, rgba(21,128,61,0.3) 100%)",
-                                },
-                                {
-                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(22,163,74,0.2) 50%, rgba(21,128,61,0.2) 100%)",
-                                },
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
+                            )
+                        ),
+                        # How it Works Tab
+                        rx.box(
+                            rx.flex(
+                                rx.icon(
+                                    "circle-help",
+                                    size=14,
+                                    class_name=rx.cond(
+                                        State.is_dark_theme, 
+                                        "text-green-400/80", 
+                                        "text-green-600/80"
+                                    ) + " md:size-4 lg:size-4 xl:size-5",
+                                ),
+                                rx.text(
+                                    "How it Works",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "text-white/90 font-medium text-xs md:text-[10px] lg:text-xs xl:text-base whitespace-nowrap",
+                                        "text-gray-800/90 font-medium text-xs md:text-[10px] lg:text-xs xl:text-base whitespace-nowrap",
+                                    ),
+                                ),
+                                align="center",
+                                justify="center",
+                                gap="1",
+                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                            ),
+                            class_name=(
+                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
+                                "cursor-pointer transition-all duration-300 ease-in-out "
+                                "hover:bg-green-500/20 hover:scale-105 active:scale-95 "
+                                "rounded-xl border-2 border-transparent hover:border-green-400/50 "
+                                "backdrop-blur-sm"
                             ),
                             on_click=rx.redirect("/how-it-works"),
                         ),
-                        rx.button(
-                            rx.icon(
-                                "github",
-                                size=16,
-                                class_name=rx.cond(
-                                    State.is_dark_theme, "text-white", "text-gray-900"
-                                )
-                                + " invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
-                            ),
-                            rx.text(
-                                "Github",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                ),
-                            ),
-                            variant="ghost",
-                            class_name=(
-                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
-                                "hover:border-2 hover:border-blue-500 rounded-2xl"
-                            ),
-                            _hover=rx.cond(
+                        # Vertical Separator
+                        rx.box(
+                            class_name=rx.cond(
                                 State.is_dark_theme,
-                                {
-                                    "background": "linear-gradient(135deg, rgba(96,165,250,0.3) 0%, rgba(59,130,246,0.3) 50%, rgba(37,99,235,0.3) 100%)",
-                                },
-                                {
-                                    "background": "linear-gradient(135deg, rgba(96,165,250,0.2) 0%, rgba(59,130,246,0.2) 50%, rgba(37,99,235,0.2) 100%)",
-                                },
-                            ),
-                            on_click=rx.redirect(
-                                "https://github.com/bm611/ark", is_external=True
-                            ),
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
+                            )
                         ),
-                        rx.button(
-                            rx.cond(
-                                State.is_dark_theme,
+                        # Github Tab
+                        rx.box(
+                            rx.flex(
                                 rx.icon(
-                                    "sun",
-                                    size=16,
-                                    class_name="text-white invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                                    "github",
+                                    size=14,
+                                    class_name=rx.cond(
+                                        State.is_dark_theme, 
+                                        "text-blue-400/80", 
+                                        "text-blue-600/80"
+                                    ) + " md:size-4 lg:size-4 xl:size-5",
                                 ),
-                                rx.icon(
-                                    "moon",
-                                    size=16,
-                                    class_name="text-gray-900 invisible group-hover:visible transition-opacity duration-300 md:block lg:block xl:size-5",
+                                rx.text(
+                                    "Github",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                    ),
                                 ),
+                                align="center",
+                                justify="center",
+                                gap="1",
+                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
                             ),
-                            rx.text(
-                                "Theme",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-white font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                    "text-gray-900 font-semibold text-sm md:text-xs lg:text-sm xl:text-base",
-                                ),
-                            ),
-                            variant="ghost",
                             class_name=(
-                                "group px-3 py-2 md:px-2 md:py-2 lg:px-3 lg:py-3 xl:px-4 xl:py-3 transition-all duration-300 font-[dm] font-semibold flex items-center justify-center gap-1 md:gap-1 lg:gap-2 xl:gap-2 "
-                                "hover:border-2 hover:border-gray-500 rounded-2xl"
+                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
+                                "cursor-pointer transition-all duration-300 ease-in-out "
+                                "hover:bg-blue-500/20 hover:scale-105 active:scale-95 "
+                                "rounded-xl border-2 border-transparent hover:border-blue-400/50 "
+                                "backdrop-blur-sm"
                             ),
-                            _hover=rx.cond(
+                            on_click=rx.redirect("https://github.com/bm611/ark", is_external=True),
+                        ),
+                        # Vertical Separator
+                        rx.box(
+                            class_name=rx.cond(
                                 State.is_dark_theme,
-                                {
-                                    "background": "linear-gradient(135deg, rgba(107,114,128,0.3) 0%, rgba(75,85,99,0.3) 50%, rgba(55,65,81,0.3) 100%)",
-                                },
-                                {
-                                    "background": "linear-gradient(135deg, rgba(107,114,128,0.2) 0%, rgba(75,85,99,0.2) 50%, rgba(55,65,81,0.2) 100%)",
-                                },
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
+                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
+                            )
+                        ),
+                        # Theme Toggle Tab
+                        rx.box(
+                            rx.flex(
+                                rx.cond(
+                                    State.is_dark_theme,
+                                    rx.icon(
+                                        "sun",
+                                        size=14,
+                                        class_name="text-yellow-400/80 md:size-4 lg:size-4 xl:size-5",
+                                    ),
+                                    rx.icon(
+                                        "moon",
+                                        size=14,
+                                        class_name="text-slate-600/80 md:size-4 lg:size-4 xl:size-5",
+                                    ),
+                                ),
+                                rx.text(
+                                    "Theme",
+                                    class_name=rx.cond(
+                                        State.is_dark_theme,
+                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
+                                    ),
+                                ),
+                                align="center",
+                                justify="center",
+                                gap="1",
+                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                            ),
+                            class_name=(
+                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
+                                "cursor-pointer transition-all duration-300 ease-in-out "
+                                "hover:bg-gray-500/20 hover:scale-105 active:scale-95 "
+                                "rounded-xl border-2 border-transparent hover:border-gray-400/50 "
+                                "backdrop-blur-sm"
                             ),
                             on_click=State.toggle_theme,
                         ),
-                        class_name="flex gap-1 md:gap-1 lg:gap-2 xl:gap-3",
+                        align="center",
+                        justify="center",
+                        gap="1",
+                        class_name="md:gap-0.5 lg:gap-1 xl:gap-3",
                     ),
                     class_name=rx.cond(
                         State.is_dark_theme,
                         (
                             "hidden md:flex absolute left-1/2 transform -translate-x-1/2 "
-                            "px-3 py-2 md:px-3 md:py-2 lg:px-4 lg:py-2 xl:px-8 xl:py-4 rounded-3xl backdrop-blur-sm "
-                            "shadow-[0px_4px_0px_0px_rgba(75,85,99,0.6)] "
-                            "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
-                            "bg-white/10 border border-white/20"
+                            "px-2 py-1 md:px-2 md:py-3 lg:px-3 lg:py-2 xl:px-6 xl:py-3 rounded-2xl "
+                            "backdrop-blur-xl border border-white/10 "
+                            "shadow-[0px_8px_32px_0px_rgba(0,0,0,0.37)] "
+                            "hover:shadow-[0px_12px_40px_0px_rgba(0,0,0,0.5)] "
+                            "transition-all duration-300 ease-in-out "
+                            "bg-gradient-to-r from-white/5 via-white/10 to-white/5"
                         ),
                         (
                             "hidden md:flex absolute left-1/2 transform -translate-x-1/2 "
-                            "px-3 py-2 md:px-3 md:py-4 lg:px-4 lg:py-3 xl:px-8 xl:py-4 rounded-3xl backdrop-blur-sm "
-                            "shadow-[0px_4px_0px_0px_rgba(75,85,99,0.6)] "
-                            "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
-                            "bg-black/5 border border-gray-300"
+                            "px-2 py-1 md:px-2 md:py-3 lg:px-3 lg:py-2 xl:px-6 xl:py-3 rounded-2xl "
+                            "backdrop-blur-xl border border-gray-200/50 "
+                            "shadow-[0px_8px_32px_0px_rgba(0,0,0,0.1)] "
+                            "hover:shadow-[0px_12px_40px_0px_rgba(0,0,0,0.15)] "
+                            "transition-all duration-300 ease-in-out "
+                            "bg-gradient-to-r from-white/80 via-white/90 to-white/80"
                         ),
                     ),
                 ),
