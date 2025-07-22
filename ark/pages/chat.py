@@ -58,7 +58,11 @@ def markdown_component_map() -> Dict[str, Any]:
                 rx.text(
                     props.get("language", "text"),
                     size="1",
-                    class_name="text-gray-300 font-mono text-xs font-semibold",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "text-gray-400 font-mono text-xs font-semibold",
+                        "text-gray-500 font-mono text-xs font-semibold",
+                    ),
                 ),
                 rx.button(
                     rx.icon("copy", size=14),
@@ -66,35 +70,52 @@ def markdown_component_map() -> Dict[str, Any]:
                     on_click=[rx.set_clipboard(text), rx.toast("Copied!")],
                     variant="ghost",
                     size="1",
-                    class_name="text-gray-300 hover:text-white hover:bg-gray-600 px-2 py-1 rounded transition-colors duration-200",
+                    class_name=rx.cond(
+                        State.is_dark_theme,
+                        "text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 rounded-md transition-colors duration-200",
+                        "text-gray-500 hover:text-black hover:bg-gray-200 px-2 py-1 rounded-md transition-colors duration-200",
+                    ),
                 ),
-                class_name="flex justify-between items-center px-4 py-3 bg-slate-700 rounded-t-lg border-b border-slate-600",
+                class_name=rx.cond(
+                    State.is_dark_theme,
+                    "flex justify-between items-center px-4 py-2 bg-gray-800 rounded-t-lg border-b border-gray-700",
+                    "flex justify-between items-center px-4 py-2 bg-gray-100 rounded-t-lg border-b border-gray-200",
+                ),
             ),
             # Code block section
             rx.code_block(
                 text,
-                theme=rx.code_block.themes.vsc_dark_plus,
+                theme=rx.cond(
+                    State.is_dark_theme,
+                    rx.code_block.themes.vsc_dark_plus,
+                    rx.code_block.themes.one_light,
+                ),
                 width="100%",
                 max_width="100%",
                 overflow_x="auto",
                 custom_style={
-                    "font-size": "12px",
-                    "font_family": "Inter",
+                    "font-size": "14px",
+                    "font_family": "'Fira Code', monospace",
                     "white-space": "pre",
                     "word-wrap": "break-word",
                     "overflow-wrap": "break-word",
-                    "border-radius": "0",
-                    "margin": "0",
+                    "border-radius": "0 0 0.5rem 0.5rem",
+                    "padding": "1rem",
+                    "line-height": "1.5",
                 },
                 css={
                     "@media (max-width: 768px)": {
-                        "font-size": "10px",
-                        "padding": "12px",
+                        "font-size": "12px",
+                        "padding": "0.8rem",
                     },
                 },
             ),
-            margin_y="1em",
-            class_name="bg-slate-800 rounded-lg shadow-lg border border-slate-600 overflow-hidden",
+            margin_y="1.5em",
+            class_name=rx.cond(
+                State.is_dark_theme,
+                "bg-gray-900 rounded-lg shadow-lg border border-gray-700 overflow-hidden",
+                "bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden",
+            ),
         ),
         "a": lambda text, **props: rx.link(
             text, **props, color="orange", _hover={"color": "red"}
@@ -299,15 +320,21 @@ def response_message(message: dict, index: int) -> rx.Component:
                 rx.cond(
                     State.is_streaming,
                     rx.box(
-                        rx.text(
-                            "Generating Response...",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "text-lg font-semibold text-slate-300 bg-gradient-to-r from-slate-300 via-slate-50 to-slate-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
-                                "text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                        rx.hstack(
+                            rx.spinner(),
+                            rx.text(
+                                "Generating Response...",
+                                class_name=rx.cond(
+                                    State.is_dark_theme,
+                                    "text-lg font-semibold text-slate-300 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                                    "text-lg font-semibold text-gray-600 bg-gradient-to-r from-purple-500 via-pink-600 to-red-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
+                                ),
                             ),
+                            align="center",
+                            spacing="2",
+                            justify="start",
                         ),
-                        class_name="w-full justify-left px-4 py-4",
+                        class_name="w-full px-4 py-4",
                     ),
                 ),
                 spacing="0",
