@@ -32,8 +32,7 @@ class State(rx.State):
     selected_provider: str = ModelConfig.DEFAULT_PROVIDER
     selected_model: str = ModelConfig.CHAT_MODEL
 
-    # Theme state
-    is_dark_theme: bool = False
+    
 
     # Mobile menu state
     is_mobile_menu_open: bool = False

@@ -26,38 +26,18 @@ def input_section():
                                                 "file-text",
                                             ),
                                             size=18,
-                                            color=rx.cond(
-                                                file_ref["type"] == "image",
-                                                rx.cond(
-                                                    State.is_dark_theme,
-                                                    "#60a5fa",
-                                                    "#3b82f6",
-                                                ),
-                                                rx.cond(
-                                                    State.is_dark_theme,
-                                                    "#ef4444",
-                                                    "#dc2626",
-                                                ),
-                                            ),
+                                            color="#000000",
                                         ),
                                         rx.text(
                                             file_ref.get(
                                                 "original_filename", "Unknown file"
                                             ),
-                                            class_name=rx.cond(
-                                                State.is_dark_theme,
-                                                "text-sm text-neutral-200 font-[dm] font-medium",
-                                                "text-sm text-gray-700 font-[dm] font-medium",
-                                            ),
+                                            class_name="text-sm text-black font-medium",
                                         ),
                                         align="center",
                                         spacing="2",
                                     ),
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                    ),
+                                    class_name="bg-white border-2 border-black rounded-lg px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
                                 ),
                             ),
                             # Legacy image files (fallback)
@@ -68,38 +48,22 @@ def input_section():
                                         rx.icon(
                                             "image",
                                             size=18,
-                                            color=rx.cond(
-                                                State.is_dark_theme,
-                                                "#60a5fa",
-                                                "#3b82f6",
-                                            ),
+                                            color="#3b82f6",
                                         ),
                                         rx.text(
                                             filename,
-                                            class_name=rx.cond(
-                                                State.is_dark_theme,
-                                                "text-sm text-neutral-200 font-[dm] font-medium",
-                                                "text-sm text-gray-700 font-[dm] font-medium",
-                                            ),
+                                            class_name="text-sm text-black font-medium",
                                         ),
                                         rx.button(
                                             rx.icon("x", size=14),
                                             variant="ghost",
-                                            class_name=rx.cond(
-                                                State.is_dark_theme,
-                                                "ml-2 p-1 rounded-full hover:bg-neutral-600/30 text-neutral-400 hover:text-neutral-200 border-0 bg-transparent",
-                                                "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
-                                            ),
+                                            class_name="ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
                                             on_click=State.clear_images,
                                         ),
                                         align="center",
                                         spacing="2",
                                     ),
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                    ),
+                                    class_name="bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
                                 ),
                             ),
                             # Legacy PDF files (fallback)
@@ -110,38 +74,22 @@ def input_section():
                                         rx.icon(
                                             "file-text",
                                             size=18,
-                                            color=rx.cond(
-                                                State.is_dark_theme,
-                                                "#ef4444",
-                                                "#dc2626",
-                                            ),
+                                            color="#dc2626",
                                         ),
                                         rx.text(
                                             filename,
-                                            class_name=rx.cond(
-                                                State.is_dark_theme,
-                                                "text-sm text-neutral-200 font-[dm] font-medium",
-                                                "text-sm text-gray-700 font-[dm] font-medium",
-                                            ),
+                                            class_name="text-sm text-black font-medium",
                                         ),
                                         rx.button(
                                             rx.icon("x", size=14),
                                             variant="ghost",
-                                            class_name=rx.cond(
-                                                State.is_dark_theme,
-                                                "ml-2 p-1 rounded-full hover:bg-neutral-600/30 text-neutral-400 hover:text-neutral-200 border-0 bg-transparent",
-                                                "ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
-                                            ),
+                                            class_name="ml-2 p-1 rounded-full hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 border-0 bg-transparent",
                                             on_click=State.clear_pdfs,
                                         ),
                                         align="center",
                                         spacing="2",
                                     ),
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                    ),
+                                    class_name="bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
                                 ),
                             ),
                             wrap="wrap",
@@ -153,22 +101,26 @@ def input_section():
                 rx.box(
                     rx.text_area(
                         value=State.prompt,
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "w-full mx-auto text-white text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(#0a0a0a,#0a0a0a),linear-gradient(90deg,#f97316,#c026d3)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_30px_rgba(249,115,22,0.7),0_0_60px_rgba(192,38,211,0.4),0_8px_40px_rgba(0,0,0,0.5)]",
-                            "w-full mx-auto text-gray-900 text-base sm:text-lg md:text-2xl rounded-3xl min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 border transition-all duration-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 pb-12 sm:pb-16 resize-none outline-none focus:outline-none border-[3px] border-transparent bg-[linear-gradient(white,white),linear-gradient(90deg,#fb923c,#a21caf)] bg-origin-border bg-clip-padding bg-clip-border shadow-[0_0_40px_rgba(251,146,60,0.7),0_0_80px_rgba(162,28,175,0.4)]",
+                        class_name=(
+                            "w-full mx-auto text-black text-base sm:text-lg "
+                            "min-h-28 sm:min-h-32 max-h-40 sm:max-h-48 "
+                            "px-4 sm:px-6 py-4 sm:py-6 pb-12 sm:pb-16 "
+                            "resize-none outline-none focus:outline-none "
+                            "border-4 border-black bg-yellow-200 "
+                            "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] "
+                            "focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                            "focus:translate-x-1 focus:translate-y-1 "
+                            "transition-all duration-100 font-bold"
                         ),
-                        placeholder="Ask Anything...",
+                        placeholder="ASK ANYTHING...",
                         style={
-                            "background": rx.cond(
-                                State.is_dark_theme, "#0a0a0a", "white"
-                            ),
-                            "color": rx.cond(State.is_dark_theme, "white", "#111827"),
+                            "background": "#FDE68A",
+                            "color": "#000000",
                             "outline": "none",
                             "& textarea::placeholder": {
-                                "color": rx.cond(
-                                    State.is_dark_theme, "#a3a3a3", "#6b7280"
-                                ),
+                                "color": "#374151",
+                                "font-weight": "900",
+                                "text-transform": "uppercase",
                             },
                         },
                         on_change=State.set_prompt.debounce(500),
@@ -227,28 +179,27 @@ def input_section():
                                     rx.icon(
                                         "arrow-up",
                                         size=20,
-                                        color="white",
+                                        color="black",
                                         class_name="sm:hidden w-5 h-5",
                                     ),
                                     rx.text(
-                                        "Send",
-                                        class_name="hidden sm:block text-sm font-medium text-white ml-1",
+                                        "SEND",
+                                        class_name="hidden sm:block text-base font-black text-black ml-2 uppercase tracking-wider",
                                     ),
                                     class_name="flex items-center justify-center",
                                 ),
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "ml-auto text-white rounded-full h-8 sm:h-10 w-10 sm:w-auto sm:px-4 shadow-[0px_4px_0px_0px_rgba(107,114,128,0.6)] hover:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.7)] active:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.8)] transition-all duration-150 flex items-center justify-center mb-1",
-                                    "ml-auto text-white rounded-full h-8 sm:h-10 w-10 sm:w-auto sm:px-4 shadow-[0px_4px_0px_0px_rgba(107,114,128,0.6)] hover:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.7)] active:shadow-[0px_4px_0px_0px_rgba(107,114,128,0.8)] transition-all duration-150 flex items-center justify-center mb-1",
+                                class_name=(
+                                    "ml-auto bg-red-400 border-4 border-black h-10 sm:h-12 w-10 sm:w-auto sm:px-4 "
+                                    "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                    "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                    "hover:translate-x-1 hover:translate-y-1 "
+                                    "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                    "active:translate-x-2 active:translate-y-2 "
+                                    "transition-all duration-100 flex items-center justify-center mb-2"
                                 ),
                                 style={
-                                    "background": rx.cond(
-                                        State.is_dark_theme,
-                                        "linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%)",
-                                        "linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%)",
-                                    ),
-                                    "border": "2px solid #374151",
-                                    "boxShadow": "0px 4px 0px 0px rgba(107,114,128,0.6)",
+                                    "background": "#F87171",
+                                    "border": "4px solid #000000",
                                 },
                                 on_click=[
                                     State.handle_generation,
@@ -266,7 +217,7 @@ def input_section():
                 ),
                 class_name="w-full mx-auto max-w-4xl",
             ),
-            class_name="fixed bottom-2 md:bottom-6 left-0 right-0 p-4",
+            class_name="fixed bottom-2 md:bottom-6 left-0 right-0 p-4 bg-white",
         ),
     )
 
@@ -278,57 +229,47 @@ def hero():
                 rx.box(
                     rx.box(
                         clerk.signed_in(
-                            rx.heading(
-                                rx.cond(
-                                    State.logged_user_name == "",
-                                    "Welcome back!",
-                                    "Welcome back, " + State.logged_user_name + "!",
-                                ),
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 animate-fade-in-up px-8 md:px-0 leading-tight",
-                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
-                                ),
-                                as_="h1",
+                            rx.box(
+                                rx.heading(
+                                    rx.cond(
+                                        State.logged_user_name == "",
+                                        "WELCOME BACK!",
+                                        "WELCOME BACK, " + State.logged_user_name.upper() + "!",
+                                    ),
+                                    class_name="text-3xl md:text-6xl font-black mb-4 tracking-tight text-black uppercase px-6 py-3 bg-yellow-400 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-1",
+                                    as_="h1",
+                                )
                             )
                         ),
                         clerk.signed_out(
-                            rx.heading(
-                                "Welcome to Ark!",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 animate-fade-in-up px-8 md:px-0 leading-tight",
-                                    "text-4xl md:text-7xl font-bold mb-3 md:mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-400 to-purple-500 animate-fade-in-up px-8 md:px-0 leading-tight",
-                                ),
-                                as_="h1",
+                            rx.box(
+                                rx.heading(
+                                    "WELCOME TO ARK!",
+                                    class_name="text-3xl md:text-6xl font-black mb-4 tracking-tight text-black uppercase px-6 py-3 bg-yellow-400 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-1",
+                                    as_="h1",
+                                )
                             )
                         ),
-                        rx.heading(
-                            "Your AI Chat Companion",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "text-xl md:text-3xl font-bold mb-3 md:mb-4 tracking-wide text-white animate-fade-in-up px-8 md:px-0 leading-tight",
-                                "text-xl md:text-3xl font-bold mb-3 md:mb-4 tracking-wide text-gray-900 animate-fade-in-up px-8 md:px-0 leading-tight",
-                            ),
-                            as_="h1",
+                        rx.box(
+                            rx.heading(
+                                "YOUR AI CHAT COMPANION",
+                                class_name="text-lg md:text-3xl font-black mb-4 tracking-tight text-white uppercase px-4 py-2 bg-black border-4 border-black inline-block transform rotate-1",
+                                as_="h2",
+                            )
                         ),
-                        rx.text(
-                            "Chat, search, and learn—smarter, faster, anywhere.",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-neutral-300 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
-                                "hidden sm:block text-base sm:text-lg md:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-700 font-medium animate-fade-in-up px-6 md:px-0 leading-relaxed",
-                            ),
+                        rx.box(
+                            rx.text(
+                                "CHAT • SEARCH • LEARN—SMARTER, FASTER, ANYWHERE",
+                                class_name="hidden sm:block text-sm sm:text-base md:text-xl mb-6 text-black font-black uppercase tracking-wide px-4 py-2 bg-pink-400 border-4 border-black inline-block",
+                            )
                         ),
                         rx.box(
                             rx.vstack(
-                                rx.text(
-                                    "Try these examples:",
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "text-sm sm:text-base font-semibold text-neutral-300 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
-                                        "text-sm sm:text-base font-semibold text-gray-600 mb-3 sm:mb-4 px-4 md:px-0 mt-4",
-                                    ),
+                                rx.box(
+                                    rx.text(
+                                        "TRY THESE EXAMPLES:",
+                                        class_name="text-base sm:text-lg font-black text-black uppercase tracking-wider mb-3 px-3 py-2 bg-white border-4 border-black inline-block shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+                                    )
                                 ),
                                 rx.flex(
                                     rx.button(
@@ -337,25 +278,25 @@ def hero():
                                                 rx.icon(
                                                     "message-circle",
                                                     size=20,
-                                                    color=rx.cond(
-                                                        State.is_dark_theme,
-                                                        "#60a5fa",
-                                                        "#3b82f6",
-                                                    ),
+                                                    color="black",
                                                 ),
                                                 class_name="mb-2",
                                             ),
                                             rx.text(
-                                                "Python programming tips",
-                                                class_name="font-medium text-center leading-tight",
+                                                "PYTHON TIPS",
+                                                class_name="font-black text-center leading-tight text-black uppercase tracking-wide text-xs",
                                             ),
                                             spacing="1",
                                             align="center",
                                         ),
-                                        class_name=rx.cond(
-                                            State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
-                                            "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-blue-50/50 border border-gray-200/60 hover:border-blue-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
+                                        class_name=(
+                                            "bg-blue-300 border-4 border-black px-4 py-3 "
+                                            "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] "
+                                            "hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] "
+                                            "hover:translate-x-1 hover:translate-y-1 "
+                                            "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                            "active:translate-x-2 active:translate-y-2 "
+                                            "transition-all duration-100 min-h-[100px] min-w-[140px]"
                                         ),
                                         on_click=[
                                             State.set_prompt(
@@ -371,25 +312,25 @@ def hero():
                                                 rx.icon(
                                                     "globe",
                                                     size=20,
-                                                    color=rx.cond(
-                                                        State.is_dark_theme,
-                                                        "#22c55e",
-                                                        "#16a34a",
-                                                    ),
+                                                    color="black",
                                                 ),
                                                 class_name="mb-2",
                                             ),
                                             rx.text(
-                                                "What's the latest news?",
-                                                class_name="font-medium text-center leading-tight",
+                                                "LATEST NEWS",
+                                                class_name="font-black text-center leading-tight text-black uppercase tracking-wide text-xs",
                                             ),
                                             spacing="1",
                                             align="center",
                                         ),
-                                        class_name=rx.cond(
-                                            State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
-                                            "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-green-50/50 border border-gray-200/60 hover:border-green-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
+                                        class_name=(
+                                            "bg-green-300 border-4 border-black px-4 py-3 "
+                                            "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] "
+                                            "hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] "
+                                            "hover:translate-x-1 hover:translate-y-1 "
+                                            "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                            "active:translate-x-2 active:translate-y-2 "
+                                            "transition-all duration-100 min-h-[100px] min-w-[140px]"
                                         ),
                                         on_click=[
                                             State.set_prompt(
@@ -406,25 +347,25 @@ def hero():
                                                 rx.icon(
                                                     "book-open",
                                                     size=20,
-                                                    color=rx.cond(
-                                                        State.is_dark_theme,
-                                                        "#a855f7",
-                                                        "#9333ea",
-                                                    ),
+                                                    color="black",
                                                 ),
                                                 class_name="mb-2",
                                             ),
                                             rx.text(
-                                                "Explain quantum computing",
-                                                class_name="font-medium text-center leading-tight",
+                                                "QUANTUM COMPUTING",
+                                                class_name="font-black text-center leading-tight text-black uppercase tracking-wide text-xs",
                                             ),
                                             spacing="1",
                                             align="center",
                                         ),
-                                        class_name=rx.cond(
-                                            State.is_dark_theme,
-                                            "example-prompt-card bg-gradient-to-br from-neutral-800/90 to-neutral-900/70 hover:from-neutral-700/95 hover:to-neutral-800/80 border border-neutral-600/50 hover:border-neutral-500/70 text-neutral-200 hover:text-white transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-lg hover:shadow-xl transform hover:scale-105",
-                                            "example-prompt-card bg-gradient-to-br from-white/90 to-gray-50/80 hover:from-white hover:to-purple-50/50 border border-gray-200/60 hover:border-purple-200/80 text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-xl transform hover:scale-105",
+                                        class_name=(
+                                            "bg-purple-300 border-4 border-black px-4 py-3 "
+                                            "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] "
+                                            "hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] "
+                                            "hover:translate-x-1 hover:translate-y-1 "
+                                            "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                            "active:translate-x-2 active:translate-y-2 "
+                                            "transition-all duration-100 min-h-[100px] min-w-[140px]"
                                         ),
                                         on_click=[
                                             State.set_prompt(
@@ -485,6 +426,6 @@ def hero():
                 </style>
                 """
             ),
-            class_name="flex items-center justify-center min-h-[70vh] pb-4 pt-8 md:pt-0 relative overflow-hidden",
+            class_name="flex items-center justify-center min-h-[70vh] pb-4 pt-8 md:pt-0 relative overflow-hidden bg-white",
         ),
     )

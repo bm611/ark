@@ -16,11 +16,7 @@ def index() -> rx.Component:
         navbar(),
         hero(),
         input_section(),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            "min-h-screen bg-gray-950 text-gray-50 transition-colors duration-300",
-            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
-        ),
+        class_name="min-h-screen bg-white text-gray-900 transition-colors duration-300",
     )
 
 
@@ -30,11 +26,7 @@ def chat() -> rx.Component:
         chat_nav(),
         chat_messages(),
         chat_input(),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            "h-screen flex flex-col bg-gray-950 text-gray-50 transition-colors duration-300",
-            "h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300",
-        ),
+        class_name="h-screen flex flex-col bg-white text-gray-900 transition-colors duration-300",
     )
 
 
@@ -42,11 +34,7 @@ def chat() -> rx.Component:
 def history() -> rx.Component:
     return rx.box(
         history_nav(),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            "min-h-screen bg-gray-950 text-gray-50 transition-colors duration-300",
-            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
-        ),
+        class_name="min-h-screen bg-white text-gray-900 transition-colors duration-300",
     )
 
 
@@ -78,11 +66,7 @@ def changelog() -> rx.Component:
             ],
             class_name="max-w-4xl mx-auto px-4 pb-16 md:pb-20",
         ),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            "min-h-screen bg-gray-900 text-gray-50 transition-colors duration-300",
-            "min-h-screen bg-white text-gray-900 transition-colors duration-300",
-        ),
+        class_name="min-h-screen bg-white text-gray-900 transition-colors duration-300",
     )
 
 
@@ -94,9 +78,6 @@ style = {
 app = rx.App(
     style=style,
     stylesheets=["/fonts/fonts.css"],
-    theme=rx.theme(
-        appearance="light",
-    ),
     head_components=[
         rx.el.link(rel="manifest", href="/manifest.json"),
         rx.el.meta(name="theme-color", content="#ffffff"),

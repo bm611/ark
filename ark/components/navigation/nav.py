@@ -10,24 +10,16 @@ def mobile_menu_item(icon: str, text: str, on_click_action) -> rx.Component:
             rx.icon(
                 icon,
                 size=36,
-                class_name=rx.cond(State.is_dark_theme, "text-white", "text-gray-900"),
+                class_name="text-gray-900",
             ),
             rx.text(
                 text,
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "font-bold text-white text-4xl",
-                    "font-bold text-gray-900 text-4xl",
-                ),
+                class_name="font-bold text-gray-900 text-4xl",
             ),
             class_name="w-full gap-6 justify-start items-center",
         ),
         on_click=on_click_action,
-        class_name=rx.cond(
-            State.is_dark_theme,
-            "py-3 hover:bg-gray-700/30 cursor-pointer transition-colors duration-200",
-            "py-3 hover:bg-gray-100/50 cursor-pointer transition-colors duration-200",
-        ),
+        class_name="py-3 hover:bg-gray-100/50 cursor-pointer transition-colors duration-200",
     )
 
 
@@ -60,30 +52,6 @@ def mobile_menu_dropdown() -> rx.Component:
                         State.close_mobile_menu,
                         rx.redirect("https://github.com/bm611/ark", is_external=True),
                     ],
-                ),
-                rx.box(
-                    rx.flex(
-                        rx.cond(
-                            State.is_dark_theme,
-                            rx.icon("sun", size=36, class_name="text-white"),
-                            rx.icon("moon", size=36, class_name="text-gray-900"),
-                        ),
-                        rx.text(
-                            "Theme",
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "font-bold text-white text-4xl",
-                                "font-bold text-gray-900 text-4xl",
-                            ),
-                        ),
-                        class_name="w-full gap-6 justify-start items-center",
-                    ),
-                    on_click=State.toggle_theme_and_close_menu,
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        "py-3 hover:bg-gray-700/30 cursor-pointer transition-colors duration-200",
-                        "py-3 hover:bg-gray-100/50 cursor-pointer transition-colors duration-200",
-                    ),
                 ),
                 clerk.signed_out(
                     rx.hstack(
@@ -142,11 +110,7 @@ def mobile_menu_dropdown() -> rx.Component:
             width="100vw",
             height="calc(100vh - 90px)",
             z_index="998",
-            class_name=rx.cond(
-                State.is_dark_theme,
-                "md:hidden backdrop-blur-sm bg-gray-950/95",
-                "md:hidden backdrop-blur-sm bg-white/95",
-            ),
+            class_name="md:hidden backdrop-blur-sm bg-white/95",
         ),
     )
 
@@ -159,37 +123,26 @@ def navbar() -> rx.Component:
             # Left section - Logo
             rx.hstack(
                 rx.button(
-                    rx.icon("ship"),
+                    rx.icon("ship", size=24),
                     rx.text(
-                        "Ark",
-                        class_name="text-xl md:text-2xl lg:text-xl xl:text-3xl font-bold mt-1 text-neutral-50",
+                        "ARK",
+                        class_name="text-xl md:text-2xl font-black uppercase tracking-tight text-black",
                     ),
                     class_name=(
-                        "px-4 py-4 rounded-xl transition-all duration-200 "
-                        "shadow-[0px_4px_0px_0px_rgba(30,41,59,0.6)] "
-                        "hover:shadow-[0px_6px_0px_0px_rgba(30,41,59,0.8)] "
-                        "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(30,41,59,0.6)] active:translate-y-1 "
-                        "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                        "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                        "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-3xl"
+                        "px-4 py-3 bg-yellow-400 border-4 border-black "
+                        "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] "
+                        "hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] "
+                        "hover:translate-x-1 hover:translate-y-1 "
+                        "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                        "active:translate-x-2 active:translate-y-2 "
+                        "transition-all duration-100 "
+                        "md:px-6 md:py-4 "
+                        "lg:px-8 lg:py-6"
                     ),
-                    style=rx.cond(
-                        State.is_dark_theme,
-                        {
-                            "background": "linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%)",
-                            "border": "2px solid rgba(59,130,246,0.8)",
-                            "backdropFilter": "blur(12px) saturate(180%)",
-                            "WebkitBackdropFilter": "blur(12px) saturate(180%)",
-                            "backgroundColor": "rgba(15,23,42,0.80)",
-                        },
-                        {
-                            "background": "linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%)",
-                            "border": "2px solid rgba(30,64,175,0.8)",
-                            "backdropFilter": "blur(12px) saturate(180%)",
-                            "WebkitBackdropFilter": "blur(12px) saturate(180%)",
-                            "backgroundColor": "rgba(255,255,255,0.10)",
-                        },
-                    ),
+                    style={
+                        "background": "#FBBF24",
+                        "border": "4px solid #000000",
+                    },
                     on_click=rx.redirect("/"),
                 ),
                 class_name="flex justify-start items-center cursor-pointer",
@@ -202,25 +155,25 @@ def navbar() -> rx.Component:
                             State.is_mobile_menu_open,
                             rx.box(
                                 rx.box(
-                                    class_name="w-6 h-0.5 bg-white transform rotate-45 translate-y-1.5 transition-all duration-300"
+                                    class_name="w-6 h-0.5 bg-black transform rotate-45 translate-y-1.5 transition-all duration-300"
                                 ),
                                 rx.box(
-                                    class_name="w-6 h-0.5 bg-white opacity-0 transition-all duration-300"
+                                    class_name="w-6 h-0.5 bg-black opacity-0 transition-all duration-300"
                                 ),
                                 rx.box(
-                                    class_name="w-6 h-0.5 bg-white transform -rotate-45 -translate-y-1.5 transition-all duration-300"
+                                    class_name="w-6 h-0.5 bg-black transform -rotate-45 -translate-y-1.5 transition-all duration-300"
                                 ),
                                 class_name="flex flex-col justify-center items-center space-y-1",
                             ),
                             rx.box(
                                 rx.box(
-                                    class_name="w-6 h-0.5 bg-white transition-all duration-300"
+                                    class_name="w-6 h-0.5 bg-black transition-all duration-300"
                                 ),
                                 rx.box(
-                                    class_name="w-6 h-0.5 bg-white transition-all duration-300"
+                                    class_name="w-6 h-0.5 bg-black transition-all duration-300"
                                 ),
                                 rx.box(
-                                    class_name="w-6 h-0.5 bg-white transition-all duration-300"
+                                    class_name="w-6 h-0.5 bg-black transition-all duration-300"
                                 ),
                                 class_name="flex flex-col justify-center items-center space-y-1",
                             ),
@@ -231,25 +184,18 @@ def navbar() -> rx.Component:
                             "hover:shadow-[0px_6px_0px_0px_rgba(75,85,99,0.8)] "
                             "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgba(75,85,99,0.6)] active:translate-y-1"
                         ),
-                        style=rx.cond(
-                            State.is_dark_theme,
-                            {
-                                "background": "linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 50%, rgba(15,23,42,0.8) 100%)",
-                                "border": "1px solid rgba(71,85,105,0.7)",
-                            },
-                            {
-                                "background": "linear-gradient(135deg, rgba(107,114,128,0.7) 0%, rgba(75,85,99,0.7) 50%, rgba(55,65,81,0.7) 100%)",
-                                "border": "1px solid rgba(55,65,81,0.7)",
-                            },
-                        ),
+                        style={
+                            "background": "linear-gradient(135deg, rgba(107,114,128,0.7) 0%, rgba(75,85,99,0.7) 50%, rgba(55,65,81,0.7) 100%)",
+                            "border": "1px solid rgba(55,65,81,0.7)",
+                        },
                         on_click=State.toggle_mobile_menu,
                     ),
                 ),
                 class_name="flex gap-2 md:hidden ml-auto",
             ),
-            # Desktop navigation (hidden on mobile) - Three section layout
+            # Desktop navigation (hidden on mobile) - Neo-Brutal tab design
             rx.hstack(
-                # Center navigation with modern tab-style design
+                # Center navigation with neo-brutal tab-style design
                 rx.box(
                     rx.hstack(
                         # History Tab
@@ -257,254 +203,162 @@ def navbar() -> rx.Component:
                             rx.flex(
                                 rx.icon(
                                     "history",
-                                    size=14,
-                                    class_name=rx.cond(
-                                        State.is_dark_theme, 
-                                        "text-amber-400/80", 
-                                        "text-amber-600/80"
-                                    ) + " md:size-4 lg:size-4 xl:size-5",
+                                    size=18,
+                                    class_name="text-black"
                                 ),
                                 rx.text(
-                                    "History",
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                    ),
+                                    "HISTORY",
+                                    class_name="text-black font-black text-xs md:text-sm uppercase tracking-wider",
                                 ),
                                 align="center",
                                 justify="center",
-                                gap="1",
-                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                                gap="2",
                             ),
                             class_name=(
-                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
-                                "cursor-pointer transition-all duration-300 ease-in-out "
-                                "hover:bg-amber-500/20 hover:scale-105 active:scale-95 "
-                                "rounded-xl border-2 border-transparent hover:border-amber-400/50 "
-                                "backdrop-blur-sm"
+                                "bg-pink-400 border-4 border-black px-3 py-2 "
+                                "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:translate-x-1 hover:translate-y-1 "
+                                "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                "active:translate-x-2 active:translate-y-2 "
+                                "cursor-pointer transition-all duration-100"
                             ),
                             on_click=rx.redirect("/history"),
-                        ),
-                        # Vertical Separator
-                        rx.box(
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
-                            )
                         ),
                         # Changelog Tab
                         rx.box(
                             rx.flex(
                                 rx.icon(
                                     "scroll-text",
-                                    size=14,
-                                    class_name=rx.cond(
-                                        State.is_dark_theme, 
-                                        "text-purple-400/80", 
-                                        "text-purple-600/80"
-                                    ) + " md:size-4 lg:size-4 xl:size-5",
+                                    size=18,
+                                    class_name="text-black"
                                 ),
                                 rx.text(
-                                    "Changelog",
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                    ),
+                                    "CHANGELOG",
+                                    class_name="text-black font-black text-xs md:text-sm uppercase tracking-wider",
                                 ),
                                 align="center",
                                 justify="center",
-                                gap="1",
-                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                                gap="2",
                             ),
                             class_name=(
-                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
-                                "cursor-pointer transition-all duration-300 ease-in-out "
-                                "hover:bg-purple-500/20 hover:scale-105 active:scale-95 "
-                                "rounded-xl border-2 border-transparent hover:border-purple-400/50 "
-                                "backdrop-blur-sm"
+                                "bg-green-400 border-4 border-black px-3 py-2 "
+                                "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:translate-x-1 hover:translate-y-1 "
+                                "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                "active:translate-x-2 active:translate-y-2 "
+                                "cursor-pointer transition-all duration-100"
                             ),
                             on_click=rx.redirect("/changelog"),
-                        ),
-                        # Vertical Separator
-                        rx.box(
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
-                            )
                         ),
                         # How it Works Tab
                         rx.box(
                             rx.flex(
                                 rx.icon(
                                     "circle-help",
-                                    size=14,
-                                    class_name=rx.cond(
-                                        State.is_dark_theme, 
-                                        "text-green-400/80", 
-                                        "text-green-600/80"
-                                    ) + " md:size-4 lg:size-4 xl:size-5",
+                                    size=18,
+                                    class_name="text-black"
                                 ),
                                 rx.text(
-                                    "How it Works",
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "text-white/90 font-medium text-xs md:text-[10px] lg:text-xs xl:text-base whitespace-nowrap",
-                                        "text-gray-800/90 font-medium text-xs md:text-[10px] lg:text-xs xl:text-base whitespace-nowrap",
-                                    ),
+                                    "HOW IT WORKS",
+                                    class_name="text-black font-black text-xs md:text-sm uppercase tracking-wider",
                                 ),
                                 align="center",
                                 justify="center",
-                                gap="1",
-                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                                gap="2",
                             ),
                             class_name=(
-                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
-                                "cursor-pointer transition-all duration-300 ease-in-out "
-                                "hover:bg-green-500/20 hover:scale-105 active:scale-95 "
-                                "rounded-xl border-2 border-transparent hover:border-green-400/50 "
-                                "backdrop-blur-sm"
+                                "bg-blue-400 border-4 border-black px-3 py-2 "
+                                "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:translate-x-1 hover:translate-y-1 "
+                                "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                "active:translate-x-2 active:translate-y-2 "
+                                "cursor-pointer transition-all duration-100"
                             ),
                             on_click=rx.redirect("/how-it-works"),
-                        ),
-                        # Vertical Separator
-                        rx.box(
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
-                            )
                         ),
                         # Github Tab
                         rx.box(
                             rx.flex(
                                 rx.icon(
                                     "github",
-                                    size=14,
-                                    class_name=rx.cond(
-                                        State.is_dark_theme, 
-                                        "text-blue-400/80", 
-                                        "text-blue-600/80"
-                                    ) + " md:size-4 lg:size-4 xl:size-5",
+                                    size=18,
+                                    class_name="text-black"
                                 ),
                                 rx.text(
-                                    "Github",
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                    ),
+                                    "GITHUB",
+                                    class_name="text-black font-black text-xs md:text-sm uppercase tracking-wider",
                                 ),
                                 align="center",
                                 justify="center",
-                                gap="1",
-                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                                gap="2",
                             ),
                             class_name=(
-                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
-                                "cursor-pointer transition-all duration-300 ease-in-out "
-                                "hover:bg-blue-500/20 hover:scale-105 active:scale-95 "
-                                "rounded-xl border-2 border-transparent hover:border-blue-400/50 "
-                                "backdrop-blur-sm"
+                                "bg-purple-400 border-4 border-black px-3 py-2 "
+                                "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:translate-x-1 hover:translate-y-1 "
+                                "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                "active:translate-x-2 active:translate-y-2 "
+                                "cursor-pointer transition-all duration-100"
                             ),
                             on_click=rx.redirect("https://github.com/bm611/ark", is_external=True),
-                        ),
-                        # Vertical Separator
-                        rx.box(
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-white/20",
-                                "w-px h-4 md:h-3 lg:h-4 xl:h-6 bg-gray-300/50"
-                            )
                         ),
                         # Theme Toggle Tab
                         rx.box(
                             rx.flex(
-                                rx.cond(
-                                    State.is_dark_theme,
-                                    rx.icon(
-                                        "sun",
-                                        size=14,
-                                        class_name="text-yellow-400/80 md:size-4 lg:size-4 xl:size-5",
-                                    ),
-                                    rx.icon(
-                                        "moon",
-                                        size=14,
-                                        class_name="text-slate-600/80 md:size-4 lg:size-4 xl:size-5",
-                                    ),
+                                rx.icon(
+                                    "sun",
+                                    size=18,
+                                    class_name="text-black"
                                 ),
                                 rx.text(
-                                    "Theme",
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "text-white/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                        "text-gray-800/90 font-medium text-xs md:text-xs lg:text-sm xl:text-base",
-                                    ),
+                                    "THEME",
+                                    class_name="text-black font-black text-xs md:text-sm uppercase tracking-wider",
                                 ),
                                 align="center",
                                 justify="center",
-                                gap="1",
-                                class_name="md:gap-1 lg:gap-2 xl:gap-2",
+                                gap="2",
                             ),
                             class_name=(
-                                "group relative px-3 py-2 md:px-2 md:py-1 lg:px-3 lg:py-1 xl:px-5 xl:py-3 "
-                                "cursor-pointer transition-all duration-300 ease-in-out "
-                                "hover:bg-gray-500/20 hover:scale-105 active:scale-95 "
-                                "rounded-xl border-2 border-transparent hover:border-gray-400/50 "
-                                "backdrop-blur-sm"
+                                "bg-orange-400 border-4 border-black px-3 py-2 "
+                                "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                "hover:translate-x-1 hover:translate-y-1 "
+                                "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                "active:translate-x-2 active:translate-y-2 "
+                                "cursor-pointer transition-all duration-100"
                             ),
-                            on_click=State.toggle_theme,
                         ),
                         align="center",
                         justify="center",
-                        gap="1",
-                        class_name="md:gap-0.5 lg:gap-1 xl:gap-3",
+                        gap="3",
                     ),
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        (
-                            "hidden md:flex absolute left-1/2 transform -translate-x-1/2 "
-                            "px-2 py-1 md:px-2 md:py-3 lg:px-3 lg:py-2 xl:px-6 xl:py-3 rounded-2xl "
-                            "backdrop-blur-xl border border-white/10 "
-                            "shadow-[0px_8px_32px_0px_rgba(0,0,0,0.37)] "
-                            "hover:shadow-[0px_12px_40px_0px_rgba(0,0,0,0.5)] "
-                            "transition-all duration-300 ease-in-out "
-                            "bg-gradient-to-r from-white/5 via-white/10 to-white/5"
-                        ),
-                        (
-                            "hidden md:flex absolute left-1/2 transform -translate-x-1/2 "
-                            "px-2 py-1 md:px-2 md:py-3 lg:px-3 lg:py-2 xl:px-6 xl:py-3 rounded-2xl "
-                            "backdrop-blur-xl border border-gray-200/50 "
-                            "shadow-[0px_8px_32px_0px_rgba(0,0,0,0.1)] "
-                            "hover:shadow-[0px_12px_40px_0px_rgba(0,0,0,0.15)] "
-                            "transition-all duration-300 ease-in-out "
-                            "bg-gradient-to-r from-white/80 via-white/90 to-white/80"
-                        ),
-                    ),
+                    class_name="hidden md:flex absolute left-1/2 transform -translate-x-1/2",
                 ),
-                # Right section - Authentication buttons only
+                # Right section - Neo-Brutal Authentication buttons
                 rx.hstack(
                     clerk.signed_out(
                         clerk.sign_in_button(
                             rx.button(
                                 rx.text(
-                                    "Sign In", class_name="text-white font-semibold"
+                                    "SIGN IN", class_name="text-black font-black uppercase tracking-wider"
                                 ),
                                 class_name=(
-                                    "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                                    "shadow-[0px_4px_0px_0px_rgb(34,197,94,0.6)] "
-                                    "hover:shadow-[0px_6px_0px_0px_rgb(34,197,94,0.8)] "
-                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(34,197,94,0.6)] active:translate-y-1 "
-                                    "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                                    "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                                    "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                                    "px-4 py-2 bg-green-400 border-4 border-black text-base "
+                                    "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                    "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                    "hover:translate-x-1 hover:translate-y-1 "
+                                    "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                    "active:translate-x-2 active:translate-y-2 "
+                                    "transition-all duration-100 "
+                                    "md:px-6 md:py-3"
                                 ),
                                 style={
-                                    "background": "linear-gradient(135deg, rgba(34,197,94,0.7) 0%, rgba(22,163,74,0.7) 50%, rgba(21,128,61,0.7) 100%)",
-                                    "border": "1px solid rgba(21,128,61,0.7)",
+                                    "background": "#4ADE80",
+                                    "border": "4px solid #000000",
                                 },
                             )
                         ),
@@ -513,20 +367,21 @@ def navbar() -> rx.Component:
                         clerk.sign_out_button(
                             rx.button(
                                 rx.text(
-                                    "Sign Out", class_name="text-white font-semibold"
+                                    "SIGN OUT", class_name="text-white font-black uppercase tracking-wider"
                                 ),
                                 class_name=(
-                                    "p-2 rounded-xl text-white text-sm transition-all duration-200 font-[dm] font-semibold flex items-center justify-center "
-                                    "shadow-[0px_4px_0px_0px_rgb(239,68,68,0.6)] "
-                                    "hover:shadow-[0px_6px_0px_0px_rgb(239,68,68,0.8)] "
-                                    "hover:brightness-110 active:shadow-[0px_2px_0px_0px_rgb(239,68,68,0.6)] active:translate-y-1 "
-                                    "md:px-3 md:py-4 md:rounded-xl md:text-lg "
-                                    "lg:px-2 lg:py-3 lg:rounded-lg lg:text-base "
-                                    "xl:px-6 xl:py-8 xl:rounded-3xl xl:text-xl"
+                                    "px-4 py-2 bg-red-500 border-4 border-black text-base "
+                                    "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+                                    "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] "
+                                    "hover:translate-x-1 hover:translate-y-1 "
+                                    "active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] "
+                                    "active:translate-x-2 active:translate-y-2 "
+                                    "transition-all duration-100 "
+                                    "md:px-6 md:py-3"
                                 ),
                                 style={
-                                    "background": "linear-gradient(135deg, rgba(239,68,68,0.7) 0%, rgba(220,38,38,0.7) 50%, rgba(185,28,28,0.7) 100%)",
-                                    "border": "1px solid rgba(185,28,28,0.7)",
+                                    "background": "#EF4444",
+                                    "border": "4px solid #000000",
                                 },
                             )
                         ),
@@ -536,5 +391,5 @@ def navbar() -> rx.Component:
             ),
             class_name="flex justify-between items-center",
         ),
-        class_name="p-4",
+        class_name="p-4 bg-white border-b-4 border-black",
     )

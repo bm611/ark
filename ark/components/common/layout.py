@@ -19,11 +19,7 @@ def expandable_content_box(
     """
     return rx.box(
         content,
-        class_name=rx.cond(
-            State.is_dark_theme,
-            f"bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
-            f"bg-white border-2 border-{border_color} rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-        ),
+        class_name=f"bg-white border-2 border-{border_color} p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
         width="100%",
         max_width="100%",
         overflow_x="auto",
@@ -48,17 +44,9 @@ def provider_badge(
     return rx.flex(
         rx.text(
             provider_name.upper(),
-            class_name=rx.cond(
-                State.is_dark_theme,
-                "font-[dm] text-xs md:text-sm font-bold text-slate-50",
-                "font-[dm] text-xs md:text-sm font-bold text-black",
-            ),
+            class_name="font-bold text-xs md:text-sm text-black",
         ),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            f"hidden md:flex bg-slate-700 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)]",
-            f"hidden md:flex {color_class} rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
-        ),
+        class_name=f"hidden md:flex {color_class} p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
     )
 
 
@@ -73,75 +61,46 @@ def model_badge(model_name: str, color_class: str = "bg-pink-300") -> rx.Compone
     return rx.flex(
         rx.text(
             model_name.upper(),
-            class_name=rx.cond(
-                State.is_dark_theme,
-                "font-[dm] text-xs md:text-sm font-bold text-slate-50",
-                "font-[dm] text-xs md:text-sm font-bold text-black",
-            ),
+            class_name="font-bold text-xs md:text-sm text-black",
         ),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            f"bg-slate-700 rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)]",
-            f"{color_class} rounded-xl p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
-        ),
+        class_name=f"{color_class} p-2 md:p-3 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
     )
 
 
 def loading_skeleton() -> rx.Component:
     """Reusable loading skeleton component."""
     return rx.vstack(
-        # Shimmer text
         rx.hstack(
             rx.text(
                 "Generating Response...",
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "text-lg font-semibold text-slate-300 bg-gradient-to-r from-slate-300 via-slate-50 to-slate-300 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
-                    "text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
-                ),
+                class_name="text-lg font-semibold text-gray-600 bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
             ),
             class_name="w-full justify-left px-4 py-4",
         ),
         rx.hstack(
             rx.skeleton(
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "h-4 w-32 rounded-full bg-slate-700",
-                    "h-4 w-32 rounded-full bg-gray-200",
-                ),
+                class_name="h-4 w-32 rounded-full bg-gray-200",
                 loading=True,
             ),
             class_name="w-full items-start gap-3 px-4 py-2",
         ),
         rx.hstack(
             rx.skeleton(
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "h-4 w-full rounded-lg bg-slate-700",
-                    "h-4 w-full rounded-lg bg-gray-200",
-                ),
+                class_name="h-4 w-full rounded-lg bg-gray-200",
                 loading=True,
             ),
             class_name="w-full px-4 py-2",
         ),
         rx.hstack(
             rx.skeleton(
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "h-4 w-3/4 rounded-lg bg-slate-700",
-                    "h-4 w-3/4 rounded-lg bg-gray-200",
-                ),
+                class_name="h-4 w-3/4 rounded-lg bg-gray-200",
                 loading=True,
             ),
             class_name="w-full px-4 py-1",
         ),
         rx.hstack(
             rx.skeleton(
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "h-4 w-1/2 rounded-lg bg-slate-700",
-                    "h-4 w-1/2 rounded-lg bg-gray-200",
-                ),
+                class_name="h-4 w-1/2 rounded-lg bg-gray-200",
                 loading=True,
             ),
             class_name="w-full px-4 py-1 pb-4",
@@ -183,33 +142,18 @@ def navigation_header(
                     rx.icon(
                         "plus",
                         size=24,
-                        color=rx.cond(State.is_dark_theme, "white", "rgb(75, 85, 99)"),
+                        color="black",
                         class_name="md:hidden",
                     ),
                     rx.text(
                         "New Chat",
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "hidden md:block font-[dm] text-slate-50 tracking-wide text-lg font-bold",
-                            "hidden md:block font-[dm] text-black tracking-wide text-lg font-bold",
-                        ),
+                        class_name="hidden md:block font-bold text-black tracking-wide text-lg",
                     ),
                     align="center",
                     justify="center",
                     class_name="flex items-center",
                 ),
-                class_name="text-left p-4 md:p-6 rounded-2xl shadow-[0px_8px_0px_0px_rgba(75,85,99,0.8)] hover:shadow-[0px_4px_0px_0px_rgba(75,85,99,0.8)] hover:translate-y-1 transition-all duration-200 mb-2",
-                style=rx.cond(
-                    State.is_dark_theme,
-                    {
-                        "background": "linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%)",
-                        "border": "2px solid #64748b",
-                    },
-                    {
-                        "background": "linear-gradient(135deg, #e2e8f0 0%, #d1d5db 50%, #bcc3ce 100%)",
-                        "border": "2px solid #4a5568",
-                    },
-                ),
+                class_name="text-left p-4 md:p-6 bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-200 mb-2",
                 on_click=new_chat_handler,
             ),
             class_name="flex-1 flex justify-end",

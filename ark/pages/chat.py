@@ -16,53 +16,36 @@ def markdown_component_map() -> Dict[str, Any]:
             text,
             size="5",
             margin_y="1em",
-            class_name="font-[dm] text-3xl font-bold leading-tight my-4",
+            class_name="font-bold text-3xl tracking-tight text-black",
         ),
         "h2": lambda text: rx.heading(
             text,
             size="3",
             margin_y="1em",
-            class_name="font-[dm] text-2xl font-bold leading-tight my-4",
+            class_name="font-bold text-2xl tracking-tight text-black",
         ),
         "h3": lambda text: rx.heading(
             text,
             size="1",
             margin_y="1em",
-            class_name="font-[dm] text-xl font-bold leading-tight my-4",
+            class_name="font-bold text-xl tracking-tight text-black",
         ),
         "h4": lambda text: rx.heading(
             text,
             size="1",
             margin_y="1em",
-            class_name="font-[dm] text-xl font-bold leading-tight my-4",
+            class_name="font-bold text-xl tracking-tight text-black",
         ),
-        "p": lambda text: rx.text(text, margin_y="1em", class_name="font-[dm]"),
+        "p": lambda text: rx.text(text, margin_y="1em", class_name="text-black"),
         "code": lambda text: rx.code(
             text,
-            class_name=rx.cond(
-                State.is_dark_theme,
-                "font-mono text-sm bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-600",
-                "font-mono text-sm bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md border border-gray-200",
-            ),
-            style={
-                "font-family": "ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace",
-                "font-size": "0.875rem",
-                "line-height": "1.25rem",
-                "word-break": "break-all",
-                "white-space": "pre-wrap",
-            },
+            class_name="font-mono text-sm bg-gray-200 text-black px-1.5 py-0.5 border border-black",
         ),
         "codeblock": lambda text, **props: rx.box(
-            # Header section with language and copy button
             rx.box(
                 rx.text(
                     props.get("language", "text"),
-                    size="1",
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        "text-gray-400 font-mono text-xs font-semibold",
-                        "text-gray-500 font-mono text-xs font-semibold",
-                    ),
+                    class_name="text-gray-500 font-mono text-xs font-semibold",
                 ),
                 rx.button(
                     rx.icon("copy", size=14),
@@ -70,85 +53,30 @@ def markdown_component_map() -> Dict[str, Any]:
                     on_click=[rx.set_clipboard(text), rx.toast("Copied!")],
                     variant="ghost",
                     size="1",
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        "text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 rounded-md transition-colors duration-200",
-                        "text-gray-500 hover:text-black hover:bg-gray-200 px-2 py-1 rounded-md transition-colors duration-200",
-                    ),
+                    class_name="text-gray-500 hover:text-black hover:bg-gray-200 px-2 py-1 rounded-md transition-colors duration-200",
                 ),
-                class_name=rx.cond(
-                    State.is_dark_theme,
-                    "flex justify-between items-center px-4 py-2 bg-gray-800 rounded-t-lg border-b border-gray-700",
-                    "flex justify-between items-center px-4 py-2 bg-gray-100 rounded-t-lg border-b border-gray-200",
-                ),
+                class_name="flex justify-between items-center px-4 py-2 bg-gray-100 border-b-2 border-black",
             ),
-            # Code block section
             rx.code_block(
                 text,
-                theme=rx.cond(
-                    State.is_dark_theme,
-                    rx.code_block.themes.vsc_dark_plus,
-                    rx.code_block.themes.one_light,
-                ),
+                theme=rx.code_block.themes.vsc_dark_plus,
                 width="100%",
-                max_width="100%",
                 overflow_x="auto",
                 custom_style={
                     "font-size": "14px",
                     "font_family": "'Fira Code', monospace",
-                    "white-space": "pre",
-                    "word-wrap": "break-word",
-                    "overflow-wrap": "break-word",
-                    "border-radius": "0 0 0.5rem 0.5rem",
-                    "padding": "1rem",
-                    "line-height": "1.5",
-                },
-                css={
-                    "@media (max-width: 768px)": {
-                        "font-size": "12px",
-                        "padding": "0.8rem",
-                    },
                 },
             ),
             margin_y="1.5em",
-            class_name=rx.cond(
-                State.is_dark_theme,
-                "bg-gray-900 rounded-lg shadow-lg border border-gray-700 overflow-hidden",
-                "bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden",
-            ),
+            class_name="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden",
         ),
         "a": lambda text, **props: rx.link(
-            text, **props, color="orange", _hover={"color": "red"}
+            text, **props, color="blue.500", _hover={"color": "blue.700"}
         ),
         "table": lambda children: rx.box(
-            children,
+            rx.box(children, class_name="p-4"),
+            class_name="border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] my-4",
             overflow_x="auto",
-            margin_y="1em",
-            width="100%",
-            max_width="100vw",
-            scrollbar_width="thin",
-            css={
-                "WebkitOverflowScrolling": "touch",
-                "@media (max-width: 768px)": {
-                    "display": "block",
-                    "overflow-x": "scroll",
-                },
-            },
-            style={
-                "table": {
-                    "width": "100%",
-                    "border-collapse": "collapse",
-                    "min-width": "400px",
-                },
-                "th": {
-                    "border": "1px solid #e2e8f0",
-                    "padding": "8px",
-                    "background-color": "#f8fafc",
-                    "text-align": "left",
-                    "white-space": "nowrap",
-                },
-                "td": {"border": "1px solid #e2e8f0", "padding": "8px"},
-            },
         ),
     }
 
@@ -168,376 +96,163 @@ def response_message(message: dict, index: int) -> rx.Component:
     return rx.box(
         rx.cond(
             message["role"] == "user",
-            rx.vstack(
-                rx.text(
-                    message.get("display_text", message["content"]),
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        "ml-2 text-xl md:text-4xl font-bold tracking-wide text-slate-50",
-                        "ml-2 text-xl md:text-4xl font-bold tracking-wide text-gray-900",
+            rx.box(
+                rx.vstack(
+                    rx.text(
+                        message.get("display_text", message["content"]),
+                        class_name="text-2xl md:text-4xl font-bold tracking-tight text-black",
+                        style={
+                            "display": "-webkit-box",
+                            "-webkit-line-clamp": "2",
+                            "-webkit-box-orient": "vertical",
+                            "overflow": "hidden",
+                            "text-overflow": "ellipsis",
+                        },
                     ),
-                    style={
-                        "display": "-webkit-box",
-                        "-webkit-line-clamp": "2",
-                        "-webkit-box-orient": "vertical",
-                        "overflow": "hidden",
-                        "text-overflow": "ellipsis",
-                    },
-                ),
-                # File preview section for user messages - R2 and fallback
-                rx.cond(
-                    (message.get("files") & (message.get("files", []).length() > 0)) | 
-                    ((State.current_message_image & (index == 0)) | 
-                     ((State.pdf_files.length() > 0) & (index == 0))),
-                    rx.box(
-                        rx.vstack(
-                            # R2 files display (priority)
-                            rx.cond(
-                                message.get("files") & (message.get("files", []).length() > 0),
-                                rx.hstack(
-                                    rx.foreach(
-                                        message.get("files", []),
-                                        lambda file_ref: rx.cond(
-                                            file_ref["content_type"].startswith("image/"),
-                                            # Image display
-                                            rx.image(
-                                                src=file_ref.get("presigned_url") | file_ref.get("base64_url"),
-                                                class_name=rx.cond(
-                                                    State.is_dark_theme,
-                                                    "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
-                                                    "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
-                                                ),
-                                                style={
-                                                    "max-width": "300px",
-                                                    "max-height": "300px",
-                                                    "object-fit": "contain",
-                                                },
-                                            ),
-                                            # File display (PDF, etc.)
-                                            rx.box(
-                                                rx.hstack(
-                                                    rx.icon(
-                                                        "file-text",
-                                                        size=18,
-                                                        color=rx.cond(
-                                                            State.is_dark_theme,
-                                                            "#ef4444",
-                                                            "#dc2626",
-                                                        ),
-                                                    ),
-                                                    rx.text(
-                                                        file_ref.get("original_filename") | file_ref.get("filename"),
-                                                        class_name=rx.cond(
-                                                            State.is_dark_theme,
-                                                            "text-sm text-neutral-200 font-[dm] font-medium",
-                                                            "text-sm text-gray-700 font-[dm] font-medium",
-                                                        ),
-                                                    ),
-                                                    align="center",
-                                                    spacing="2",
-                                                ),
-                                                class_name=rx.cond(
-                                                    State.is_dark_theme,
-                                                    "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                                    "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                    wrap="wrap",
-                                    spacing="3",
-                                ),
-                            ),
-                            # Fallback to legacy display for backward compatibility
-                            rx.cond(
-                                ~(message.get("files") & (message.get("files", []).length() > 0)),
-                                rx.vstack(
-                                    # Legacy image display
-                                    rx.cond(
-                                        State.current_message_image & (index == 0),
+                    # File preview section for user messages
+                    rx.cond(
+                        message.get("files") & (message.get("files", []).length() > 0),
+                        rx.box(
+                            rx.hstack(
+                                rx.foreach(
+                                    message.get("files", []),
+                                    lambda file_ref: rx.cond(
+                                        file_ref["content_type"].startswith("image/"),
+                                        # Image display
                                         rx.image(
-                                            src=State.current_message_image,
-                                            class_name=rx.cond(
-                                                State.is_dark_theme,
-                                                "rounded-xl border-2 border-slate-600 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-2",
-                                                "rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-2",
-                                            ),
+                                            src=file_ref.get("presigned_url") | file_ref.get("base64_url"),
+                                            class_name="rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
                                             style={
-                                                "max-width": "300px",
-                                                "max-height": "300px",
+                                                "max-width": "200px",
+                                                "max-height": "200px",
                                                 "object-fit": "contain",
                                             },
                                         ),
-                                    ),
-                                    # Legacy PDF display
-                                    rx.cond(
-                                        (State.pdf_files.length() > 0) & (index == 0),
-                                        rx.hstack(
-                                            rx.foreach(
-                                                State.pdf_files,
-                                                lambda filename: rx.box(
-                                                    rx.hstack(
-                                                        rx.icon(
-                                                            "file-text",
-                                                            size=18,
-                                                            color=rx.cond(
-                                                                State.is_dark_theme,
-                                                                "#ef4444",
-                                                                "#dc2626",
-                                                            ),
-                                                        ),
-                                                        rx.text(
-                                                            filename,
-                                                            class_name=rx.cond(
-                                                                State.is_dark_theme,
-                                                                "text-sm text-neutral-200 font-[dm] font-medium",
-                                                                "text-sm text-gray-700 font-[dm] font-medium",
-                                                            ),
-                                                        ),
-                                                        align="center",
-                                                        spacing="2",
-                                                    ),
-                                                    class_name=rx.cond(
-                                                        State.is_dark_theme,
-                                                        "bg-neutral-800/90 border border-neutral-600/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                                        "bg-white/90 border border-gray-300/60 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg",
-                                                    ),
+                                        # File display (PDF, etc.)
+                                        rx.box(
+                                            rx.hstack(
+                                                rx.icon("file-text", size=18, color="#000"),
+                                                rx.text(
+                                                    file_ref.get("original_filename") | file_ref.get("filename"),
+                                                    class_name="text-sm text-black font-bold",
                                                 ),
+                                                align="center",
+                                                spacing="2",
                                             ),
-                                            wrap="wrap",
-                                            spacing="3",
+                                            class_name="bg-gray-200 border-2 border-black rounded-lg px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
                                         ),
                                     ),
-                                    spacing="2",
                                 ),
+                                wrap="wrap",
+                                spacing="3",
+                                class_name="mt-4",
                             ),
-                            spacing="2",
                         ),
-                        class_name="ml-2 mt-4",
                     ),
+                    spacing="2",
+                    align_items="start",
                 ),
-                # Generating response indicator for user messages
-                rx.cond(
-                    State.is_streaming,
-                    rx.box(
-                        rx.hstack(
-                            rx.spinner(),
-                            rx.text(
-                                "Generating Response...",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "text-lg font-semibold text-slate-300 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
-                                    "text-lg font-semibold text-gray-600 bg-gradient-to-r from-purple-500 via-pink-600 to-red-600 bg-clip-text text-transparent animate-pulse bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
-                                ),
-                            ),
-                            align="center",
-                            spacing="2",
-                            justify="start",
-                        ),
-                        class_name="w-full px-4 py-4",
-                    ),
-                ),
-                spacing="0",
-                align_items="start",
+                class_name="p-4 md:p-6 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
             ),
-            rx.vstack(
-                # Buttons section in horizontal stack
-                rx.hstack(
-                    # Citations section
-                    rx.cond(
-                        message.get("citations", []),
-                        rx.box(
+            # Assistant's message
+            rx.box(
+                rx.vstack(
+                    # Buttons section
+                    rx.hstack(
+                        # Citations section
+                        rx.cond(
+                            message.get("citations", []),
                             expandable_section_button(
                                 label="Sources",
                                 icon="list",
                                 is_expanded=State.citations_expanded.get(index, False),
-                                gradient="linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
-                                border_color="#1e40af",
-                                shadow_color="rgba(59,130,246,0.8)",
                                 on_click=State.toggle_citations(index),
                             ),
                         ),
-                    ),
-                    # Thinking tokens collapsible section
-                    rx.cond(
-                        message.get("thinking"),
-                        rx.box(
-                            rx.button(
-                                rx.hstack(
-                                    rx.icon(
-                                        "lightbulb",
-                                        size=16,
-                                        class_name="text-white",
-                                    ),
-                                    rx.text(
-                                        "Thinking",
-                                        class_name="font-[dm] text-xs md:text-sm font-semibold text-white",
-                                    ),
-                                    rx.cond(
-                                        State.thinking_expanded.get(index, False),
-                                        rx.icon(
-                                            "chevron-down",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                        rx.icon(
-                                            "chevron-right",
-                                            size=16,
-                                            class_name="text-white",
-                                        ),
-                                    ),
-                                    class_name="items-center gap-1",
-                                ),
+                        # Thinking tokens collapsible section
+                        rx.cond(
+                            message.get("thinking"),
+                            expandable_section_button(
+                                label="Thinking",
+                                icon="lightbulb",
+                                is_expanded=State.thinking_expanded.get(index, False),
                                 on_click=State.toggle_thinking(index),
-                                class_name="text-left p-2 rounded-xl shadow-[0px_4px_0px_0px_rgba(147,51,234,0.8)] hover:shadow-[0px_2px_0px_0px_rgba(147,51,234,0.8)] hover:translate-y-1 transition-all duration-200",
-                                style={
-                                    "background": "linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #7c3aed 100%)",
-                                    "border": "2px solid #6d28d9",
-                                },
                             ),
                         ),
+                        class_name="gap-2 mb-4 flex-wrap",
                     ),
-                    class_name="gap-2 mb-4 flex-wrap ml-2",
-                ),
-                # Expanded content sections
-                rx.cond(
-                    State.citations_expanded.get(index, False),
-                    rx.box(
-                        rx.foreach(
-                            message.get("citations", []),
-                            lambda citation, citation_index: rx.box(
-                                rx.link(
-                                    f"[{citation_index + 1}] {citation}",
-                                    href=citation,
-                                    class_name=rx.cond(
-                                        State.is_dark_theme,
-                                        "font-[dm] text-sm md:text-lg text-slate-50 mb-1",
-                                        "font-[dm] text-sm md:text-lg text-black mb-1",
+                    # Expanded content sections
+                    rx.cond(
+                        State.citations_expanded.get(index, False),
+                        rx.box(
+                            rx.foreach(
+                                message.get("citations", []),
+                                lambda citation, citation_index: rx.box(
+                                    rx.link(
+                                        f"[{citation_index + 1}] {citation}",
+                                        href=citation,
+                                        class_name="font-mono text-sm md:text-base text-black underline",
                                     ),
+                                    class_name="mb-1",
                                 ),
-                                class_name="mb-1",
                             ),
+                            class_name="p-4 bg-yellow-200 border-2 border-black",
+                            width="100%",
                         ),
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                        ),
-                        width="100%",
-                        max_width="100%",
-                        overflow_x="auto",
-                        style={
-                            "word-wrap": "break-word",
-                            "overflow-wrap": "break-word",
-                        },
                     ),
-                ),
-                rx.cond(
-                    State.thinking_expanded.get(index, False),
-                    rx.box(
-                        rx.markdown(
-                            message["thinking"],
-                            component_map=markdown_component_map(),
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-slate-50",
-                                "font-[dm] text-sm md:text-lg text-black",
+                    rx.cond(
+                        State.thinking_expanded.get(index, False),
+                        rx.box(
+                            rx.markdown(
+                                message["thinking"],
+                                component_map=markdown_component_map(),
+                                class_name="font-mono text-sm md:text-base text-black",
                             ),
+                            class_name="p-4 bg-blue-200 border-2 border-black",
+                            width="100%",
                         ),
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                        ),
-                        width="100%",
-                        max_width="100%",
-                        overflow_x="auto",
-                        style={
-                            "word-wrap": "break-word",
-                            "overflow-wrap": "break-word",
-                        },
                     ),
-                ),
-                rx.cond(
-                    message.get("content"),
-                    rx.box(
-                        # Assistant message content
+                    # Main content
+                    rx.cond(
+                        message.get("content"),
                         rx.markdown(
                             message["content"],
                             component_map=markdown_component_map(),
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "font-[dm] text-sm md:text-lg text-slate-50",
-                                "font-[dm] text-sm md:text-lg text-gray-900",
-                            ),
+                            class_name="font-sans text-base md:text-lg text-black",
                         ),
-                        class_name=rx.cond(
-                            State.is_dark_theme,
-                            "bg-slate-800 border-2 border-slate-600 rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(51,65,85,0.8)] mb-4",
-                            "bg-white border-2 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4",
-                        ),
-                        width="100%",
-                        max_width="100%",
-                        overflow_x="auto",
-                        style={
-                            "word-wrap": "break-word",
-                            "overflow-wrap": "break-word",
-                        },
                     ),
-                ),
-                # Performance stats with hero component design style
-                rx.cond(
-                    message.get("generation_time"),
-                    rx.flex(
+                    # Performance stats
+                    rx.cond(
+                        message.get("generation_time"),
                         rx.flex(
-                            rx.text(
-                                f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-slate-50",
-                                    "font-[dm] text-xs font-bold text-black",
+                            rx.flex(
+                                rx.text(
+                                    f"{message.get('tokens_per_second', 'N/A'):.2f} TOKENS/SEC",
+                                    class_name="font-black text-xs text-black uppercase",
                                 ),
+                                class_name="bg-purple-300 p-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]",
                             ),
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "bg-purple-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
-                                "bg-purple-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
-                            ),
-                        ),
-                        rx.flex(
-                            rx.text(
-                                f"{message.get('total_tokens', 'N/A'):.2f} TOKENS",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-slate-50",
-                                    "font-[dm] text-xs font-bold text-black",
+                            rx.flex(
+                                rx.text(
+                                    f"{message.get('total_tokens', 'N/A')} TOKENS",
+                                    class_name="font-black text-xs text-black uppercase",
                                 ),
+                                class_name="bg-sky-300 p-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]",
                             ),
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "bg-sky-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
-                                "bg-sky-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
-                            ),
-                        ),
-                        rx.flex(
-                            rx.text(
-                                f"{message.get('generation_time', 'N/A'):.2f} SEC",
-                                class_name=rx.cond(
-                                    State.is_dark_theme,
-                                    "font-[dm] text-xs font-bold text-slate-50",
-                                    "font-[dm] text-xs font-bold text-black",
+                            rx.flex(
+                                rx.text(
+                                    f"{message.get('generation_time', 'N/A'):.2f} SEC",
+                                    class_name="font-black text-xs text-black uppercase",
                                 ),
+                                class_name="bg-amber-300 p-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]",
                             ),
-                            class_name=rx.cond(
-                                State.is_dark_theme,
-                                "bg-amber-600 rounded-xl p-2 items-center border-2 md:border-3 border-slate-600 shadow-[3px_3px_0px_0px_rgba(51,65,85,0.8)] md:shadow-[5px_5px_0px_0px_rgba(51,65,85,0.8)]",
-                                "bg-amber-300 rounded-xl p-2 items-center border-2 md:border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]",
-                            ),
+                            class_name="gap-2 md:gap-4 mt-4",
                         ),
-                        class_name="gap-2 md:gap-4 mb-20 ml-2",
                     ),
+                    spacing="2",
+                    align_items="start",
                 ),
-                spacing="0",
+                class_name="p-4 md:p-6 bg-gray-100 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mt-4",
             ),
         ),
     )
@@ -550,29 +265,20 @@ def chat_input():
                 rx.input(
                     value=State.prompt,
                     placeholder="Ask Follow Up...",
-                    class_name=rx.cond(
-                        State.is_dark_theme,
-                        "w-full text-white text-base md:text-lg rounded-xl h-12 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] border border-gray-600 hover:border-gray-500 focus:border-gray-400 transition-all duration-200 pl-3 md:pl-4 pr-12 md:pr-14 outline-none focus:outline-none",
-                        "w-full text-gray-900 text-base md:text-lg rounded-xl h-12 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.15)] focus:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.2)] border border-gray-300 hover:border-gray-400 focus:border-gray-600 transition-all duration-200 pl-3 md:pl-4 pr-12 md:pr-14 outline-none focus:outline-none",
-                    ),
+                    class_name="w-full text-black text-base md:text-lg rounded-none h-12 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:translate-x-1 focus:translate-y-1 transition-all duration-100 pl-4 pr-14 outline-none",
                     style={
-                        "background": rx.cond(State.is_dark_theme, "#1f2937", "white"),
-                        "color": rx.cond(State.is_dark_theme, "white", "#111827"),
-                        "outline": "none",
-                        "& input::placeholder": {
-                            "color": rx.cond(State.is_dark_theme, "#a3a3a3", "#6b7280"),
+                        "background": "#FFFFFF",
+                        "color": "#000000",
+                        "&::placeholder": {
+                            "color": "#374151",
+                            "font-weight": "600",
                         },
                     },
                     on_change=State.set_prompt,
                 ),
                 rx.button(
-                    rx.icon(
-                        "arrow-right",
-                        size=24,
-                        color=rx.cond(State.is_dark_theme, "white", "gray"),
-                    ),
-                    class_name="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-transparent rounded-none h-8 w-8 p-0 m-0 flex items-center justify-center",
-                    style={"boxShadow": "none", "background": "none"},
+                    rx.icon("arrow-right", size=24, color="black"),
+                    class_name="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-400 border-2 border-black h-8 w-8 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 transition-all duration-100",
                     on_click=[
                         State.handle_generation,
                         State.send_message_stream,
@@ -584,11 +290,7 @@ def chat_input():
             ),
             class_name="p-4",
         ),
-        class_name=rx.cond(
-            State.is_dark_theme,
-            "fixed bottom-0 left-0 right-0 backdrop-blur-lg",
-            "fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg",
-        ),
+        class_name="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t-4 border-black",
     )
 
 
@@ -598,5 +300,5 @@ def chat_messages():
             State.messages,
             lambda message, index: response_message(message, index),
         ),
-        class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-4 max-w-4xl mx-auto w-full pb-24 md:pb-32 hide-scrollbar",
+        class_name="flex-1 overflow-y-scroll p-4 md:p-6 space-y-8 max-w-4xl mx-auto w-full pb-32 md:pb-40",
     )
